@@ -77,6 +77,9 @@
     <Compile Include="proxy\proxy.ashx.cs">
       <DependentUpon>proxy.ashx</DependentUpon>
     </Compile>
+    <Compile Include="proxy\ProxyConfig.cs" />
+    <Compile Include="proxy\RateMeter.cs" />
+    <Compile Include="proxy\ServerUrl.cs" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
