@@ -2,12 +2,10 @@
 namespace Esri.Proxy
 {
 	using System;
-	using System.IO;
-	using System.Web;
-	using System.Xml.Serialization;
-	using System.Web.Caching;
 	using System.Collections.Concurrent;
 	using System.Diagnostics;
+	using System.IO;
+	using System.Web;
 
 	public class proxy : IHttpHandler
 	{
