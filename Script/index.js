@@ -16,13 +16,13 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 	}
 
 	function FeetAndInches(str) {
-		var feetAndInRe = /(\d+)'\s*(\d+(?:\.\d+)?)"/i;
+		var feetAndInRe = /(\d+)'\s*(?:(\d+(?:\.\d+)?)")?/i;
 		var match = str.match(feetAndInRe);
 		if (!match) {
 			throw new Error("Invalid format.");
 		} 
 		this.feet = Number(match[1]);
-		this.inches = Number(match[2]);
+		this.inches = match[2] ? Number(match[2]) : 0;
 	}
 
 	FeetAndInches.prototype.totalInches = function () {
@@ -38,31 +38,37 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 			type: "esriSLS",
 			style: "esriSLSSolid",
 			color: [255, 0, 0, 255],
-			width: 15
+			width: 8
 		});
 		var pointSelectionSymbol = new SimpleMarkerSymbol({
 			"type": "esriSMS",
-			"style": "esriSMSSquare",
+			"style": "esriSMSCircle",
 			"color": [255, 0, 0, 255],
 			"size": 8,
 			"angle": 0,
 			"xoffset": 0,
 			"yoffset": 0,
 			"outline": {
-				"color": [40, 0, 0, 255],
+				"color": [0, 0, 0, 255],
 				"width": 2
 			 }
 		});
 
+		var infoTemplate = { title: "Attributes", content: "${*}" };
+
 		bridgeLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/2", {
-			outFields: ["min_vert_deck"]
+			mode: FeatureLayer.MODE_SELECTION,
+			infoTemplate: infoTemplate,
+			outFields: ["*"] // "min_vert_deck"]
 		});
 		bridgeLayer.setSelectionSymbol(lineSelectionSymbol);
 		bridgeLayer.on("error", onLayerError);
 		map.addLayer(bridgeLayer);
 
 		ucNoDataLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/4", {
-			outFields: ["min_vert_deck"]
+			mode: FeatureLayer.MODE_SELECTION,
+			infoTemplate: infoTemplate,
+			outFields: ["*"] //"min_vert_deck"]
 		});
 		ucNoDataLayer.setSelectionSymbol(pointSelectionSymbol);
 		ucNoDataLayer.on("error", onLayerError);
@@ -70,21 +76,26 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 	});
 
 	document.forms.clearanceForm.onsubmit = function (e) {
-		var clearanceText = e.target.clearance.value;
-		var inches = Number(clearanceText);
-		var feetAndInches;
-		if (isNaN(inches)) {
-			feetAndInches = new FeetAndInches(clearanceText);
-			inches = feetAndInches.totalInches();
-		}
+		try {
+			e.target.blur();
+			var clearanceText = e.target.clearance.value;
+			var inches = Number(clearanceText);
+			var feetAndInches;
+			if (isNaN(inches)) {
+				feetAndInches = new FeetAndInches(clearanceText);
+				inches = feetAndInches.totalInches();
+			}
 		
-		if (inches) {
-			console.log(inches);
-			[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
-				var query = new Query();
-				query.where = "min_vert_deck < " + inches;
-				layer.selectFeatures(query);
-			});
+			if (inches) {
+				console.log(inches);
+				[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
+					var query = new Query();
+					query.where = "min_vert_deck < " + inches;
+					layer.selectFeatures(query);
+				});
+			}
+		} catch (err) {
+			console.error(err);
 		}
 
 		return false;
