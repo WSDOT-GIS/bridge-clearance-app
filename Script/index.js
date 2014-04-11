@@ -33,6 +33,10 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 		return this.feet + this.inches / 12;
 	};
 
+	FeetAndInches.prototype.toWeirdoFormat = function () {
+		return this.feet * 100 + this.inches;
+	};
+
 	map.on("load", function () {
 		var lineSelectionSymbol = new SimpleLineSymbol({
 			type: "esriSLS",
@@ -84,13 +88,15 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 			if (isNaN(inches)) {
 				feetAndInches = new FeetAndInches(clearanceText);
 				inches = feetAndInches.totalInches();
+			} else {
+				feetAndInches = new FeetAndInches("0'" + inches + '"');
 			}
 		
-			if (inches) {
-				console.log(inches);
+			if (feetAndInches) {
+				console.log(feetAndInches);
 				[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
 					var query = new Query();
-					query.where = "min_vert_deck < " + inches;
+					query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
 					layer.selectFeatures(query);
 				});
 			}
