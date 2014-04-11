@@ -15,6 +15,12 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 		console.error("Layer error", error);
 	}
 
+	/**
+	 * Parses a string into feet and inches.
+	 * @param {string} str
+	 * @property {number} feet
+	 * @property {number} inches
+	 */
 	function FeetAndInches(str) {
 		var feetAndInRe = /(\d+)'\s*(?:(\d+(?:\.\d+)?)")?/i;
 		var match = str.match(feetAndInRe);
@@ -25,14 +31,26 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 		this.inches = match[2] ? Number(match[2]) : 0;
 	}
 
+	/**
+	 * Converts to the total number of inches.
+	 * @returns {number}
+	 */
 	FeetAndInches.prototype.totalInches = function () {
 		return this.feet * 12 + this.inches;
 	};
 
+	/**
+	 * Converts to the total number of feet.
+	 * @returns {number}
+	 */
 	FeetAndInches.prototype.totalFeet = function () {
 		return this.feet + this.inches / 12;
 	};
 
+	/**
+	 * Converts to the weird format used by the bridge data.
+	 * @returns {number}
+	 */
 	FeetAndInches.prototype.toWeirdoFormat = function () {
 		return this.feet * 100 + this.inches;
 	};
