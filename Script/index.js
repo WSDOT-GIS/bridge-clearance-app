@@ -4,9 +4,8 @@ require([
 	"esri/config",
 	"esri/domUtils",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
-	"esri/layers/ImageParameters"
-], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer, ImageParameters) {
-	var map, bridgeLayer;
+], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer) {
+	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
@@ -58,13 +57,16 @@ require([
 	};
 
 	map.on("load", function () {
-		var imageParameters = new ImageParameters();
-		imageParameters.layerOption = ImageParameters.LAYER_OPTION_SHOW;
-		bridgeLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer", {
-			id: "bridges",
-			layerIds: [2,5]
+		bridgeOnLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeOnRecords/MapServer", {
+			id: "bridge-on",
+			visible: false
 		});
-		map.addLayer(bridgeLayer);
+		bridgeUnderLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeUnderRecords/MapServer", {
+			id: "bridge-under",
+			visible: false
+		});
+		map.addLayer(bridgeOnLayer);
+		map.addLayer(bridgeUnderLayer);
 	});
 
 	map.on("update-end", function () {
@@ -90,10 +92,12 @@ require([
 			}
 		
 			if (feetAndInches) {
-				layerDefinitions = [];
-				layerDefinitions[2] = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
-				layerDefinitions[5] = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
-				bridgeLayer.setLayerDefinitions(layerDefinitions);
+				layerDefinitions = ["min_vert_deck < " + feetAndInches.toWeirdoFormat()];
+				bridgeOnLayer.setLayerDefinitions(layerDefinitions);
+				layerDefinitions = ["vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat()];
+				bridgeUnderLayer.setLayerDefinitions(layerDefinitions);
+				bridgeOnLayer.show();
+				bridgeUnderLayer.show();
 			}
 		} catch (err) {
 			console.error(err);
@@ -106,6 +110,9 @@ require([
 	 * Clear the selections from the layers.
 	 */
 	document.forms.clearanceForm.onreset = function () {
-		bridgeLayer.setDefaultLayerDefinitions();
+		bridgeOnLayer.hide();
+		bridgeUnderLayer.hide();
+		bridgeOnLayer.setDefaultLayerDefinitions();
+		bridgeUnderLayer.setDefaultLayerDefinitions();
 	};
 });
