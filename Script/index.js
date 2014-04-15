@@ -3,13 +3,10 @@ require([
 	"esri/map",
 	"esri/config",
 	"esri/domUtils",
-	"esri/layers/FeatureLayer",
-	"esri/tasks/query",
-	"esri/Color",
-	"esri/symbols/CartographicLineSymbol",
-	"esri/symbols/SimpleMarkerSymbol"
-], function (Map, esriConfig, domUtils, FeatureLayer, Query, Color, CartographicLineSymbol, SimpleMarkerSymbol) {
-	var map, bridgeLayer, ucNoDataLayer;
+	"esri/layers/ArcGISDynamicMapServiceLayer",
+	"esri/layers/ImageParameters"
+], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer, ImageParameters) {
+	var map, bridgeLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
@@ -19,10 +16,6 @@ require([
 		zoom: 7,
 		showAttribution: true
 	});
-
-	function onLayerError(error) {
-		console.error("Layer error", error);
-	}
 
 	/**
 	 * Parses a string into feet and inches.
@@ -65,42 +58,13 @@ require([
 	};
 
 	map.on("load", function () {
-		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
-			new Color([255, 0, 0, 255]), 10,
-			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
-		var pointSelectionSymbol = new SimpleMarkerSymbol({
-			"type": "esriSMS",
-			"style": "esriSMSCircle",
-			"color": [255, 0, 0, 255],
-			"size": 8,
-			"angle": 0,
-			"xoffset": 0,
-			"yoffset": 0,
-			"outline": {
-				"color": [0, 0, 0, 255],
-				"width": 2
-			 }
+		var imageParameters = new ImageParameters();
+		imageParameters.layerOption = ImageParameters.LAYER_OPTION_SHOW;
+		bridgeLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer", {
+			id: "bridges",
+			layerIds: [2,5]
 		});
-
-		var infoTemplate = { title: "Attributes", content: "${*}" };
-
-		bridgeLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/2", {
-			mode: FeatureLayer.MODE_SELECTION,
-			infoTemplate: infoTemplate,
-			outFields: ["*"]
-		});
-		bridgeLayer.setSelectionSymbol(lineSelectionSymbol);
-		bridgeLayer.on("error", onLayerError);
 		map.addLayer(bridgeLayer);
-
-		ucNoDataLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/5", {
-			mode: FeatureLayer.MODE_SELECTION,
-			infoTemplate: infoTemplate,
-			outFields: ["*"]
-		});
-		ucNoDataLayer.setSelectionSymbol(pointSelectionSymbol);
-		ucNoDataLayer.on("error", onLayerError);
-		map.addLayer(ucNoDataLayer);
 	});
 
 	map.on("update-end", function () {
@@ -112,7 +76,7 @@ require([
 	});
 
 	document.forms.clearanceForm.onsubmit = function () {
-		var query, clearanceText, inches, feetAndInches;
+		var clearanceText, inches, feetAndInches, layerDefinitions;
 		try {
 			this.blur();
 			clearanceText = this.clearance.value;
@@ -126,13 +90,10 @@ require([
 			}
 		
 			if (feetAndInches) {
-				query = new Query();
-				query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
-				bridgeLayer.selectFeatures(query);
-
-				query = new Query();
-				query.where = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
-				ucNoDataLayer.selectFeatures(query);
+				layerDefinitions = [];
+				layerDefinitions[2] = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
+				layerDefinitions[5] = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
+				bridgeLayer.setLayerDefinitions(layerDefinitions);
 			}
 		} catch (err) {
 			console.error(err);
@@ -145,7 +106,6 @@ require([
 	 * Clear the selections from the layers.
 	 */
 	document.forms.clearanceForm.onreset = function () {
-		bridgeLayer.clearSelection();
-		ucNoDataLayer.clearSelection();
+		bridgeLayer.setDefaultLayerDefinitions();
 	};
 });
