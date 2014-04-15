@@ -1,5 +1,13 @@
 ﻿/*global require*/
-require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/query", "esri/symbols/SimpleLineSymbol", "esri/symbols/SimpleMarkerSymbol"], function (Map, esriConfig, FeatureLayer, Query, SimpleLineSymbol, SimpleMarkerSymbol) {
+require([
+	"esri/map",
+	"esri/config",
+	"esri/layers/FeatureLayer",
+	"esri/tasks/query",
+	"esri/Color",
+	"esri/symbols/CartographicLineSymbol",
+	"esri/symbols/SimpleMarkerSymbol"
+], function (Map, esriConfig, FeatureLayer, Query, Color, CartographicLineSymbol, SimpleMarkerSymbol) {
 	var map, bridgeLayer, ucNoDataLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
@@ -56,12 +64,9 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 	};
 
 	map.on("load", function () {
-		var lineSelectionSymbol = new SimpleLineSymbol({
-			type: "esriSLS",
-			style: "esriSLSSolid",
-			color: [255, 0, 0, 255],
-			width: 8
-		});
+		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
+			new Color([255, 0, 0, 255]), 10,
+			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 		var pointSelectionSymbol = new SimpleMarkerSymbol({
 			"type": "esriSMS",
 			"style": "esriSMSCircle",
