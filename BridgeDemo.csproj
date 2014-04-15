@@ -59,6 +59,9 @@
   <ItemGroup>
     <Content Include="proxy\proxy.ashx" />
     <Content Include="proxy\proxy.config" />
+    <Content Include="Script\index.min.js.map">
+      <DependentUpon>index.min.js</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -69,7 +72,13 @@
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Script\index.js" />
+    <Content Include="Script\index.min.js">
+      <DependentUpon>index.js</DependentUpon>
+    </Content>
     <Content Include="Style\index.css" />
+    <Content Include="Style\index.min.css">
+      <DependentUpon>index.css</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
