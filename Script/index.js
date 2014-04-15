@@ -77,8 +77,27 @@ require([
 		domUtils.show(document.getElementById("mapProgress"));
 	});
 
+	/**
+	 * Creates a layer definition string
+	 * @param {string} clearanceField - The name of the field that contains clearance data.
+	 * @param {FeetAndInches} feetAndInches
+	 * @param {string} [srid] - A state route ID in three-digit format.
+	 * @param {Boolean} [exactMatch]
+	 */
+	function createLayerDefinition(clearanceField, feetAndInches, srid, exactMatch) {
+		var output = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
+		if (srid) {
+			if (exactMatch) {
+				output.push(" AND SRID = '", srid, "'");
+			} else {
+				output.push(" AND SRID LIKE '", srid, "%'");
+			}
+		}
+		return output.join("");
+	}
+
 	document.forms.clearanceForm.onsubmit = function () {
-		var clearanceText, inches, feetAndInches, layerDefinitions, routeText;
+		var clearanceText, inches, feetAndInches, layerDefinitions, routeText, exactRoute;
 		try {
 			this.blur();
 
@@ -95,17 +114,11 @@ require([
 
 			// Get the route filter
 			routeText = this.route.value;
-		
+			exactRoute = this.routeFilterType.value === "exact";
 			if (feetAndInches) {
-				layerDefinitions = ["min_vert_deck < " + feetAndInches.toWeirdoFormat()];
-				if (routeText) {
-					layerDefinitions[0] += " AND SRID = '" + routeText + "'";
-				}
+				layerDefinitions = [createLayerDefinition("min_vert_deck", feetAndInches, routeText, exactRoute)];
 				bridgeOnLayer.setLayerDefinitions(layerDefinitions);
-				layerDefinitions = ["vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat()];
-				if (routeText) {
-					layerDefinitions[0] += " AND SRID = '" + routeText + "'";
-				}
+				layerDefinitions = [createLayerDefinition("vert_clrnc_route_min", feetAndInches, routeText, exactRoute)];
 				bridgeUnderLayer.setLayerDefinitions(layerDefinitions);
 				bridgeOnLayer.show();
 				bridgeUnderLayer.show();
