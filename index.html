@@ -3,13 +3,17 @@
 <head>
 	<title>Bridge Demo</title>
 	<link href="//js.arcgis.com/3.9/js/esri/css/esri.css" rel="stylesheet" />
+	<link href="//js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css" rel="stylesheet" />
 	<link href="Style/index.css" rel="stylesheet" />
 </head>
-<body>
+<body class="claro">
 	<div id="map"></div>
 	<progress id="mapProgress" class="map-progress">Loading map data...</progress>
 	<form id="clearanceForm">
-		<input name="clearance" type="text" placeholder="Enter clearance height" required="required" title="Enter clearance height in inches" />
+		<label for="clearanceBox">Clearance</label><br />
+		<input id="clearanceBox" name="clearance" type="text" placeholder="E.g. 15&apos;5&quot; or 185" required="required" title="Enter clearance height in either inches or X&apos;X&quot;" /><br />
+		<label for="routeFilterBox">Route (optional)</label><br />
+		<input id="routeFilterBox" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" /><br />
 		<button type="submit">Submit</button>
 		<button type="reset">Reset</button>
 	</form>

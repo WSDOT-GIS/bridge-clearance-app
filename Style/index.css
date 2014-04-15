@@ -4,10 +4,16 @@
 	height:100%;
 }
 
+body {
+	font-family: Verdana, Geneva, 'DejaVu Sans', sans-serif;
+}
+
 #clearanceForm {
 	position: absolute;
 	top: 0;
 	right: 0;
+	background-color: rgba(224, 232, 216, 0.63);
+	padding: 1em;
 }
 
 .map-progress {

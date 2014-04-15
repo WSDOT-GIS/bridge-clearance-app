@@ -78,9 +78,11 @@ require([
 	});
 
 	document.forms.clearanceForm.onsubmit = function () {
-		var clearanceText, inches, feetAndInches, layerDefinitions;
+		var clearanceText, inches, feetAndInches, layerDefinitions, routeText;
 		try {
 			this.blur();
+
+			// Get the clearance amount.
 			clearanceText = this.clearance.value;
 			inches = Number(clearanceText);
 			feetAndInches;
@@ -90,11 +92,20 @@ require([
 			} else {
 				feetAndInches = new FeetAndInches("0'" + inches + '"');
 			}
+
+			// Get the route filter
+			routeText = this.route.value;
 		
 			if (feetAndInches) {
 				layerDefinitions = ["min_vert_deck < " + feetAndInches.toWeirdoFormat()];
+				if (routeText) {
+					layerDefinitions[0] += " AND SRID = '" + routeText + "'";
+				}
 				bridgeOnLayer.setLayerDefinitions(layerDefinitions);
 				layerDefinitions = ["vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat()];
+				if (routeText) {
+					layerDefinitions[0] += " AND SRID = '" + routeText + "'";
+				}
 				bridgeUnderLayer.setLayerDefinitions(layerDefinitions);
 				bridgeOnLayer.show();
 				bridgeUnderLayer.show();
