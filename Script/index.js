@@ -4,25 +4,13 @@ require([
 	"esri/config",
 	"esri/domUtils",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
-	"esri/layers/ArcGISTiledMapServiceLayer",
-	"esri/dijit/Basemap",
-	"esri/dijit/BasemapLayer"
-], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer, ArcGISTiledMapServiceLayer, Basemap, BasemapLayer) {
-	var map, bridgeOnLayer, bridgeUnderLayer, wsdotBasemap;
+	"esri/layers/ArcGISTiledMapServiceLayer"
+], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer, ArcGISTiledMapServiceLayer) {
+	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
-	//wsdotBasemap = new Basemap({
-	//	id: "wsdot_basemap",
-	//	layers: new BasemapLayer({
-	//		url: "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer"
-	//	}),
-	//	title: "WSDOT"
-	//});
-
 	map = new Map("map", {
-		// center: [-120.80566406246835, 47.41322033015946],
-		// zoom: 7,
 		showAttribution: true
 	});
 
