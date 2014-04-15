@@ -9,3 +9,9 @@
 	top: 0;
 	right: 0;
 }
+
+.map-progress {
+	position: absolute;
+	bottom: 50%;
+	right: 50%;
+}

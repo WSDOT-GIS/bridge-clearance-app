@@ -2,12 +2,13 @@
 require([
 	"esri/map",
 	"esri/config",
+	"esri/domUtils",
 	"esri/layers/FeatureLayer",
 	"esri/tasks/query",
 	"esri/Color",
 	"esri/symbols/CartographicLineSymbol",
 	"esri/symbols/SimpleMarkerSymbol"
-], function (Map, esriConfig, FeatureLayer, Query, Color, CartographicLineSymbol, SimpleMarkerSymbol) {
+], function (Map, esriConfig, domUtils, FeatureLayer, Query, Color, CartographicLineSymbol, SimpleMarkerSymbol) {
 	var map, bridgeLayer, ucNoDataLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
@@ -102,11 +103,19 @@ require([
 		map.addLayer(ucNoDataLayer);
 	});
 
-	document.forms.clearanceForm.onsubmit = function (e) {
+	map.on("update-end", function () {
+		domUtils.hide(document.getElementById("mapProgress"));
+	});
+
+	map.on("update-start", function () {
+		domUtils.show(document.getElementById("mapProgress"));
+	});
+
+	document.forms.clearanceForm.onsubmit = function () {
 		var query, clearanceText, inches, feetAndInches;
 		try {
-			e.target.blur();
-			clearanceText = e.target.clearance.value;
+			this.blur();
+			clearanceText = this.clearance.value;
 			inches = Number(clearanceText);
 			feetAndInches;
 			if (isNaN(inches)) {
