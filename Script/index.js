@@ -87,7 +87,7 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 		bridgeLayer.on("error", onLayerError);
 		map.addLayer(bridgeLayer);
 
-		ucNoDataLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/4", {
+		ucNoDataLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/5", {
 			mode: FeatureLayer.MODE_SELECTION,
 			infoTemplate: infoTemplate,
 			outFields: ["*"] //"min_vert_deck"]
@@ -114,7 +114,12 @@ require(["esri/map", "esri/config", "esri/layers/FeatureLayer", "esri/tasks/quer
 				console.log(feetAndInches);
 				[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
 					var query = new Query();
-					query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
+					if (layer === bridgeLayer) {
+						query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
+					} else {
+						query.where = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
+						
+					}
 					layer.selectFeatures(query);
 				});
 			}
