@@ -86,7 +86,7 @@ require([
 		bridgeLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/2", {
 			mode: FeatureLayer.MODE_SELECTION,
 			infoTemplate: infoTemplate,
-			outFields: ["*"] // "min_vert_deck"]
+			outFields: ["*"]
 		});
 		bridgeLayer.setSelectionSymbol(lineSelectionSymbol);
 		bridgeLayer.on("error", onLayerError);
@@ -95,7 +95,7 @@ require([
 		ucNoDataLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeService_demo/MapServer/5", {
 			mode: FeatureLayer.MODE_SELECTION,
 			infoTemplate: infoTemplate,
-			outFields: ["*"] //"min_vert_deck"]
+			outFields: ["*"]
 		});
 		ucNoDataLayer.setSelectionSymbol(pointSelectionSymbol);
 		ucNoDataLayer.on("error", onLayerError);
@@ -103,11 +103,12 @@ require([
 	});
 
 	document.forms.clearanceForm.onsubmit = function (e) {
+		var query, clearanceText, inches, feetAndInches;
 		try {
 			e.target.blur();
-			var clearanceText = e.target.clearance.value;
-			var inches = Number(clearanceText);
-			var feetAndInches;
+			clearanceText = e.target.clearance.value;
+			inches = Number(clearanceText);
+			feetAndInches;
 			if (isNaN(inches)) {
 				feetAndInches = new FeetAndInches(clearanceText);
 				inches = feetAndInches.totalInches();
@@ -116,17 +117,13 @@ require([
 			}
 		
 			if (feetAndInches) {
-				console.log(feetAndInches);
-				[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
-					var query = new Query();
-					if (layer === bridgeLayer) {
-						query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
-					} else {
-						query.where = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
-						
-					}
-					layer.selectFeatures(query);
-				});
+				query = new Query();
+				query.where = "min_vert_deck < " + feetAndInches.toWeirdoFormat();
+				bridgeLayer.selectFeatures(query);
+
+				query = new Query();
+				query.where = "vert_clrnc_route_min < " + feetAndInches.toWeirdoFormat();
+				ucNoDataLayer.selectFeatures(query);
 			}
 		} catch (err) {
 			console.error(err);
@@ -139,8 +136,7 @@ require([
 	 * Clear the selections from the layers.
 	 */
 	document.forms.clearanceForm.onreset = function () {
-		[bridgeLayer, ucNoDataLayer].forEach(function (layer) {
-			layer.clearSelection();
-		});
+		bridgeLayer.clearSelection();
+		ucNoDataLayer.clearSelection();
 	};
 });
