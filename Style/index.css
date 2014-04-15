@@ -21,3 +21,11 @@ body {
 	bottom: 50%;
 	right: 50%;
 }
+
+table.bridge-info, table.bridge-info th, table.bridge-info td {
+	border: 1px solid black;
+}
+
+table.bridge-info th {
+	text-align: left;
+}

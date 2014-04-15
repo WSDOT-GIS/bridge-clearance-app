@@ -3,9 +3,11 @@ require([
 	"esri/map",
 	"esri/config",
 	"esri/domUtils",
-	"esri/layers/ArcGISDynamicMapServiceLayer",
-	"esri/layers/ArcGISTiledMapServiceLayer"
-], function (Map, esriConfig, domUtils, ArcGISDynamicMapServiceLayer, ArcGISTiledMapServiceLayer) {
+	"esri/layers/FeatureLayer",
+	"esri/layers/ArcGISTiledMapServiceLayer",
+	"esri/tasks/query",
+	"esri/InfoTemplate"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate) {
 	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
@@ -56,14 +58,32 @@ require([
 		return this.feet * 100 + this.inches;
 	};
 
+	function toHtmlTable(graphic) {
+		var output = ["<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>"], name, value;
+		for (name in graphic.attributes) {
+			if (graphic.attributes.hasOwnProperty(name)) {
+				value = graphic.attributes[name];
+				output.push("<tr><th>", name.replace(/_/g, " "), "</th><td>", value, "</td></tr>");
+			}
+		}
+		output.push("</table>");
+		return output.join("");
+	}
+
+	var infoTemplate = new InfoTemplate("${bridge_name}", toHtmlTable);
+
 	map.on("load", function () {
-		bridgeOnLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeOnRecords/MapServer", {
+		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeOnRecords/MapServer/0", {
 			id: "bridge-on",
-			visible: false
+			mode: FeatureLayer.MODE_SELECTION,
+			outFields: ["*"],
+			infoTemplate: infoTemplate
 		});
-		bridgeUnderLayer = new ArcGISDynamicMapServiceLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeUnderRecords/MapServer", {
+		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeUnderRecords/MapServer/0", {
 			id: "bridge-under",
-			visible: false
+			mode: FeatureLayer.MODE_SELECTION,
+			outFields: ["*"],
+			infoTemplate: infoTemplate
 		});
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
@@ -83,21 +103,24 @@ require([
 	 * @param {FeetAndInches} feetAndInches
 	 * @param {string} [srid] - A state route ID in three-digit format.
 	 * @param {Boolean} [exactMatch]
+	 * @returns {Query}
 	 */
-	function createLayerDefinition(clearanceField, feetAndInches, srid, exactMatch) {
-		var output = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
+	function createQuery(clearanceField, feetAndInches, srid, exactMatch) {
+		var where = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
 		if (srid) {
 			if (exactMatch) {
-				output.push(" AND SRID = '", srid, "'");
+				where.push(" AND SRID = '", srid, "'");
 			} else {
-				output.push(" AND SRID LIKE '", srid, "%'");
+				where.push(" AND SRID LIKE '", srid, "%'");
 			}
 		}
-		return output.join("");
+		var query = new Query();
+		query.where = where.join("");
+		return query;
 	}
 
 	document.forms.clearanceForm.onsubmit = function () {
-		var clearanceText, inches, feetAndInches, layerDefinitions, routeText, exactRoute;
+		var clearanceText, inches, feetAndInches, routeText, exactRoute;
 		try {
 			this.blur();
 
@@ -116,12 +139,8 @@ require([
 			routeText = this.route.value;
 			exactRoute = this.routeFilterType.value === "exact";
 			if (feetAndInches) {
-				layerDefinitions = [createLayerDefinition("min_vert_deck", feetAndInches, routeText, exactRoute)];
-				bridgeOnLayer.setLayerDefinitions(layerDefinitions);
-				layerDefinitions = [createLayerDefinition("vert_clrnc_route_min", feetAndInches, routeText, exactRoute)];
-				bridgeUnderLayer.setLayerDefinitions(layerDefinitions);
-				bridgeOnLayer.show();
-				bridgeUnderLayer.show();
+				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
+				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));
 			}
 		} catch (err) {
 			console.error(err);
@@ -134,9 +153,7 @@ require([
 	 * Clear the selections from the layers.
 	 */
 	document.forms.clearanceForm.onreset = function () {
-		bridgeOnLayer.hide();
-		bridgeUnderLayer.hide();
-		bridgeOnLayer.setDefaultLayerDefinitions();
-		bridgeUnderLayer.setDefaultLayerDefinitions();
+		bridgeOnLayer.clearSelection();
+		bridgeUnderLayer.clearSelection();
 	};
 });
