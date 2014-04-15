@@ -1,0 +1,31 @@
+﻿html, body, #map {
+	padding:0;
+	margin:0;
+	height:100%;
+}
+
+body {
+	font-family: Verdana, Geneva, 'DejaVu Sans', sans-serif;
+}
+
+#clearanceForm {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: rgba(224, 232, 216, 0.63);
+	padding: 1em;
+}
+
+.map-progress {
+	position: absolute;
+	bottom: 50%;
+	right: 50%;
+}
+
+table.bridge-info, table.bridge-info th, table.bridge-info td {
+	border: 1px solid black;
+}
+
+table.bridge-info th {
+	text-align: left;
+}
