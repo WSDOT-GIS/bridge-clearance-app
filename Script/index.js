@@ -73,12 +73,15 @@ require([
 	 */
 	function getGoogleStreetViewUrl(graphic) {
 		var geometry = graphic.geometry, xy, output = null;
+		// Get the xy coordinates of the first (or only) point of the geometry.
 		xy = geometry.type === "point" ? [geometry.x, geometry.y] : geometry.paths ? geometry.paths[0][0] : null;
+		// Convert the coordinates from Web Mercator to WGS84.
 		xy = webMercatorUtils.xyToLngLat(xy[0], xy[1]);
+		// Create the output URL, inserting the xy coordinates.
 		if (xy) {
+			// http://maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
 			output = ["http://maps.google.com/maps?q=&layer=c&cbll=", xy[1], ",", xy[0], "&cbp=11,0,0,0,0"].join("");
 		}
-		// http://maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
 		return output;
 	}
 
@@ -174,7 +177,9 @@ require([
 	 * @returns {Query}
 	 */
 	function createQuery(clearanceField, feetAndInches, srid, exactMatch) {
+		// Create the where clause for the clearance.
 		var where = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
+		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			if (exactMatch) {
 				where.push(" AND SRID = '", srid, "'");
