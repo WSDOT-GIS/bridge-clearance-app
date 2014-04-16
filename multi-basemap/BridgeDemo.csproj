@@ -57,6 +57,8 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\EsriHybridThumbnail.png" />
+    <Content Include="Images\WsdotBasemapThumbnail.jpg" />
     <Content Include="proxy\proxy.ashx" />
     <Content Include="proxy\proxy.config" />
     <Content Include="Script\index.min.js.map">
