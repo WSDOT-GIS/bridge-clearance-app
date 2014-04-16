@@ -6,9 +6,14 @@ require([
 	"esri/layers/FeatureLayer",
 	"esri/layers/ArcGISTiledMapServiceLayer",
 	"esri/tasks/query",
-	"esri/InfoTemplate"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate) {
+	"esri/InfoTemplate",
+	"esri/dijit/BasemapGallery",
+	"esri/dijit/Basemap",
+	"esri/dijit/BasemapLayer"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer) {
 	var map, bridgeOnLayer, bridgeUnderLayer;
+
+	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
@@ -16,7 +21,7 @@ require([
 		showAttribution: true
 	});
 
-	map.addLayer(new ArcGISTiledMapServiceLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer"));
+	map.addLayer(new ArcGISTiledMapServiceLayer(wsdotBasemapUrl, {id: "wsdot"}));
 
 	/**
 	 * Parses a string into feet and inches.
@@ -87,7 +92,32 @@ require([
 		});
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
+
 	});
+
+	var basemapGallery = new BasemapGallery({
+		map: map,
+		basemaps: [
+			new Basemap({
+				id: "wsdot",
+				title: "WSDOT",
+				thumbnailUrl: "Images/WsdotBasemapThumbnail.jpg",
+				layers: [
+					new BasemapLayer({
+						url: wsdotBasemapUrl
+					})
+				]
+			})
+		],
+		basemapIds: ["wsdot"]
+	}, "basemapGallery");
+	basemapGallery.startup();
+
+	basemapGallery.on("load", function () {
+		basemapGallery.select("wsdot");
+		 domUtils.hide(basemapGallery.domNode);
+	});
+	
 
 	map.on("update-end", function () {
 		domUtils.hide(document.getElementById("mapProgress"));
@@ -95,6 +125,10 @@ require([
 
 	map.on("update-start", function () {
 		domUtils.show(document.getElementById("mapProgress"));
+	});
+
+	document.getElementById("basemapsToggleButton").addEventListener("click", function () {
+		domUtils.toggle(basemapGallery.domNode);
 	});
 
 	/**

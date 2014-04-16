@@ -29,3 +29,16 @@ table.bridge-info, table.bridge-info th, table.bridge-info td {
 table.bridge-info th {
 	text-align: left;
 }
+
+#basemapGalleryContainer {
+	position: absolute;
+	top: 5em;
+	left: 1em;
+}
+
+#basemapGallery {
+	padding: 1em;
+	background-color: rgba(224, 232, 216, 0.80);
+	box-shadow: rgba(0,0,0,0.4) 1em 1em;
+	border-radius: 0.5em;
+}
