@@ -11,8 +11,9 @@ require([
 	"esri/dijit/Basemap",
 	"esri/dijit/BasemapLayer",
 	"esri/Color",
-	"esri/symbols/CartographicLineSymbol"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol) {
+	"esri/symbols/CartographicLineSymbol",
+	"esri/geometry/webMercatorUtils"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils) {
 	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
@@ -65,6 +66,27 @@ require([
 		return this.feet * 100 + this.inches;
 	};
 
+	/**
+	 * Creates a Google Street View URL from a graphic's geometry.
+	 * @param {esri/Graphic} graphic
+	 * @returns {string}
+	 */
+	function getGoogleStreetViewUrl(graphic) {
+		var geometry = graphic.geometry, xy, output = null;
+		xy = geometry.type === "point" ? [geometry.x, geometry.y] : geometry.paths ? geometry.paths[0][0] : null;
+		xy = webMercatorUtils.xyToLngLat(xy[0], xy[1]);
+		if (xy) {
+			output = ["http://maps.google.com/maps?q=&layer=c&cbll=", xy[1], ",", xy[0], "&cbp=11,0,0,0,0"].join("");
+		}
+		// http://maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
+		return output;
+	}
+
+	/**
+	 * Creates an HTML table of a graphic's attributes.
+	 * @param {esri/Graphic} graphic
+	 * @returns {string}
+	 */
 	function toHtmlTable(graphic) {
 		var output = ["<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>"], name, value;
 		for (name in graphic.attributes) {
@@ -74,6 +96,11 @@ require([
 			}
 		}
 		output.push("</table>");
+		// Add a google street view url if possible.
+		var gsvUrl = getGoogleStreetViewUrl(graphic);
+		if (gsvUrl) {
+			output.push("<a href='", getGoogleStreetViewUrl(graphic), "' target='google_street_view'>Google Street View</a>");
+		}
 		return output.join("");
 	}
 
