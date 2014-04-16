@@ -9,8 +9,10 @@ require([
 	"esri/InfoTemplate",
 	"esri/dijit/BasemapGallery",
 	"esri/dijit/Basemap",
-	"esri/dijit/BasemapLayer"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer) {
+	"esri/dijit/BasemapLayer",
+	"esri/Color",
+	"esri/symbols/CartographicLineSymbol"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol) {
 	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
@@ -78,12 +80,17 @@ require([
 	var infoTemplate = new InfoTemplate("${bridge_name}", toHtmlTable);
 
 	map.on("load", function () {
+		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
+			new Color([255, 0, 0, 255]), 10,
+			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
+
 		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeOnRecords/MapServer/0", {
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		bridgeOnLayer.setSelectionSymbol(lineSelectionSymbol);
 		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeUnderRecords/MapServer/0", {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
