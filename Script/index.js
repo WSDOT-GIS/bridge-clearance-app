@@ -91,7 +91,6 @@ require([
 	 * @returns {string}
 	 */
 	function createSRViewUrl(graphic) {
-		// http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?srnum=005&srmp=127.22
 		var baseUrl = "http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?";
 		var url;
 		if (graphic.attributes.SRID) {
@@ -100,6 +99,19 @@ require([
 		var armField = graphic.attributes.hasOwnProperty("BeginARM") ? "BeginARM" : graphic.attributes.hasOwnProperty("PointARM") ? "PointARM" : null;
 		if (armField) {
 			url += "&arm=" + graphic.attributes[armField];
+		}
+		return url;
+	}
+
+	/**
+	 * Creates a URL for Beist
+	 * @param {esri/Graphic} graphic
+	 * @returns {string}
+	 */
+	function createBeistUrl(graphic) {
+		var url = null;
+		if (graphic && graphic.attributes && graphic.attributes.control_entity_gid) {
+			url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/Index/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, "");
 		}
 		return url;
 	}
@@ -117,9 +129,12 @@ require([
 			output.push("<p><a href='", gsvUrl, "' target='google_street_view'>Google Street View</a></p>");
 		}
 		var srViewURL = createSRViewUrl(graphic);
-		console.log("SRView URL: %s", srViewURL);
 		if (srViewURL) {
 			output.push("<p><a href='", srViewURL, "'>Open location in SRView</a></p>");
+		}
+		var beistURL = createBeistUrl(graphic);
+		if (beistURL) {
+			output.push("<p><a href='", beistURL, "' target='beist'>BEIst</a></p>");
 		}
 		output.push("<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>");
 		for (name in graphic.attributes) {
