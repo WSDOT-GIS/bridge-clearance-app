@@ -92,9 +92,14 @@ require([
 	 */
 	function createSRViewUrl(graphic) {
 		var baseUrl = "http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?";
+		var re = /(\d{3})(?:(.{2})(.{0,6}))?/;
 		var url;
+		var match;
 		if (graphic.attributes.SRID) {
-			url = baseUrl + "srnum=" + graphic.attributes.SRID;
+			match = graphic.attributes.SRID.match(re);
+			if (match) {
+				url = [baseUrl, "srnum=", match[1], "&RRT=", match[2] || "", "&RRQ=", match[3] || ""].join("");
+			}
 		}
 		var armField = graphic.attributes.hasOwnProperty("BeginARM") ? "BeginARM" : graphic.attributes.hasOwnProperty("PointARM") ? "PointARM" : null;
 		if (armField) {
