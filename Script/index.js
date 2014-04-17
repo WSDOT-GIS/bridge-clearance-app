@@ -214,9 +214,9 @@ require([
 		domUtils.show(document.getElementById("mapProgress"));
 	});
 
-	document.getElementById("basemapsToggleButton").addEventListener("click", function () {
+	document.getElementById("basemapsToggleButton").onclick = function () {
 		domUtils.toggle(basemapGallery.domNode);
-	});
+	};
 
 	/**
 	 * Creates a layer definition string
