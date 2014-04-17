@@ -260,7 +260,7 @@ require([
 
 			// Get the route filter
 			routeText = this.route.value;
-			exactRoute = this.routeFilterType.value === "exact";
+			exactRoute = document.getElementById("exactRadio").checked; //this.routeFilterType.value === "exact";
 			if (feetAndInches) {
 				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));
