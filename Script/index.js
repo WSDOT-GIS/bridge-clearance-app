@@ -86,12 +86,42 @@ require([
 	}
 
 	/**
+	 * Creates a URL to open the ClickOnce SRView application from a graphic's geometry.
+	 * @param {esri/Graphic} graphic
+	 * @returns {string}
+	 */
+	function createSRViewUrl(graphic) {
+		// http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?srnum=005&srmp=127.22
+		var baseUrl = "http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?";
+		var url;
+		if (graphic.attributes.SRID) {
+			url = baseUrl + "srnum=" + graphic.attributes.SRID;
+		}
+		var armField = graphic.attributes.hasOwnProperty("BeginARM") ? "BeginARM" : graphic.attributes.hasOwnProperty("PointARM") ? "PointARM" : null;
+		if (armField) {
+			url += "&arm=" + graphic.attributes[armField];
+		}
+		return url;
+	}
+
+	/**
 	 * Creates an HTML table of a graphic's attributes.
 	 * @param {esri/Graphic} graphic
 	 * @returns {string}
 	 */
 	function toHtmlTable(graphic) {
-		var output = ["<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>"], name, value;
+		var output = [], name, value;
+		// Add a google street view url if possible.
+		var gsvUrl = getGoogleStreetViewUrl(graphic);
+		if (gsvUrl) {
+			output.push("<p><a href='", gsvUrl, "' target='google_street_view'>Google Street View</a></p>");
+		}
+		var srViewURL = createSRViewUrl(graphic);
+		console.log("SRView URL: %s", srViewURL);
+		if (srViewURL) {
+			output.push("<p><a href='", srViewURL, "'>Open location in SRView</a></p>");
+		}
+		output.push("<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>");
 		for (name in graphic.attributes) {
 			if (graphic.attributes.hasOwnProperty(name)) {
 				value = graphic.attributes[name];
@@ -99,11 +129,7 @@ require([
 			}
 		}
 		output.push("</table>");
-		// Add a google street view url if possible.
-		var gsvUrl = getGoogleStreetViewUrl(graphic);
-		if (gsvUrl) {
-			output.push("<a href='", getGoogleStreetViewUrl(graphic), "' target='google_street_view'>Google Street View</a>");
-		}
+
 		return output.join("");
 	}
 
