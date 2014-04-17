@@ -110,8 +110,12 @@ require([
 	 */
 	function createBeistUrl(graphic) {
 		var url = null;
-		if (graphic && graphic.attributes && graphic.attributes.control_entity_gid) {
-			url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/Index/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, "");
+		if (graphic && graphic.attributes) {
+			if (graphic.attributes.control_entity_gid) {
+				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/Index/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, "");
+			} else if (graphic.attributes.key_structure_id) {
+				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE?StructureID=" + graphic.attributes.key_structure_id;
+			}
 		}
 		return url;
 	}
