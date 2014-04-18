@@ -371,7 +371,7 @@ require([
 
 			// Get the route filter
 			routeText = this.route.value;
-			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked; //this.routeFilterType.value === "exact";
+			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 			if (feetAndInches) {
 				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));
