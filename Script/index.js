@@ -238,49 +238,115 @@ require([
 		return name.replace(/_/g, " ");
 	}
 
+	function toDL(/**{Object}*/ o) {
+		var dl = document.createElement("dl"), dt, dd;
+		for (var name in o) {
+			if (o.hasOwnProperty(name)) {
+				dt = document.createElement("dt");
+				dd = document.createElement("dd");
+				dt.textContent = formatFieldName(name);
+				dd.textContent = o[name];
+				dl.appendChild(dt);
+				dl.appendChild(dd);
+			}
+		}
+		return dl;
+	}
+
+	function createTable(o, ignoredNames) {
+		var table = document.createElement("table");
+		table.setAttribute("class", "bridge-info");
+		var tr, th, td;
+		for (var name in o) {
+			if (o.hasOwnProperty(name) && (!ignoredNames || !ignoredNames.test(name))) {
+				tr = document.createElement("tr");
+				th = document.createElement("th");
+				th.textContent = formatFieldName(name);
+				tr.appendChild(th);
+
+				td = document.createElement("td");
+				td.textContent = o[name];
+				tr.appendChild(td);
+				table.appendChild(tr);
+			}
+		}
+		return table;
+	}
+
+	function addFeetAndInchesLabelsToBridgeValue(v) {
+		if (typeof v === "number") {
+			v = String(v);
+		}
+		var match = v.match(/^(\d+)(\d{2})$/);
+		return [match[1], "'", match[2], '"'].join("");
+	}
+
 	/**
 	 * Creates an HTML table of a graphic's attributes.
 	 * @param {esri/Graphic} graphic
 	 * @returns {string}
 	 */
-	function toHtmlTable(graphic) {
-		var graphicsLayer = graphic._graphicsLayer;
-		var ignoredFields = /^(?:(?:control_entity_gid)|(?:OBJECTID_?\d*)|(Field\d+)|(Shape_Length))$/i;
-		var output = [], name, value;
+	function toHtmlContent(graphic) {
+		var graphicsLayer = graphic._graphicsLayer, ignoredFields;
+		ignoredFields = /^(?:(?:\w+_gid)|(?:OBJECTID_?\d*)|(Field\d+)|(Shape_Length))$/i;
+
+		var fragment = document.createDocumentFragment();
 
 		var clearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
-		if (clearanceProperty) {
-			output.push("<dl><dt>", formatFieldName(clearanceProperty), "</dt><dd>", graphic.attributes[clearanceProperty], "</dd></dl>");
-		}
+		var dl = toDL({
+			"Clearance" : addFeetAndInchesLabelsToBridgeValue(graphic.attributes[clearanceProperty])
+		});
 
-		output.push("<h2>Links</h2><ul>");
+		fragment.appendChild(dl);
+		var linksHeader = document.createElement("h2");
+		linksHeader.textContent = "Links";
+		fragment.appendChild(linksHeader);
+
+		var ul = document.createElement("ul");
+		fragment.appendChild(ul);
+
+		var li, a;
+
 		// Add a google street view url if possible.
 		var gsvUrl = getGoogleStreetViewUrl(graphic);
 		if (gsvUrl) {
-			output.push("<li><a href='", gsvUrl, "' target='google_street_view'>Google Street View</a></li>");
+			li = document.createElement("li");
+			a = document.createElement("a");
+			a.href = gsvUrl;
+			a.textContent = "Google Street View";
+			a.target = "_blank";
+			li.appendChild(a);
+			ul.appendChild(li);
 		}
+
 		var srViewURL = createSRViewUrl(graphic);
 		if (srViewURL) {
-			output.push("<li><a href='", srViewURL, "' target='_blank'>Open location in SRView</a></li>");
+			li = document.createElement("li");
+			a = document.createElement("a");
+			a.href = srViewURL;
+			a.target = "_blank";
+			a.textContent = "Open location in SRView";
+			li.appendChild(a);
+			ul.appendChild(li);
 		}
 		var beistURL = createBeistUrl(graphic);
 		if (beistURL) {
-			output.push("<li><a href='", beistURL, "' target='beist'>BEIst</a></li>");
+			li = document.createElement("li");
+			a = document.createElement("a");
+			a.href = beistURL;
+			a.target = 'beist';
+			a.textContent = "BEIst";
+			li.appendChild(a);
+			ul.appendChild(li);
 		}
-		output.push("</ul>");
-		output.push("<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>");
-		for (name in graphic.attributes) {
-			if (graphic.attributes.hasOwnProperty(name) && !ignoredFields.test(name)) {
-				value = graphic.attributes[name];
-				output.push("<tr><th>", formatFieldName(name), "</th><td>", value, "</td></tr>");
-			}
-		}
-		output.push("</table>");
 
-		return output.join("");
+		var table = createTable(graphic.attributes, ignoredFields);
+		fragment.appendChild(table);
+
+		return fragment;
 	}
 
-	var infoTemplate = new InfoTemplate("${crossing_description}", toHtmlTable);
+	var infoTemplate = new InfoTemplate("${crossing_description}", toHtmlContent);
 
 	map.on("load", function () {
 		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
@@ -352,7 +418,7 @@ require([
 		// Pad the srid with zeroes if necessary.
 		if (/^\d$/.test(srid)) {
 			srid = "00" + srid;
-		} else if (/^\d{2}$/) {
+		} else if (/^\d{2}$/.test(srid)) {
 			srid = 0 + srid;
 		}
 
