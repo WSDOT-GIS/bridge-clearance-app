@@ -157,21 +157,21 @@ require([
 		return output.join("");
 	}
 
-	var infoTemplate = new InfoTemplate("${bridge_name}", toHtmlTable);
+	var infoTemplate = new InfoTemplate("${crossing_description}", toHtmlTable);
 
 	map.on("load", function () {
 		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
-			new Color([255, 0, 0, 255]), 10,
+			new Color([255, 85, 0, 255]), 10,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
-		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeOnRecords/MapServer/0", {
+		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/1", {
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
 		bridgeOnLayer.setSelectionSymbol(lineSelectionSymbol);
-		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgeUnderRecords/MapServer/0", {
+		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/0", {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
@@ -202,7 +202,7 @@ require([
 
 	basemapGallery.on("load", function () {
 		basemapGallery.select("wsdot");
-		 domUtils.hide(basemapGallery.domNode);
+		domUtils.hide(basemapGallery.domNode);
 	});
 	
 
@@ -227,6 +227,13 @@ require([
 	 * @returns {Query}
 	 */
 	function createQuery(clearanceField, feetAndInches, srid, exactMatch) {
+		// Pad the srid with zeroes if necessary.
+		if (/^\d$/.test(srid)) {
+			srid = "00" + srid;
+		} else if (/^\d{2}$/) {
+			srid = 0 + srid;
+		}
+
 		// Create the where clause for the clearance.
 		var where = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
 		// If an SRID is specified, add to the where clause...
@@ -260,7 +267,7 @@ require([
 
 			// Get the route filter
 			routeText = this.route.value;
-			exactRoute = document.getElementById("exactRadio").checked; //this.routeFilterType.value === "exact";
+			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked; //this.routeFilterType.value === "exact";
 			if (feetAndInches) {
 				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));

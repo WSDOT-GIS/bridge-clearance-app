@@ -11,13 +11,12 @@
 	<div id="map"></div>
 	<progress id="mapProgress" class="map-progress">Loading map data...</progress>
 	<form id="clearanceForm">
-		<label for="clearanceBox">Clearance</label><br />
+		<label for="clearanceBox">Vehicle Height</label><br />
 		<input id="clearanceBox" name="clearance" type="text" placeholder="E.g. 15&apos;5&quot; or 185" required="required" title="Enter clearance height in either inches or X&apos;X&quot;" /><br />
 		<fieldset>
 			<label for="routeFilterBox">Route (optional)</label><br />
 			<input id="routeFilterBox" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" /><br />
-			<input id="exactRadio" type="radio" name="routeFilterType" value="exact" checked="checked" /><label for="exactRadio">Exact</label>
-			<input id="startsWithRadio" type="radio" name="routeFilterType" value="starts-with" /><label for="startsWithRadio">Starts With</label>
+			<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" /><label for="exactRadio">Include ramps, etc.</label>
 		</fieldset>
 		<button type="submit">Submit</button>
 		<button type="reset">Reset</button>
