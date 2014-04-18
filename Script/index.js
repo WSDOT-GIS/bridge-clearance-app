@@ -234,11 +234,21 @@ require([
 		return url;
 	}
 
+	/**
+	 * Replaces the underscores in a string with spaces.
+	 * @param {string} name
+	 * @returns {string}
+	 */
 	function formatFieldName(name) {
 		return name.replace(/_/g, " ");
 	}
 
-	function toDL(/**{Object}*/ o) {
+	/**
+	 * Creates a definition list from an object's properties.
+	 * @param {Object} o
+	 * @returns {HTMLDListElement}
+	 */
+	function toDL(o) {
 		var dl = document.createElement("dl"), dt, dd;
 		for (var name in o) {
 			if (o.hasOwnProperty(name)) {
@@ -253,6 +263,11 @@ require([
 		return dl;
 	}
 
+	/**
+	 * Creates an HTML table from an object's properties.
+	 * @param {Object} o
+	 * @param {RegExp} [ignoredNames] - Any properties with names that match this RegExp will be omitted from the table.
+	 */
 	function createTable(o, ignoredNames) {
 		var table = document.createElement("table");
 		table.setAttribute("class", "bridge-info");
@@ -273,6 +288,11 @@ require([
 		return table;
 	}
 
+	/**
+	 * E.g., converts 1401 to 14"01'
+	 * @param {(string|number)} v
+	 * @returns {string}
+	 */
 	function addFeetAndInchesLabelsToBridgeValue(v) {
 		if (typeof v === "number") {
 			v = String(v);
@@ -281,6 +301,9 @@ require([
 		return [match[1], "'", match[2], '"'].join("");
 	}
 
+	/**
+	 * Toggles the bridge details table's visibility.
+	 */
 	function toggleDetails() {
 		var table = document.querySelector("table.bridge-info");
 		if (table) {
