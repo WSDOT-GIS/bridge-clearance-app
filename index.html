@@ -2,9 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Bridge Demo</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<link href="//js.arcgis.com/3.9/js/esri/css/esri.css" rel="stylesheet" />
-	<link href="//js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css" rel="stylesheet" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<link href="//js.arcgis.com/3.9compact/js/esri/css/esri.css" rel="stylesheet" />
+	<link href="//js.arcgis.com/3.9compact/js/dojo/dijit/themes/claro/claro.css" rel="stylesheet" />
 	<link href="Style/index.css" rel="stylesheet" />
 </head>
 <body class="claro">
@@ -16,7 +20,7 @@
 		<fieldset>
 			<label for="routeFilterBox">Route (optional)</label><br />
 			<input id="routeFilterBox" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" /><br />
-			<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" /><label for="exactRadio">Include ramps, etc.</label>
+			<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" /><label for="includeNonMainlineCheckbox">Include ramps, etc.</label>
 		</fieldset>
 		<button type="submit">Submit</button>
 		<button type="reset">Reset</button>
@@ -26,7 +30,7 @@
 		<div id="basemapGallery"></div>
 	</div>
 	<script data-dojo-config="async: true"></script>
-	<script src="//js.arcgis.com/3.9/"></script>
+	<script src="//js.arcgis.com/3.9compact/"></script>
 	<script src="Script/index.js"></script>
 </body>
 </html>
