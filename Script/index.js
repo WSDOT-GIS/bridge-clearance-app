@@ -139,7 +139,7 @@ require([
 		}
 		var srViewURL = createSRViewUrl(graphic);
 		if (srViewURL) {
-			output.push("<p><a href='", srViewURL, "'>Open location in SRView</a></p>");
+			output.push("<p><a href='", srViewURL, "' target='_blank'>Open location in SRView</a></p>");
 		}
 		var beistURL = createBeistUrl(graphic);
 		if (beistURL) {
