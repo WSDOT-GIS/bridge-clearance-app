@@ -240,7 +240,7 @@ require([
 	 * @returns {string}
 	 */
 	function toHtmlTable(graphic) {
-		var graphicsLayer = graphic._grpahicsLayer;
+		var graphicsLayer = graphic._graphicsLayer;
 		var ignoredFields = /^(?:(?:control_entity_gid)|(?:OBJECTID_?\d*)|(Field\d+)|(Shape_Length))$/i;
 		var output = [], name, value;
 
