@@ -281,6 +281,20 @@ require([
 		return [match[1], "'", match[2], '"'].join("");
 	}
 
+	function toggleDetails() {
+		var table = document.querySelector("table.bridge-info");
+		if (table) {
+			if (table.classList.contains("collapsed")) {
+				table.classList.remove("collapsed");
+				this.textContent = "Hide details";
+			} else {
+				table.classList.add("collapsed");
+				this.textContent = "Details...";
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Creates an HTML table of a graphic's attributes.
 	 * @param {esri/Graphic} graphic
@@ -294,7 +308,7 @@ require([
 
 		var clearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
 		var dl = toDL({
-			"Clearance" : addFeetAndInchesLabelsToBridgeValue(graphic.attributes[clearanceProperty])
+			"Vertical Clearance" : addFeetAndInchesLabelsToBridgeValue(graphic.attributes[clearanceProperty])
 		});
 
 		fragment.appendChild(dl);
@@ -341,6 +355,19 @@ require([
 		}
 
 		var table = createTable(graphic.attributes, ignoredFields);
+
+		var p;
+		if (table.classList) {
+			table.classList.add("collapsed");
+			p = document.createElement("p");
+			a = document.createElement("a");
+			a.href = "#";
+			a.textContent = "Details...";
+			a.onclick = toggleDetails;
+			p.appendChild(a);
+			fragment.appendChild(p);
+		}
+
 		fragment.appendChild(table);
 
 		return fragment;

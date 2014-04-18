@@ -30,6 +30,10 @@ table.bridge-info th {
 	text-align: left;
 }
 
+table.bridge-info.collapsed {
+	display: none;
+}
+
 #basemapGalleryContainer {
 	position: absolute;
 	bottom: 0;
