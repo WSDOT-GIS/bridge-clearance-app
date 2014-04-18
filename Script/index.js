@@ -234,6 +234,10 @@ require([
 		return url;
 	}
 
+	function formatFieldName(name) {
+		return name.replace(/_/g, " ");
+	}
+
 	/**
 	 * Creates an HTML table of a graphic's attributes.
 	 * @param {esri/Graphic} graphic
@@ -246,7 +250,7 @@ require([
 
 		var clearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
 		if (clearanceProperty) {
-			output.push("<dl><dt>", clearanceProperty, "</dt><dd>", graphic.attributes[clearanceProperty], "</dd></dl>");
+			output.push("<dl><dt>", formatFieldName(clearanceProperty), "</dt><dd>", graphic.attributes[clearanceProperty], "</dd></dl>");
 		}
 
 		output.push("<h2>Links</h2><ul>");
@@ -268,7 +272,7 @@ require([
 		for (name in graphic.attributes) {
 			if (graphic.attributes.hasOwnProperty(name) && !ignoredFields.test(name)) {
 				value = graphic.attributes[name];
-				output.push("<tr><th>", name.replace(/_/g, " "), "</th><td>", value, "</td></tr>");
+				output.push("<tr><th>", formatFieldName(name), "</th><td>", value, "</td></tr>");
 			}
 		}
 		output.push("</table>");
