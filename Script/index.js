@@ -171,6 +171,10 @@ require([
 		return this.feet * 100 + this.inches;
 	};
 
+	FeetAndInches.prototype.toString = function () {
+		return [this.feet.toString(), "'", this.inches.toString(), '"'].join("");
+	};
+
 	/**
 	 * Creates a Google Street View URL from a graphic's geometry.
 	 * @param {esri/Graphic} graphic
@@ -236,23 +240,33 @@ require([
 	 * @returns {string}
 	 */
 	function toHtmlTable(graphic) {
+		var graphicsLayer = graphic._grpahicsLayer;
+		var ignoredFields = /^(?:(?:control_entity_gid)|(?:OBJECTID_?\d*)|(Field\d+)|(Shape_Length))$/i;
 		var output = [], name, value;
+
+		var clearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
+		if (clearanceProperty) {
+			output.push("<dl><dt>", clearanceProperty, "</dt><dd>", graphic.attributes[clearanceProperty], "</dd></dl>");
+		}
+
+		output.push("<h2>Links</h2><ul>");
 		// Add a google street view url if possible.
 		var gsvUrl = getGoogleStreetViewUrl(graphic);
 		if (gsvUrl) {
-			output.push("<p><a href='", gsvUrl, "' target='google_street_view'>Google Street View</a></p>");
+			output.push("<li><a href='", gsvUrl, "' target='google_street_view'>Google Street View</a></li>");
 		}
 		var srViewURL = createSRViewUrl(graphic);
 		if (srViewURL) {
-			output.push("<p><a href='", srViewURL, "' target='_blank'>Open location in SRView</a></p>");
+			output.push("<li><a href='", srViewURL, "' target='_blank'>Open location in SRView</a></li>");
 		}
 		var beistURL = createBeistUrl(graphic);
 		if (beistURL) {
-			output.push("<p><a href='", beistURL, "' target='beist'>BEIst</a></p>");
+			output.push("<li><a href='", beistURL, "' target='beist'>BEIst</a></li>");
 		}
+		output.push("</ul>");
 		output.push("<table class='bridge-info on-under-code-", graphic.attributes.on_under_code === 1 ? "on" : "under", "'>");
 		for (name in graphic.attributes) {
-			if (graphic.attributes.hasOwnProperty(name)) {
+			if (graphic.attributes.hasOwnProperty(name) && !ignoredFields.test(name)) {
 				value = graphic.attributes[name];
 				output.push("<tr><th>", name.replace(/_/g, " "), "</th><td>", value, "</td></tr>");
 			}
