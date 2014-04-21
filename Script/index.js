@@ -465,17 +465,17 @@ require([
 	 * @returns {Query}
 	 */
 	function createQuery(clearanceField, feetAndInches, srid, exactMatch) {
-		// Pad the srid with zeroes if necessary.
-		if (/^\d$/.test(srid)) {
-			srid = "00" + srid;
-		} else if (/^\d{2}$/.test(srid)) {
-			srid = 0 + srid;
-		}
-
 		// Create the where clause for the clearance.
 		var where = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
+			// Pad the srid with zeroes if necessary.
+			if (/^\d$/.test(srid)) {
+				srid = "00" + srid;
+			} else if (/^\d{2}$/.test(srid)) {
+				srid = "0" + srid;
+			}
+
 			if (exactMatch) {
 				where.push(" AND SRID = '", srid, "'");
 			} else {
