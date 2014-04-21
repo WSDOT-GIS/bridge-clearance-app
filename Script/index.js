@@ -20,6 +20,7 @@ require([
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
+	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
 	map = new Map("map", {
 		showAttribution: true,
 		spatialReference: {
@@ -129,6 +130,7 @@ require([
 		]
 	});
 
+	// Add the WSDOT basemap layer to the map.
 	map.addLayer(new ArcGISTiledMapServiceLayer(wsdotBasemapUrl, { id: "wsdot" }));
 
 	/**
