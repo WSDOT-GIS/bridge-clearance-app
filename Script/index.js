@@ -400,6 +400,29 @@ require([
 
 	var infoTemplate = new InfoTemplate("${crossing_description}", toHtmlContent);
 
+
+	/**
+	 * @typedef {Object} FeatureSelectionCompleteResult
+	 * @param {Graphic[]} features
+	 * @param {Number} method
+	 * @param {FeatureLayer} target
+	 */
+
+	/**
+	 * @param {FeatureSelectionCompleteResult} results
+	 * @this {FeatureLayer}
+	 */
+	function handleSelectionComplete(results) {
+		console.log("%s features were selected from %s using method %d.", results.features.length, results.target.id, results.method);
+	}
+
+	/**
+	 * @this {FeatureLayer}
+	 */
+	function handleSelectionClear() {
+		console.log("Selection cleared from %s.", this.id);
+	}
+
 	map.on("load", function () {
 		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
 			new Color([255, 85, 0, 255]), 10,
@@ -411,6 +434,8 @@ require([
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		bridgeOnLayer.on("selection-complete", handleSelectionComplete);
+		bridgeOnLayer.on("selection-clear", handleSelectionClear);
 		bridgeOnLayer.setSelectionSymbol(lineSelectionSymbol);
 		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/0", {
 			id: "bridge-under",
@@ -418,6 +443,8 @@ require([
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		bridgeUnderLayer.on("selection-complete", handleSelectionComplete);
+		bridgeUnderLayer.on("selection-clear", handleSelectionClear);
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
 
