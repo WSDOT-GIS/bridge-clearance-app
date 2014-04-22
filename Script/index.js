@@ -12,8 +12,9 @@ require([
 	"esri/dijit/BasemapLayer",
 	"esri/Color",
 	"esri/symbols/CartographicLineSymbol",
-	"esri/geometry/webMercatorUtils"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils) {
+	"esri/geometry/webMercatorUtils",
+	"esri/dijit/HomeButton"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, HomeButton) {
 	var map, bridgeOnLayer, bridgeUnderLayer;
 
 	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
@@ -346,7 +347,7 @@ require([
 
 		var li, a;
 
-		// Add a google street view url if possible.
+		// Add a google street view, SRView and BEIst urls if possible.
 		var gsvUrl = getGoogleStreetViewUrl(graphic);
 		if (gsvUrl) {
 			li = document.createElement("li");
@@ -407,19 +408,23 @@ require([
 	 * @param {FeatureLayer} target
 	 */
 
-	/**
+	/** Updates the feature count table.
 	 * @param {FeatureSelectionCompleteResult} results
-	 * @this {FeatureLayer}
 	 */
 	function handleSelectionComplete(results) {
-		var cell = results.target.id === "bridge-on" ? document.getElementById("oncount") 
-			: results.target.id === "bridge-under" ? document.getElementById("undercount") : null;
-		if (cell) {
-			cell.textContent = results.features.length;
+		// Determine which layer triggered the selection-complete event.
+		// Get the corresponding table cell that holds its feature count.
+		// Update the value in that table cell.
+		var cellId = results.target.id === "bridge-on" ? "oncount" : results.target.id === "bridge-under" ? "undercount" : null;
+		if (cellId) {
+			var cell = document.getElementById(cellId);
+			if (cell) {
+				cell.textContent = results.features.length;
+			}
 		}
 	}
 
-	/**
+	/** Resets the feature count table cell corresponding to the layer that triggered the event to zero.
 	 * @this {FeatureLayer}
 	 */
 	function handleSelectionClear() {
@@ -432,32 +437,44 @@ require([
 	}
 
 	map.on("load", function () {
+		// Create the cartographic line symbol that will be used to show the selected lines.
+		// This gives them a better appearance than the default behavior.
 		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
 			new Color([255, 85, 0, 255]), 10,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
+		// Create the layer for the "on" features. Features will only appear on the map when they are selected.
 		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/1", {
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		// Attach events.
 		bridgeOnLayer.on("selection-complete", handleSelectionComplete);
 		bridgeOnLayer.on("selection-clear", handleSelectionClear);
 		bridgeOnLayer.setSelectionSymbol(lineSelectionSymbol);
+
+		// Create the bridge under layer. Only selected features will appear on the map.
 		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/0", {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		// Attach events.
 		bridgeUnderLayer.on("selection-complete", handleSelectionComplete);
 		bridgeUnderLayer.on("selection-clear", handleSelectionClear);
+		// Add these layers to the map.
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
 
 	});
 
+	var homeButton = new HomeButton({ map: map }, document.getElementById("homeButton"));
+	homeButton.startup();
+
+	// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
 	var basemapGallery = new BasemapGallery({
 		map: map,
 		basemaps: [
@@ -476,11 +493,14 @@ require([
 	}, "basemapGallery");
 	basemapGallery.startup();
 
+	// Select the WSDOT basemap when the gallery dijit has loaded.
+	// Hide the basemap gallery. (User will show it by clicking a button.)
 	basemapGallery.on("load", function () {
 		basemapGallery.select("wsdot");
 		domUtils.hide(basemapGallery.domNode);
 	});
 
+	// Set up the progress bar to show when the map is loading.
 	map.on("update-end", function () {
 		domUtils.hide(document.getElementById("mapProgress"));
 	});
@@ -489,6 +509,7 @@ require([
 		domUtils.show(document.getElementById("mapProgress"));
 	});
 
+	// Set up the button that will show and hide the basemap gallery.
 	document.getElementById("basemapsToggleButton").onclick = function () {
 		domUtils.toggle(basemapGallery.domNode);
 	};

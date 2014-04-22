@@ -1,7 +1,7 @@
 ﻿html, body, #map {
-	padding:0;
-	margin:0;
-	height:100%;
+	padding: 0;
+	margin: 0;
+	height: 100%;
 }
 
 body {
@@ -26,13 +26,13 @@ table.bridge-info, table.bridge-info th, table.bridge-info td {
 	border: 1px solid black;
 }
 
-table.bridge-info th {
-	text-align: left;
-}
+	table.bridge-info th {
+		text-align: left;
+	}
 
-table.bridge-info.collapsed {
-	display: none;
-}
+	table.bridge-info.collapsed {
+		display: none;
+	}
 
 #basemapGalleryContainer {
 	position: absolute;
@@ -58,4 +58,11 @@ table.feature-counts td, table.feature-counts th {
 
 table.feature-counts tr > td:last-child {
 	text-align: right;
+}
+
+#homeButton {
+	position: absolute;
+	top: 95px;
+	left: 20px;
+	z-index: 50;
 }
