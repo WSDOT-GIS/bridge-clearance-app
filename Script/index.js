@@ -15,7 +15,13 @@ require([
 	"esri/geometry/webMercatorUtils",
 	"esri/dijit/HomeButton"
 ], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, HomeButton) {
-	var map, bridgeOnLayer, bridgeUnderLayer;
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress;
+
+	onProgress = document.getElementById("onProgress");
+	underProgress = document.getElementById("underProgress");
+
+	domUtils.hide(onProgress);
+	domUtils.hide(underProgress);
 
 	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
 
@@ -415,7 +421,16 @@ require([
 		// Determine which layer triggered the selection-complete event.
 		// Get the corresponding table cell that holds its feature count.
 		// Update the value in that table cell.
-		var cellId = results.target.id === "bridge-on" ? "oncount" : results.target.id === "bridge-under" ? "undercount" : null;
+		var cellId = null;
+
+		if (results.target.id === "bridge-on") {
+			cellId = "oncount";
+			domUtils.hide(onProgress);
+		} else if (results.target.id === "bridge-under") {
+			cellId = "undercount";
+			domUtils.hide(underProgress);
+		}
+		
 		if (cellId) {
 			var cell = document.getElementById(cellId);
 			if (cell) {
@@ -566,7 +581,9 @@ require([
 			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 			if (feetAndInches) {
 				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
+				domUtils.show(onProgress);
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));
+				domUtils.show(underProgress);
 			}
 		} catch (err) {
 			console.error(err);
