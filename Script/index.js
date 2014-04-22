@@ -413,14 +413,23 @@ require([
 	 * @this {FeatureLayer}
 	 */
 	function handleSelectionComplete(results) {
-		console.log("%s features were selected from %s using method %d.", results.features.length, results.target.id, results.method);
+		var cell = results.target.id === "bridge-on" ? document.getElementById("oncount") 
+			: results.target.id === "bridge-under" ? document.getElementById("undercount") : null;
+		if (cell) {
+			cell.textContent = results.features.length;
+		}
 	}
 
 	/**
 	 * @this {FeatureLayer}
 	 */
 	function handleSelectionClear() {
-		console.log("Selection cleared from %s.", this.id);
+		if (this && this.id) {
+			var divId = this.id === "bridge-on" ? "oncount" : this.id === "bridge-under" ? "undercount" : null;
+			if (divId) {
+				document.getElementById(divId).textContent = "0";
+			}
+		}
 	}
 
 	map.on("load", function () {

@@ -46,3 +46,16 @@ table.bridge-info.collapsed {
 	box-shadow: rgba(0,0,0,0.4) 1em 1em;
 	border-radius: 0.5em;
 }
+
+table.feature-counts {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+table.feature-counts td, table.feature-counts th {
+	border: 1px solid black;
+}
+
+table.feature-counts tr > td:last-child {
+	text-align: right;
+}
