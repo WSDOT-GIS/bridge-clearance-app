@@ -609,6 +609,11 @@ require([
 
 			// Get the route filter
 			routeText = this.route.value;
+			// Make sure that route text is valid
+			if (routeText && !(/^\d+$/.test(routeText) || /^\d{3}(?:(\w{2})(\w{0,6}))?$/.test(routeText))) {
+				alert("Invalid route");
+				return false;
+			}
 			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 			if (feetAndInches) {
 				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
