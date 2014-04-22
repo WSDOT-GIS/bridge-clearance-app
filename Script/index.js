@@ -400,7 +400,6 @@ require([
 
 	var infoTemplate = new InfoTemplate("${crossing_description}", toHtmlContent);
 
-
 	/**
 	 * @typedef {Object} FeatureSelectionCompleteResult
 	 * @param {Graphic[]} features
