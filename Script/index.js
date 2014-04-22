@@ -229,18 +229,44 @@ require([
 	/**
 	 * Creates a URL for Beist
 	 * @param {esri/Graphic} graphic
+	 * @param {string} [type="Index"]
 	 * @returns {string}
 	 */
-	function createBeistUrl(graphic) {
+	function createBeistUrl(graphic, type) {
 		var url = null;
 		if (graphic && graphic.attributes) {
 			if (graphic.attributes.control_entity_gid) {
-				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/Index/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, "");
+				if (!type) {
+					type = "Index";
+				}
+				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/" + type + "/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, ""); // Replace removes leading and trailing curly braces.
 			} else if (graphic.attributes.key_structure_id) {
 				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE?StructureID=" + graphic.attributes.key_structure_id;
 			}
 		}
 		return url;
+	}
+
+	function createBeistListItem(graphic) {
+		var mainLi = document.createElement("li");
+		var mainA = document.createElement("a");
+		mainA.target = "_blank";
+		mainLi.appendChild(mainA);
+		mainA.textContent = "BEIst";
+		mainA.href = createBeistUrl(graphic);
+		var ul, li, a;
+		if (graphic.attributes.control_entity_gid) {
+			ul = document.createElement("ul");
+			li = document.createElement("li");
+			ul.appendChild(li);
+			a = document.createElement("a");
+			a.target = "_blank";
+			li.appendChild(a);
+			a.href = createBeistUrl(graphic, "Correspondence");
+			a.textContent = "Clearance Card";
+			mainLi.appendChild(ul);
+		}
+		return mainLi;
 	}
 
 	/**
@@ -375,14 +401,19 @@ require([
 			li.appendChild(a);
 			ul.appendChild(li);
 		}
-		var beistURL = createBeistUrl(graphic);
-		if (beistURL) {
-			li = document.createElement("li");
-			a = document.createElement("a");
-			a.href = beistURL;
-			a.target = 'beist';
-			a.textContent = "BEIst";
-			li.appendChild(a);
+		////var beistURL = createBeistUrl(graphic);
+		////if (beistURL) {
+		////	li = document.createElement("li");
+		////	a = document.createElement("a");
+		////	a.href = beistURL;
+		////	a.target = 'beist';
+		////	a.textContent = "BEIst";
+		////	li.appendChild(a);
+		////	ul.appendChild(li);
+		////}
+
+		li = createBeistListItem(graphic);
+		if (li) {
 			ul.appendChild(li);
 		}
 
