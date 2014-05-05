@@ -17,6 +17,47 @@ require([
 ], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, HomeButton) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress;
 
+	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
+
+	/**
+	 * Converts the custom feet/inches format used by the bridge database into inches.
+	 * @param {number} n
+	 * @returns {number}
+	 */
+	function customToInches(n) {
+		var feet, inches, output;
+		if (typeof n === "number") {
+			inches = n % 100;
+			feet = (n - inches) / 100;
+			output = feet * 12 + inches;
+		} else {
+			output = n;
+		}
+		return output;
+	}
+
+	/////**
+	//// * Converts the custom feet/inches format used in the bridge database into X'XX" label.
+	//// * @param {number} n
+	//// * @return {string}
+	//// */
+	////function customToFeetInchesLabel(n) {
+	////	var inches = n % 100;
+	////	var feet = (n - inches) / 100;
+	////	return [feet, "'", inches, '"'].join("");
+	////}
+
+	/**
+	 * Converts inches to a feet & inches label (X'XX").
+	 * @param {number} inches
+	 * @returns {string}
+	 */
+	function inchesToFeetAndInchesLabel(inches) {
+		var inchesPart = inches % 12;
+		var feetPart = (inches - inchesPart) / 12;
+		return [feetPart, "'", inchesPart, '"'].join("");
+	}
+
 	onProgress = document.getElementById("onProgress");
 	underProgress = document.getElementById("underProgress");
 
@@ -204,72 +245,6 @@ require([
 	}
 
 	/**
-	 * Creates a URL to open the ClickOnce SRView application from a graphic's geometry.
-	 * @param {esri/Graphic} graphic
-	 * @returns {string}
-	 */
-	function createSRViewUrl(graphic) {
-		var baseUrl = "http://srview3i.wsdot.loc/stateroute/picturelog/v3/client/SRview.Windows.Viewer.application?";
-		var re = /(\d{3})(?:(.{2})(.{0,6}))?/;
-		var url;
-		var match;
-		if (graphic.attributes.SRID) {
-			match = graphic.attributes.SRID.match(re);
-			if (match) {
-				url = [baseUrl, "srnum=", match[1], "&RRT=", match[2] || "", "&RRQ=", match[3] || ""].join("");
-			}
-		}
-		var armField = graphic.attributes.hasOwnProperty("BeginARM") ? "BeginARM" : graphic.attributes.hasOwnProperty("PointARM") ? "PointARM" : null;
-		if (armField) {
-			url += "&arm=" + graphic.attributes[armField];
-		}
-		return url;
-	}
-
-	/**
-	 * Creates a URL for Beist
-	 * @param {esri/Graphic} graphic
-	 * @param {string} [type="Index"]
-	 * @returns {string}
-	 */
-	function createBeistUrl(graphic, type) {
-		var url = null;
-		if (graphic && graphic.attributes) {
-			if (graphic.attributes.control_entity_gid) {
-				if (!type) {
-					type = "Index";
-				}
-				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE/Details/" + type + "/" + graphic.attributes.control_entity_gid.replace(/[\{\}]/g, ""); // Replace removes leading and trailing curly braces.
-			} else if (graphic.attributes.key_structure_id) {
-				url = "http://beist.wsdot.loc/InventoryAndRepair/Inventory/BRIDGE?StructureID=" + graphic.attributes.key_structure_id;
-			}
-		}
-		return url;
-	}
-
-	function createBeistListItem(graphic) {
-		var mainLi = document.createElement("li");
-		var mainA = document.createElement("a");
-		mainA.target = "_blank";
-		mainLi.appendChild(mainA);
-		mainA.textContent = "BEIst";
-		mainA.href = createBeistUrl(graphic);
-		var ul, li, a;
-		if (graphic.attributes.control_entity_gid) {
-			ul = document.createElement("ul");
-			li = document.createElement("li");
-			ul.appendChild(li);
-			a = document.createElement("a");
-			a.target = "_blank";
-			li.appendChild(a);
-			a.href = createBeistUrl(graphic, "Correspondence");
-			a.textContent = "Clearance Card";
-			mainLi.appendChild(ul);
-		}
-		return mainLi;
-	}
-
-	/**
 	 * Replaces the underscores in a string with spaces.
 	 * @param {string} name
 	 * @returns {string}
@@ -302,11 +277,11 @@ require([
 	 * Creates an HTML table from an object's properties.
 	 * @param {Object} o
 	 * @param {RegExp} [ignoredNames] - Any properties with names that match this RegExp will be omitted from the table.
+	 * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
 	 */
-	function createTable(o, ignoredNames) {
-		var table = document.createElement("table");
+	function createTable(o, ignoredNames, feetInchesFields) {
+		var table = document.createElement("table"), tr, th, td, value;
 		table.setAttribute("class", "bridge-info");
-		var tr, th, td;
 		for (var name in o) {
 			if (o.hasOwnProperty(name) && (!ignoredNames || !ignoredNames.test(name))) {
 				tr = document.createElement("tr");
@@ -315,7 +290,12 @@ require([
 				tr.appendChild(th);
 
 				td = document.createElement("td");
-				td.textContent = o[name];
+				value = o[name];
+				// If this is a feet+inches field, format it appropriately.
+				if (feetInchesFields && feetInchesFields.test(name) && value > 0) {
+					value = inchesToFeetAndInchesLabel(customToInches(value) - 3);
+				}
+				td.textContent = value;
 				tr.appendChild(td);
 				table.appendChild(tr);
 			}
@@ -323,18 +303,18 @@ require([
 		return table;
 	}
 
-	/**
-	 * E.g., converts 1401 to 14"01'
-	 * @param {(string|number)} v
-	 * @returns {string}
-	 */
-	function addFeetAndInchesLabelsToBridgeValue(v) {
-		if (typeof v === "number") {
-			v = String(v);
-		}
-		var match = v.match(/^(\d+)(\d{2})$/);
-		return [match[1], "'", match[2], '"'].join("");
-	}
+	/////**
+	//// * E.g., converts 1401 to 14"01'
+	//// * @param {(string|number)} v
+	//// * @returns {string}
+	//// */
+	////function addFeetAndInchesLabelsToBridgeValue(v) {
+	////	if (typeof v === "number") {
+	////		v = String(v);
+	////	}
+	////	var match = v.match(/^(\d+)(\d{2})$/);
+	////	return [match[1], "'", match[2], '"'].join("");
+	////}
 
 	/**
 	 * Toggles the bridge details table's visibility.
@@ -364,10 +344,27 @@ require([
 
 		var fragment = document.createDocumentFragment();
 
-		var clearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
-		var dl = toDL({
-			"Vertical Clearance" : addFeetAndInchesLabelsToBridgeValue(graphic.attributes[clearanceProperty])
-		});
+		var minClearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
+		var maxClearanceProperty = graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_max" : null;
+		var minClearance = customToInches(graphic.attributes[minClearanceProperty]);
+		var maxClearance = maxClearanceProperty ? customToInches(graphic.attributes[maxClearanceProperty]) : null;
+		if (minClearance > 3) {
+			minClearance -= 3;
+		}
+		if (maxClearance && maxClearance > 3) {
+			maxClearance -= 3;
+		}
+
+		var dlObj = {};
+
+		if (minClearance) {
+			dlObj["Minimum Vertical Clearance"] = inchesToFeetAndInchesLabel(minClearance);
+		}
+		if (maxClearance) {
+			dlObj["Maximum Vertical Clearance"] = inchesToFeetAndInchesLabel(maxClearance);
+		}
+
+		var dl = toDL(dlObj);
 
 		fragment.appendChild(dl);
 		var linksHeader = document.createElement("h2");
@@ -391,33 +388,7 @@ require([
 			ul.appendChild(li);
 		}
 
-		var srViewURL = createSRViewUrl(graphic);
-		if (srViewURL) {
-			li = document.createElement("li");
-			a = document.createElement("a");
-			a.href = srViewURL;
-			a.target = "_blank";
-			a.textContent = "Open location in SRView";
-			li.appendChild(a);
-			ul.appendChild(li);
-		}
-		////var beistURL = createBeistUrl(graphic);
-		////if (beistURL) {
-		////	li = document.createElement("li");
-		////	a = document.createElement("a");
-		////	a.href = beistURL;
-		////	a.target = 'beist';
-		////	a.textContent = "BEIst";
-		////	li.appendChild(a);
-		////	ul.appendChild(li);
-		////}
-
-		li = createBeistListItem(graphic);
-		if (li) {
-			ul.appendChild(li);
-		}
-
-		var table = createTable(graphic.attributes, ignoredFields);
+		var table = createTable(graphic.attributes, ignoredFields, fieldsWithWeirdFormatNumbers);
 
 		var p;
 		if (table.classList) {
