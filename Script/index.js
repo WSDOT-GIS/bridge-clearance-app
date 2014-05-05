@@ -36,6 +36,18 @@ require([
 		return output;
 	}
 
+	/**
+	 * Converts an amount in inches into the combined Feet/Inches format used by the bridge database.
+	 * @param {number} inches - An integer representing an amount in inches.
+	 * @returns {number}
+	 */
+	function inchesToCustom(inches) {
+		var feetPart, inchesPart;
+		inchesPart = inches % 12;
+		feetPart = (inches - inchesPart) / 12;
+		return feetPart * 100 + inchesPart;
+	}
+
 	/////**
 	//// * Converts the custom feet/inches format used in the bridge database into X'XX" label.
 	//// * @param {number} n
@@ -534,14 +546,14 @@ require([
 	/**
 	 * Creates a layer definition string
 	 * @param {string} clearanceField - The name of the field that contains clearance data.
-	 * @param {FeetAndInches} feetAndInches
+	 * @param {number} inches
 	 * @param {string} [srid] - A state route ID in three-digit format.
 	 * @param {Boolean} [exactMatch]
 	 * @returns {Query}
 	 */
-	function createQuery(clearanceField, feetAndInches, srid, exactMatch) {
+	function createQuery(clearanceField, inches, srid, exactMatch) {
 		// Create the where clause for the clearance.
-		var where = [clearanceField, " < ", feetAndInches.toWeirdoFormat()];
+		var where = [clearanceField, " < ", inchesToCustom(inches + 3) ];
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.
@@ -573,8 +585,6 @@ require([
 			if (isNaN(inches)) {
 				feetAndInches = new FeetAndInches(clearanceText);
 				inches = feetAndInches.totalInches();
-			} else {
-				feetAndInches = new FeetAndInches("0'" + inches + '"');
 			}
 
 			// Get the route filter
@@ -586,9 +596,9 @@ require([
 			}
 			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 			if (feetAndInches) {
-				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", feetAndInches, routeText, exactRoute));
+				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", inches, routeText, exactRoute));
 				domUtils.show(onProgress);
-				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", feetAndInches, routeText, exactRoute));
+				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
 				domUtils.show(underProgress);
 			}
 		} catch (err) {
