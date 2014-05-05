@@ -4,6 +4,10 @@
 	height: 100%;
 }
 
+#map {
+	height: 98%;
+}
+
 body {
 	font-family: Verdana, Geneva, 'DejaVu Sans', sans-serif;
 }
