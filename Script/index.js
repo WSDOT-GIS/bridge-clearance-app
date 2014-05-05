@@ -570,7 +570,6 @@ require([
 			// Get the clearance amount.
 			clearanceText = this.clearance.value;
 			inches = Number(clearanceText);
-			feetAndInches;
 			if (isNaN(inches)) {
 				feetAndInches = new FeetAndInches(clearanceText);
 				inches = feetAndInches.totalInches();
