@@ -30,13 +30,13 @@ table.bridge-info, table.bridge-info th, table.bridge-info td {
 	border: 1px solid black;
 }
 
-	table.bridge-info th {
-		text-align: left;
-	}
+table.bridge-info th {
+	text-align: left;
+}
 
-	table.bridge-info.collapsed {
-		display: none;
-	}
+table.bridge-info.collapsed {
+	display: none;
+}
 
 #basemapGalleryContainer {
 	position: absolute;
@@ -66,7 +66,7 @@ table.feature-counts tr > td:last-child {
 
 #homeButton {
 	position: absolute;
-	top: 95px;
+	top: 105px;
 	left: 20px;
-	z-index: 50;
+	z-index: 1;
 }

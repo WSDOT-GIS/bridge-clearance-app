@@ -13,11 +13,27 @@ require([
 	"esri/Color",
 	"esri/symbols/CartographicLineSymbol",
 	"esri/geometry/webMercatorUtils",
-	"esri/dijit/HomeButton"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery, Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, HomeButton) {
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress;
+	"esri/dijit/HomeButton",
+	"esri/renderers/UniqueValueRenderer",
+	"esri/symbols/SimpleMarkerSymbol"
+], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
+	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, HomeButton, UniqueValueRenderer, SimpleMarkerSymbol) {
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
+
+	/**
+	 * Determines if a vehicle can pass under a structure in ANY lane.
+	 * @param {Graphic} graphic
+	 * @returns {number}
+	 */
+	function someLanesCanPass(graphic) {
+		var output = 0;
+		if (vehicleHeight < graphic.attributes.vert_clrnc_route_max) {
+			output = 1;
+		}
+		return output;
+	}
 
 	/**
 	 * Converts the custom feet/inches format used by the bridge database into inches.
@@ -48,17 +64,6 @@ require([
 		return feetPart * 100 + inchesPart;
 	}
 
-	/////**
-	//// * Converts the custom feet/inches format used in the bridge database into X'XX" label.
-	//// * @param {number} n
-	//// * @return {string}
-	//// */
-	////function customToFeetInchesLabel(n) {
-	////	var inches = n % 100;
-	////	var feet = (n - inches) / 100;
-	////	return [feet, "'", inches, '"'].join("");
-	////}
-
 	/**
 	 * Converts inches to a feet & inches label (X'XX").
 	 * @param {number} inches
@@ -87,106 +92,106 @@ require([
 			wkid: 3857,
 		},
 		lods: [
-			  {
+			{
 				"level": 0,
 				"resolution": 156543.03392800014,
 				"scale": 5.91657527591555E8
-			  },
-			  {
+			},
+			{
 				"level": 1,
 				"resolution": 78271.51696399994,
 				"scale": 2.95828763795777E8
-			  },
-			  {
+			},
+			{
 				"level": 2,
 				"resolution": 39135.75848200009,
 				"scale": 1.47914381897889E8
-			  },
-			  {
+			},
+			{
 				"level": 3,
 				"resolution": 19567.87924099992,
 				"scale": 7.3957190948944E7
-			  },
-			  {
+			},
+			{
 				"level": 4,
 				"resolution": 9783.93962049996,
 				"scale": 3.6978595474472E7
-			  },
-			  {
+			},
+			{
 				"level": 5,
 				"resolution": 4891.96981024998,
 				"scale": 1.8489297737236E7
-			  },
-			  {
+			},
+			{
 				"level": 6,
 				"resolution": 2445.98490512499,
 				"scale": 9244648.868618
-			  },
-			  {
+			},
+			{
 				"level": 7,
 				"resolution": 1222.992452562495,
 				"scale": 4622324.434309
-			  },
-			  {
+			},
+			{
 				"level": 8,
 				"resolution": 611.4962262813797,
 				"scale": 2311162.217155
-			  },
-			  {
+			},
+			{
 				"level": 9,
 				"resolution": 305.74811314055756,
 				"scale": 1155581.108577
-			  },
-			  {
+			},
+			{
 				"level": 10,
 				"resolution": 152.87405657041106,
 				"scale": 577790.554289
-			  },
-			  {
+			},
+			{
 				"level": 11,
 				"resolution": 76.43702828507324,
 				"scale": 288895.277144
-			  },
-			  {
+			},
+			{
 				"level": 12,
 				"resolution": 38.21851414253662,
 				"scale": 144447.638572
-			  },
-			  {
+			},
+			{
 				"level": 13,
 				"resolution": 19.10925707126831,
 				"scale": 72223.819286
-			  },
-			  {
+			},
+			{
 				"level": 14,
 				"resolution": 9.554628535634155,
 				"scale": 36111.909643
-			  },
-			  {
+			},
+			{
 				"level": 15,
 				"resolution": 4.77731426794937,
 				"scale": 18055.954822
-			  },
-			  {
+			},
+			{
 				"level": 16,
 				"resolution": 2.388657133974685,
 				"scale": 9027.977411
-			  },
-			  {
+			},
+			{
 				"level": 17,
 				"resolution": 1.1943285668550503,
 				"scale": 4513.988705
-			  },
-			  {
+			},
+			{
 				"level": 18,
 				"resolution": 0.5971642835598172,
 				"scale": 2256.994353
-			  },
-			  {
+			},
+			{
 				"level": 19,
 				"resolution": 0.29858214164761665,
 				"scale": 1128.497176
-			  }
+			}
 		]
 	});
 
@@ -315,19 +320,6 @@ require([
 		return table;
 	}
 
-	/////**
-	//// * E.g., converts 1401 to 14"01'
-	//// * @param {(string|number)} v
-	//// * @returns {string}
-	//// */
-	////function addFeetAndInchesLabelsToBridgeValue(v) {
-	////	if (typeof v === "number") {
-	////		v = String(v);
-	////	}
-	////	var match = v.match(/^(\d+)(\d{2})$/);
-	////	return [match[1], "'", match[2], '"'].join("");
-	////}
-
 	/**
 	 * Toggles the bridge details table's visibility.
 	 */
@@ -356,10 +348,8 @@ require([
 
 		var fragment = document.createDocumentFragment();
 
-		var minClearanceProperty = graphicsLayer === bridgeOnLayer ? "min_vert_deck" : graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_min" : null;
-		var maxClearanceProperty = graphicsLayer === bridgeUnderLayer ? "vert_clrnc_route_max" : null;
-		var minClearance = customToInches(graphic.attributes[minClearanceProperty]);
-		var maxClearance = maxClearanceProperty ? customToInches(graphic.attributes[maxClearanceProperty]) : null;
+		var minClearance = customToInches(graphic.attributes["vert_clrnc_route_min"]);
+		var maxClearance = customToInches(graphic.attributes["vert_clrnc_route_max"]);
 		if (minClearance > 3) {
 			minClearance -= 3;
 		}
@@ -468,9 +458,39 @@ require([
 	map.on("load", function () {
 		// Create the cartographic line symbol that will be used to show the selected lines.
 		// This gives them a better appearance than the default behavior.
-		var lineSelectionSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
-			new Color([255, 85, 0, 255]), 10,
+		var defaultPointSymbol, defaultLineSymbol, warningLineSymbol, pointRenderer, lineRenderer, defaultColor, warningColor;
+
+		defaultColor = new Color([255, 85, 0, 255]);
+		warningColor = new Color([255, 255, 0, 255]);
+
+		defaultLineSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
+			defaultColor, 10,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
+
+		warningLineSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
+			warningColor, 10,
+			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
+
+		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor);
+
+		var label = "Can pass in some lanes"
+		var description = "Vehicle may be able to pass in some but not all lanes."
+
+		lineRenderer = new UniqueValueRenderer(defaultLineSymbol, someLanesCanPass);
+		lineRenderer.addValue({
+			value: 1,
+			symbol: warningLineSymbol,
+			label: label,
+			description: description
+		});
+
+		pointRenderer = new UniqueValueRenderer(defaultPointSymbol, someLanesCanPass);
+		pointRenderer.addValue({
+			value: 1,
+			symbol: new SimpleMarkerSymbol().setColor(warningColor),
+			label: label,
+			description: description
+		});
 
 		// Create the layer for the "on" features. Features will only appear on the map when they are selected.
 		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/1", {
@@ -479,10 +499,10 @@ require([
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+		bridgeOnLayer.setRenderer(lineRenderer);
 		// Attach events.
 		bridgeOnLayer.on("selection-complete", handleSelectionComplete);
 		bridgeOnLayer.on("selection-clear", handleSelectionClear);
-		bridgeOnLayer.setSelectionSymbol(lineSelectionSymbol);
 
 		// Create the bridge under layer. Only selected features will appear on the map.
 		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/0", {
@@ -491,6 +511,8 @@ require([
 			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
+
+		bridgeUnderLayer.setRenderer(pointRenderer);
 		// Attach events.
 		bridgeUnderLayer.on("selection-complete", handleSelectionComplete);
 		bridgeUnderLayer.on("selection-clear", handleSelectionClear);
@@ -595,8 +617,9 @@ require([
 				return false;
 			}
 			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
-			if (feetAndInches) {
-				bridgeOnLayer.selectFeatures(createQuery("min_vert_deck", inches, routeText, exactRoute));
+			if (inches) {
+				vehicleHeight = inchesToCustom(inches - 3);
+				bridgeOnLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
 				domUtils.show(onProgress);
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
 				domUtils.show(underProgress);
@@ -614,5 +637,6 @@ require([
 	document.forms.clearanceForm.onreset = function () {
 		bridgeOnLayer.clearSelection();
 		bridgeUnderLayer.clearSelection();
+		vehicleHeight = null;
 	};
 });
