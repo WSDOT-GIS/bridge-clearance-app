@@ -343,13 +343,13 @@ require([
 	 * @returns {string}
 	 */
 	function toHtmlContent(graphic) {
-		var graphicsLayer = graphic._graphicsLayer, ignoredFields;
+		var ignoredFields;
 		ignoredFields = /^(?:(?:\w+_gid)|(?:OBJECTID_?\d*)|(Field\d+)|(Shape_Length))$/i;
 
 		var fragment = document.createDocumentFragment();
 
-		var minClearance = customToInches(graphic.attributes["vert_clrnc_route_min"]);
-		var maxClearance = customToInches(graphic.attributes["vert_clrnc_route_max"]);
+		var minClearance = customToInches(graphic.attributes.vert_clrnc_route_min);
+		var maxClearance = customToInches(graphic.attributes.vert_clrnc_route_max);
 		if (minClearance > 3) {
 			minClearance -= 3;
 		}
@@ -473,8 +473,8 @@ require([
 
 		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor);
 
-		var label = "Can pass in some lanes"
-		var description = "Vehicle may be able to pass in some but not all lanes."
+		var label = "Can pass in some lanes";
+		var description = "Vehicle may be able to pass in some but not all lanes.";
 
 		lineRenderer = new UniqueValueRenderer(defaultLineSymbol, someLanesCanPass);
 		lineRenderer.addValue({
@@ -575,7 +575,7 @@ require([
 	 */
 	function createQuery(clearanceField, inches, srid, exactMatch) {
 		// Create the where clause for the clearance.
-		var where = [clearanceField, " < ", inchesToCustom(inches + 3) ];
+		var where = [clearanceField, " < ", inchesToCustom(inches - 3) ];
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.

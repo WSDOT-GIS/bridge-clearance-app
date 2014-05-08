@@ -65,6 +65,7 @@
       <DependentUpon>index.min.js</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\Test.pubxml" />
+    <None Include="Properties\PublishProfiles\Test2.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
