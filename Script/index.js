@@ -225,8 +225,10 @@ require([
 	 * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
 	 */
 	function createTable(o, ignoredNames, feetInchesFields) {
-		var table = document.createElement("table"), tr, th, td, value;
-		table.setAttribute("class", "bridge-info");
+		var table = document.createElement("table"), tr, th, td, value, tbody;
+		table.setAttribute("class", "bridge-info table table-striped table-hover");
+		table.createTHead();
+		tbody = table.createTBody();
 		for (var name in o) {
 			if (o.hasOwnProperty(name) && (!ignoredNames || !ignoredNames.test(name))) {
 				tr = document.createElement("tr");
@@ -242,7 +244,7 @@ require([
 				}
 				td.textContent = value;
 				tr.appendChild(td);
-				table.appendChild(tr);
+				tbody.appendChild(tr);
 			}
 		}
 		return table;
@@ -297,7 +299,7 @@ require([
 		var dl = toDL(dlObj);
 
 		fragment.appendChild(dl);
-		var linksHeader = document.createElement("h3");
+		var linksHeader = document.createElement("h4");
 		linksHeader.textContent = "Links";
 		fragment.appendChild(linksHeader);
 

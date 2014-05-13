@@ -106,26 +106,27 @@
 	z-index: 1;
 }
 
-table.bridge-info, table.bridge-info th, table.bridge-info td {
+/*table.bridge-info, table.bridge-info th, table.bridge-info td {
 	border: 1px solid black;
 }
 
 	table.bridge-info th {
 		text-align: left;
 	}
+*/
 
 	table.bridge-info.collapsed {
 		display: none;
 	}
 
-table.feature-counts {
+/*table.feature-counts {
 	border: 1px solid black;
 	border-collapse: collapse;
 }
 
 table.feature-counts td, table.feature-counts th {
 	border: 1px solid black;
-}
+}*/
 
 table.feature-counts tr > td:last-child {
 	text-align: right;
