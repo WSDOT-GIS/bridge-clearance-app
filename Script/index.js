@@ -468,6 +468,22 @@ require([
 							url: wsdotBasemapUrl
 						})
 					]
+				}),
+				new Basemap({
+					id: "hybrid",
+					title: "Esri Hybrid",
+					thumbnailUrl: "Images/EsriHybridThumbnail.png",
+					layers: [
+						new BasemapLayer({
+							url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
+						}),
+						new BasemapLayer({
+							url: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer"
+						}),
+						new BasemapLayer({
+							url: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
+						}),
+					]
 				})
 			],
 			basemapIds: map.layerIds
