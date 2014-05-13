@@ -77,25 +77,25 @@
 	}
 
 	.row-offcanvas-right .sidebar-offcanvas {
-		right: -80%; /* 6 columns */
+		right: -83%; /* 10 columns */
 	}
 
 	.row-offcanvas-left .sidebar-offcanvas {
-		left: -80%; /* 6 columns */
+		left: -83%; /* 10 columns */
 	}
 
 	.row-offcanvas-right.active {
-		right: 80%; /* 6 columns */
+		right: 83%; /* 10 columns */
 	}
 
 	.row-offcanvas-left.active {
-		left: 80%; /* 6 columns */
+		left: 83%; /* 10 columns */
 	}
 
 	.sidebar-offcanvas {
 		position: absolute;
 		top: 0;
-		width: 80%; /* 6 columns */
+		width: 83%; /* 10 columns */
 	}
 }
 
