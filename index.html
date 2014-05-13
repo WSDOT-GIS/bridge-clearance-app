@@ -26,7 +26,7 @@
 		<div class="row row-offcanvas row-offcanvas-right">
 
 			<!-- Map -->
-			<div id="map" class="col-sm-7 col-md-9">
+			<div id="map" class="col-sm-7 col-md-9 well">
 				<div id="tools">
 					<button type="button" class="btn btn-primary btn-xs visible-xs" data-toggle="offcanvas"><span class="glyphicon glyphicon-cog"></span></button>
 				</div>
@@ -34,13 +34,13 @@
 			</div>
 
 			<!-- Tools panel-->
-			<div class="col-sm-5 col-md-3 sidebar-offcanvas" id="sidebar">
+			<div class="col-xs-9 col-sm-5 col-md-3 sidebar-offcanvas" id="sidebar">
 				<div class="panel">
 					<ul id="tabs" class="nav nav-tabs">
 						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span></a></li>
 						<li><a href="#basemaps"><span class="glyphicon glyphicon-th-large"></span></a></li>
 					</ul>
-					<div class="tab-content">
+					<div id="tabContent" class="tab-content">
 						<div class="tab-pane active" id="bridgetools">
 							<form id="clearanceForm" role="form">
 								<div class="form-group">

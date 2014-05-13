@@ -14,43 +14,54 @@ require([
 	"esri/symbols/CartographicLineSymbol",
 	"esri/geometry/webMercatorUtils",
 	"esri/renderers/UniqueValueRenderer",
-	"esri/symbols/SimpleMarkerSymbol"
+	"esri/symbols/SimpleMarkerSymbol",
+	"dojo/domReady!"
 ], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
 	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
+	// Setup tab click events.
 	$('#tabs a').click(function (e) {
 		e.preventDefault();
 		$(this).tab('show');
 	});
 
+	// Setup the offcanvas button functionality.
 	$("[data-toggle=offcanvas]").click(function () {
 		$(".row-offcanvas").toggleClass('active');
 	});
 
 	/** Set the height of the map div.
 	*/
-	function setMapDivHeight() {
-		var topNavBar, mapDiv, desiredHeight;
+	function setDivHeights() {
+		var topNavBar, mapDiv, desiredHeight, sidebarDiv;
 
 		topNavBar = document.getElementById("topNavBar");
 		mapDiv = document.getElementById("map");
+		sidebarDiv = document.getElementById("sidebar");
 
 		desiredHeight = window.innerHeight - topNavBar.clientHeight - 40;
+		desiredHeight = [desiredHeight, "px"].join("");
 
-		mapDiv.style.height = [desiredHeight, "px"].join("");
+		mapDiv.style.height = desiredHeight;
+		sidebarDiv.style.height = desiredHeight;
 
-		//if (map) {
-		// map.resize();
-		//}
+		var tabPanes = document.querySelectorAll(".tab-pane");
+
+		desiredHeight = window.innerHeight - topNavBar.clientHeight - 80;
+		desiredHeight = [desiredHeight, "px"].join("");
+
+		for (var i = 0, l = tabPanes.length; i < l; i += 1) {
+			tabPanes[i].style.height = desiredHeight;
+		}
 	}
 
-	setMapDivHeight();
+	setDivHeights();
 
-	window.addEventListener("resize", setMapDivHeight, true);
-	window.addEventListener("deviceorientation", setMapDivHeight, true);
+	window.addEventListener("resize", setDivHeights, true);
+	window.addEventListener("deviceorientation", setDivHeights, true);
 
 	/**
 	 * Determines if a vehicle can pass under a structure in ANY lane.
