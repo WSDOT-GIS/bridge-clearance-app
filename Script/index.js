@@ -59,7 +59,7 @@ require([
 	 */
 	function someLanesCanPass(graphic) {
 		var output = 0;
-		if (vehicleHeight < graphic.attributes.vert_clrnc_route_max) {
+		if (vehicleHeight <= graphic.attributes.vert_clrnc_route_max) {
 			output = 1;
 		}
 		return output;
@@ -205,6 +205,7 @@ require([
 	 */
 	function toDL(o) {
 		var dl = document.createElement("dl"), dt, dd;
+		dl.setAttribute("class", "dl-horizontal");
 		for (var name in o) {
 			if (o.hasOwnProperty(name)) {
 				dt = document.createElement("dt");
@@ -289,17 +290,21 @@ require([
 
 		var dlObj = {};
 
+		var linksHeader = document.createElement("h5");
+		linksHeader.textContent = "Vertical Clearance";
+		fragment.appendChild(linksHeader);
+
 		if (minClearance) {
-			dlObj["Minimum Vertical Clearance"] = inchesToFeetAndInchesLabel(minClearance);
+			dlObj.Minimum = inchesToFeetAndInchesLabel(minClearance);
 		}
 		if (maxClearance) {
-			dlObj["Maximum Vertical Clearance"] = inchesToFeetAndInchesLabel(maxClearance);
+			dlObj.Maximum = inchesToFeetAndInchesLabel(maxClearance);
 		}
 
 		var dl = toDL(dlObj);
 
 		fragment.appendChild(dl);
-		var linksHeader = document.createElement("h4");
+		linksHeader = document.createElement("h5");
 		linksHeader.textContent = "Links";
 		fragment.appendChild(linksHeader);
 
