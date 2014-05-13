@@ -575,7 +575,7 @@ require([
 	 */
 	function createQuery(clearanceField, inches, srid, exactMatch) {
 		// Create the where clause for the clearance.
-		var where = [clearanceField, " < ", inchesToCustom(inches - 3) ];
+		var where = [clearanceField, " < ", inchesToCustom(inches + 3) ];
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.
@@ -618,7 +618,7 @@ require([
 			}
 			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 			if (inches) {
-				vehicleHeight = inchesToCustom(inches - 3);
+				vehicleHeight = inchesToCustom(inches + 3);
 				bridgeOnLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
 				domUtils.show(onProgress);
 				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
