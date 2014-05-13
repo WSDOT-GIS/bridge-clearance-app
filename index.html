@@ -6,44 +6,105 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" />
 	<link href="//js.arcgis.com/3.9compact/js/esri/css/esri.css" rel="stylesheet" />
 	<link href="//js.arcgis.com/3.9compact/js/dojo/dijit/themes/claro/claro.css" rel="stylesheet" />
-	<link href="Style/index.css" rel="stylesheet" />
+	<link href="Style/index.min.css" rel="stylesheet" />
 </head>
 <body class="claro">
-	<header>Bridge Vertical Clearance Trip Planner</header>
-	<div id="map">
-		<div id="homeButton"></div>
-	</div>
-	<progress id="mapProgress" class="map-progress">Loading map data...</progress>
-	<form id="clearanceForm">
-		<label for="clearanceBox">Vehicle Height</label><br />
-		<input id="clearanceBox" name="clearance" type="text" placeholder="E.g. 15&apos;5&quot; or 185" required="required" title="Enter clearance height in either inches or X&apos;X&quot;" /><br />
-		<fieldset>
-			<label for="routeFilterBox">Route (optional)</label><br />
-			<input id="routeFilterBox" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" /><br />
-			<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" /><label for="includeNonMainlineCheckbox">Include ramps, etc.</label>
-		</fieldset>
-		<button type="submit">Submit</button>
-		<button type="reset">Reset</button>
-		<div>
-			<table class="feature-counts">
-				<caption>Feature Counts</caption>
-				<thead>
-					<tr><th>Type</th><th># selected</th></tr>
-				</thead>
-				<tbody>
-					<tr><td>On</td><td><span id="oncount">0</span><progress id="onProgress">Selecting features...</progress></td></tr>
-					<tr><td>Under</td><td><span id="undercount">0</span><progress id="underProgress">Selecting features...</progress></td></tr>
-				</tbody>
-			</table>
+	<div id="topNavBar" class="navbar navbar-inverse" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<h1 class="pull-left"><a class="wsdot-logo" href="http://www.wsdot.wa.gov/"></a></h1>
+				<h1 class="navbar-brand center-block">Bridge Vertical Clearance Trip Planner</h1>
+			</div>
 		</div>
-	</form>
-	<div id="basemapGalleryContainer">
-		<button id="basemapsToggleButton" type="button">Basemaps</button>
-		<div id="basemapGallery"></div>
 	</div>
+	<div class="container-fluid">
+		<div class="row row-offcanvas row-offcanvas-right">
+
+			<!-- Map -->
+			<div id="map" class="col-sm-7 col-md-9">
+				<div id="tools">
+					<button type="button" class="btn btn-primary btn-xs visible-xs" data-toggle="offcanvas"><span class="glyphicon glyphicon-cog"></span></button>
+				</div>
+				<progress id="mapProgress" class="map-progress">Loading map data...</progress>
+			</div>
+
+			<!-- Tools panel-->
+			<div class="col-sm-5 col-md-3 sidebar-offcanvas" id="sidebar">
+				<div class="panel">
+					<ul id="tabs" class="nav nav-tabs">
+						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span></a></li>
+						<li><a href="#legend"><span class="glyphicon glyphicon-list-alt"></span></a></li>
+						<li><a href="#basemaps"><span class="glyphicon glyphicon-th-large"></span></a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="bridgetools">
+							<form id="clearanceForm" role="form">
+								<div class="form-group">
+									<label for="clearanceBox">Vehicle Height</label>
+									<input id="clearanceBox" class="form-control" name="clearance" type="text" placeholder="E.g. 15&apos;5&quot; or 185" required="required" title="Enter clearance height in either inches or X&apos;X&quot;" />
+								</div>
+								<div class="form-group">
+									<label for="routeFilterBox">Route (optional)</label>
+									<input id="routeFilterBox" class="form-control" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" />
+								</div>
+								<div class="checkbox">
+									<label>
+										<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" />Include ramps, etc.
+									</label>
+								</div>
+								<div class="btn-group btn-group-justified">
+									<div class="btn-group">
+										<button type="submit" class="btn btn-success">Submit</button>
+									</div>
+									<div class="btn-group">
+										<button type="reset" class="btn btn-danger">Reset</button>
+									</div>
+								</div>
+							</form>
+							<hr />
+							<div>
+								<table class="feature-counts table">
+									<caption>Feature Counts</caption>
+									<thead>
+										<tr><th>Type</th><th># selected</th></tr>
+									</thead>
+									<tbody>
+										<tr><td>On</td><td><span id="oncount">0</span><progress id="onProgress">Selecting features...</progress></td></tr>
+										<tr><td>Under</td><td><span id="undercount">0</span><progress id="underProgress">Selecting features...</progress></td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="tab-pane" id="legend">
+							<table class="table">
+								<tr>
+									<td><div class="legend-symbol legend-cannot-pass"></div></td>
+									<td>Vehicle will not pass</td>
+								</tr>
+								<tr>
+									<td><div class="legend-symbol legend-can-pass"></div></td>
+									<td>Vehicle will pass if correct lane is chosen – contact WSDOT Permit Office</td>
+								</tr>
+							</table>
+						</div>
+						<div class="tab-pane" id="basemaps">
+							<div id="basemapGallery" class="claro"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div> <!--row-->
+	</div>
+
+	
+
+	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script data-dojo-config="async: true"></script>
 	<script src="//js.arcgis.com/3.9compact/"></script>
 	<script src="Script/index.js"></script>
