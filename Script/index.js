@@ -15,12 +15,38 @@ require([
 	"esri/geometry/webMercatorUtils",
 	"esri/renderers/UniqueValueRenderer",
 	"esri/symbols/SimpleMarkerSymbol",
+	"esri/urlUtils",
 	"dojo/domReady!"
 ], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
-	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol) {
+	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
+
+	function populateFieldsWithQueryStringValues() {
+		// Read query string parameters
+		// clearance
+		// route
+		// include-non-mainline
+
+		var form = document.forms.clearanceForm;
+		var urlObj = urlUtils.urlToObject(location.toString());
+		var query = urlObj.query;
+
+		if (query) {
+			if (query.clearance) {
+				form.clearance.value = query.clearance;
+			}
+			if (query.route) {
+				form.route.value = query.route;
+			}
+			if (query.hasOwnProperty("include-non-mainline")) {
+				form["include-non-mainline"].checked = /^(?:(?:true)|1|(?:yes))$/i.test(query["include-non-mainline"]);
+			}
+		}
+	}
+
+	populateFieldsWithQueryStringValues();
 
 	// Setup tab click events.
 	$('#tabs a').click(function (e) {
