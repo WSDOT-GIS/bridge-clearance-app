@@ -43,10 +43,12 @@ require([
 			if (query.hasOwnProperty("include-non-mainline")) {
 				form["include-non-mainline"].checked = /^(?:(?:true)|1|(?:yes))$/i.test(query["include-non-mainline"]);
 			}
+			form.onsubmit();
 		}
+
 	}
 
-	populateFieldsWithQueryStringValues();
+	
 
 	// Setup tab click events.
 	$('#tabs a').click(function (e) {
@@ -554,6 +556,8 @@ require([
 		basemapGallery.on("load", function () {
 			basemapGallery.select("wsdot");
 		});
+
+		populateFieldsWithQueryStringValues();
 
 	});
 
