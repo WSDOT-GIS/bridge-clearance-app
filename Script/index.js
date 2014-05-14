@@ -601,13 +601,23 @@ require([
 		return query;
 	}
 
-	document.forms.clearanceForm.onsubmit = function () {
-		var clearanceText, inches, feetAndInches, routeText, exactRoute;
+	/** Selects the features that match the parameters specified in the form.
+	 * @param {HTMLFormElement} form
+	 */
+	function selectFeatures(form) {
+		var clearanceText, inches, feetAndInches, routeText, exactRoute, state;
+
+		// Set the state that will be passed back if successful.
+		state = {
+			clearance: form.clearance.value,
+			route: form.route.value,
+			"include-non-mainline": document.getElementById("includeNonMainlineCheckbox").checked
+		};
 		try {
-			this.blur();
+			form.blur();
 
 			// Get the clearance amount.
-			clearanceText = this.clearance.value;
+			clearanceText = form.clearance.value;
 			inches = Number(clearanceText);
 			if (isNaN(inches)) {
 				feetAndInches = new FeetAndInches(clearanceText);
@@ -615,26 +625,62 @@ require([
 			}
 
 			// Get the route filter
-			routeText = this.route.value;
+			routeText = form.route.value;
 			// Make sure that route text is valid
 			if (routeText && !(/^\d+$/.test(routeText) || /^\d{3}(?:(\w{2})(\w{0,6}))?$/.test(routeText))) {
 				alert("Invalid route");
-				return false;
-			}
-			exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
-			if (inches) {
-				vehicleHeight = inchesToCustom(inches + 3);
-				bridgeOnLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
-				domUtils.show(onProgress);
-				bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
-				domUtils.show(underProgress);
+				state = null;
+			} else {
+				exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
+				if (inches) {
+					vehicleHeight = inchesToCustom(inches + 3);
+					bridgeOnLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
+					domUtils.show(onProgress);
+					bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
+					domUtils.show(underProgress);
+				}
 			}
 		} catch (err) {
 			console.error(err);
+			state = null;
+		}
+		return state;
+	}
+
+	/** Converts an object in to a query string.
+	 * @param {Object.<string, string>} stateObj
+	 * @returns {string}
+	 */
+	function stateToSearch(stateObj) {
+		var output = ["?"];
+		for (var propName in stateObj) {
+			if (stateObj.hasOwnProperty(propName)) {
+				output.push([propName, encodeURIComponent(stateObj[propName])].join("="));
+			}
+		}
+		return output.join("&");
+	}
+
+	document.forms.clearanceForm.onsubmit = function () {
+		var state = selectFeatures(this);
+
+		if (state) {
+			// Update the URL so it can be bookmarked with the current search.
+			if (history) {
+				history.replaceState(state, document.title, stateToSearch(state));
+			}
 		}
 
+		// Return false so that the form is not actually submitted.
 		return false;
 	};
+
+	// TODO: Add handlers for state events.
+	if (window.onpopstate) {
+		window.addEventListener("popstate", function (event) {
+			console.log(event);
+		}, true);
+	}
 
 	/**
 	 * Clear the selections from the layers.
@@ -643,5 +689,16 @@ require([
 		bridgeOnLayer.clearSelection();
 		bridgeUnderLayer.clearSelection();
 		vehicleHeight = null;
+
+		var state = {
+			clearance: null,
+			route: null,
+			"include-non-mainline": null
+		};
+
+		// Update the URL so it can be bookmarked with the current search.
+		if (history) {
+			history.replaceState(state, document.title, location.pathname);
+		}
 	};
 });
