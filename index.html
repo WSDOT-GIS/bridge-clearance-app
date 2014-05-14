@@ -66,7 +66,7 @@
 								</div>
 							</form>
 							<hr />
-							<div>
+							<!--<div>
 								<table class="feature-counts table">
 									<caption>Feature Counts</caption>
 									<thead>
@@ -89,6 +89,44 @@
 									<td><div class="legend-symbol legend-can-pass"></div></td>
 									<td>Vehicle will pass if correct lane is chosen – contact WSDOT Permit Office</td>
 								</tr>
+							</table>-->
+
+							<table class="table">
+								<thead>
+									<!--<tr>
+										<th></th>
+										<th colspan="2">Count</th>
+									</tr>-->
+									<tr>
+										<th></th>
+										<th>On</th>
+										<th>Under</th>
+										<th>Description</th>
+									</tr>
+								</thead>
+								<tfoot>
+									<tr>
+										<th>Total</th>
+										<td><span id="oncount">0</span><progress id="onProgress">Selecting features...</progress></td>
+										<td><span id="undercount">0</span><progress id="underProgress">Selecting features...</progress></td>
+										<td></td>
+										<td></td>
+									</tr>
+								</tfoot>
+								<tbody>
+									<tr>
+										<td><div class="legend-symbol legend-cannot-pass"></div></td>
+										<td id="noPassOn"></td>
+										<td id="noPassUnder"></td>
+										<td>Vehicle will not pass</td>
+									</tr>
+									<tr>
+										<td><div class="legend-symbol legend-can-pass"></div></td>
+										<td id="somePassOn"></td>
+										<td id="somePassUnder"></td>
+										<td>Vehicle will pass if correct lane is chosen – contact WSDOT Permit Office</td>
+									</tr>
+								</tbody>
 							</table>
 						</div>
 						<div class="tab-pane" id="basemaps">

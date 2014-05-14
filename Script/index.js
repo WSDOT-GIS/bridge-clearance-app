@@ -371,21 +371,31 @@ require([
 		// Determine which layer triggered the selection-complete event.
 		// Get the corresponding table cell that holds its feature count.
 		// Update the value in that table cell.
-		var cellId = null;
+		var cellId = null, noPassCellId = null, somePassCellId = null, cell, noPassCell, somePassCell, somePassCount, totalCount;
 
 		if (results.target.id === "bridge-on") {
 			cellId = "oncount";
+			noPassCellId = "noPassOn";
+			somePassCellId = "somePassOn";
 			domUtils.hide(onProgress);
 		} else if (results.target.id === "bridge-under") {
 			cellId = "undercount";
+			noPassCellId = "noPassUnder";
+			somePassCellId = "somePassUnder";
 			domUtils.hide(underProgress);
 		}
 		
 		if (cellId) {
-			var cell = document.getElementById(cellId);
-			if (cell) {
-				cell.textContent = results.features.length;
-			}
+			cell = document.getElementById(cellId);
+			noPassCell = document.getElementById(noPassCellId);
+			somePassCell = document.getElementById(somePassCellId);
+			totalCount = results.features.length;
+			somePassCount = results.features.filter(function (graphic) {
+				return !!someLanesCanPass(graphic);
+			}).length;
+			cell.textContent = totalCount;
+			noPassCell.textContent = totalCount - somePassCount;
+			somePassCell.textContent = somePassCount;
 		}
 	}
 
@@ -393,10 +403,22 @@ require([
 	 * @this {FeatureLayer}
 	 */
 	function handleSelectionClear() {
+		var divId, noPassId, somePassId;
 		if (this && this.id) {
-			var divId = this.id === "bridge-on" ? "oncount" : this.id === "bridge-under" ? "undercount" : null;
+			if (this.id === "bridge-on") {
+				divId = "oncount";
+				noPassId = "noPassOn";
+				somePassId = "somePassOn";
+			} else if (this.id === "bridge-under") {
+				divId = "undercount";
+				noPassId = "noPassUnder";
+				somePassId = "somePassUnder";
+			}
+
 			if (divId) {
 				document.getElementById(divId).textContent = "0";
+				document.getElementById(noPassId).textContent = "0";
+				document.getElementById(somePassId).textContent = "0";
 			}
 		}
 	}
