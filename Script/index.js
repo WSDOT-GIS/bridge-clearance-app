@@ -652,13 +652,13 @@ require([
 	 * @returns {string}
 	 */
 	function stateToSearch(stateObj) {
-		var output = ["?"];
+		var output = [];
 		for (var propName in stateObj) {
 			if (stateObj.hasOwnProperty(propName)) {
 				output.push([propName, encodeURIComponent(stateObj[propName])].join("="));
 			}
 		}
-		return output.join("&");
+		return "?" + output.join("&");
 	}
 
 	document.forms.clearanceForm.onsubmit = function () {
@@ -674,13 +674,6 @@ require([
 		// Return false so that the form is not actually submitted.
 		return false;
 	};
-
-	// TODO: Add handlers for state events.
-	if (window.onpopstate) {
-		window.addEventListener("popstate", function (event) {
-			console.log(event);
-		}, true);
-	}
 
 	/**
 	 * Clear the selections from the layers.
