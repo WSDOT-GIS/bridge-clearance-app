@@ -1,6 +1,7 @@
 ﻿/*global require*/
 require([
 	"esri/map",
+	"esri/geometry/Extent",
 	"esri/config",
 	"esri/domUtils",
 	"esri/layers/FeatureLayer",
@@ -17,7 +18,7 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/urlUtils",
 	"dojo/domReady!"
-], function (Map, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
+], function (Map, Extent, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
 	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
@@ -47,8 +48,6 @@ require([
 		}
 
 	}
-
-	
 
 	// Setup tab click events.
 	$('#tabs a').click(function (e) {
@@ -156,9 +155,32 @@ require([
 
 	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
 	map = new Map("map", {
-		basemap: "streets",
-		center: [-120.80566406246835, 47.41322033015946],
-		zoom: 7,
+		extent: new Extent({ "xmin": -14058520.2360666, "ymin": 5539437.0343901999, "ymax": 6499798.1008670302, "xmax": -12822768.6769759, "spatialReference": { "wkid": 3857 } }),
+		lods: [
+			{ "level": 0, "resolution": 156543.033928, "scale": 591657527.591555 },
+			{ "level": 1, "resolution": 78271.5169639999, "scale": 295828763.795777 },
+			{ "level": 2, "resolution": 39135.7584820001, "scale": 147914381.897889 },
+			{ "level": 3, "resolution": 19567.8792409999, "scale": 73957190.948944 },
+			{ "level": 4, "resolution": 9783.93962049996, "scale": 36978595.474472 },
+			{ "level": 5, "resolution": 4891.96981024998, "scale": 18489297.737236 },
+			{ "level": 6, "resolution": 2445.98490512499, "scale": 9244648.868618 },
+				// Start
+			{ "level": 7, "resolution": 1222.99245256249, "scale": 4622324.434309 },
+			{ "level": 8, "resolution": 611.49622628138, "scale": 2311162.217155 },
+			{ "level": 9, "resolution": 305.748113140558, "scale": 1155581.108577 },
+			{ "level": 10, "resolution": 152.874056570411, "scale": 577790.554289 },
+			{ "level": 11, "resolution": 76.4370282850732, "scale": 288895.277144 },
+			{ "level": 12, "resolution": 38.2185141425366, "scale": 144447.638572 },
+			{ "level": 13, "resolution": 19.1092570712683, "scale": 72223.819286 },
+			{ "level": 14, "resolution": 9.55462853563415, "scale": 36111.909643 },
+			{ "level": 15, "resolution": 4.77731426794937, "scale": 18055.954822 },
+			{ "level": 16, "resolution": 2.38865713397468, "scale": 9027.977411 },
+			{ "level": 17, "resolution": 1.19432856685505, "scale": 4513.988705 },
+			{ "level": 18, "resolution": 0.597164283559817, "scale": 2256.994353 },
+			{ "level": 19, "resolution": 0.298582141647617, "scale": 1128.497176 }
+		],
+		minZoom: 7,
+		maxZoom: 19,
 		showAttribution: true
 	});
 
@@ -412,7 +434,7 @@ require([
 			somePassCellId = "somePassUnder";
 			domUtils.hide(underProgress);
 		}
-		
+
 		if (cellId) {
 			cell = document.getElementById(cellId);
 			noPassCell = document.getElementById(noPassCellId);
@@ -580,7 +602,7 @@ require([
 	 */
 	function createQuery(clearanceField, inches, srid, exactMatch) {
 		// Create the where clause for the clearance.
-		var where = [clearanceField, " < ", inchesToCustom(inches + 3) ];
+		var where = [clearanceField, " < ", inchesToCustom(inches + 3)];
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.
