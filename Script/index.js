@@ -5,7 +5,6 @@ require([
 	"esri/config",
 	"esri/domUtils",
 	"esri/layers/FeatureLayer",
-	"esri/layers/ArcGISTiledMapServiceLayer",
 	"esri/tasks/query",
 	"esri/InfoTemplate",
 	"esri/dijit/BasemapGallery",
@@ -16,7 +15,7 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/urlUtils",
 	"dojo/domReady!"
-], function (Map, Extent, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
+], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
@@ -147,8 +146,6 @@ require([
 	domUtils.hide(onProgress);
 	domUtils.hide(underProgress);
 
-	var wsdotBasemapUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/WebBaseMapWebMercator/MapServer";
-
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
 	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
@@ -181,9 +178,6 @@ require([
 		maxZoom: 19,
 		showAttribution: true
 	});
-
-	// Add the WSDOT basemap layer to the map.
-	map.addLayer(new ArcGISTiledMapServiceLayer(wsdotBasemapUrl, { id: "wsdot" }));
 
 	/**
 	 * Parses a string into feet and inches.
