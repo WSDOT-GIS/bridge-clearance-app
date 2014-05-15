@@ -14,9 +14,10 @@ require([
 	"esri/renderers/UniqueValueRenderer",
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/urlUtils",
+	"esri/dijit/PopupMobile",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
-	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
+	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
@@ -149,7 +150,7 @@ require([
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
 	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
-	map = new Map("map", {
+	var mapCreationParams = {
 		extent: new Extent({ "xmin": -14058520.2360666, "ymin": 5539437.0343901999, "ymax": 6499798.1008670302, "xmax": -12822768.6769759, "spatialReference": { "wkid": 3857 } }),
 		lods: [
 			{ "level": 0, "resolution": 156543.033928, "scale": 591657527.591555 },
@@ -177,7 +178,14 @@ require([
 		minZoom: 7,
 		maxZoom: 19,
 		showAttribution: true
-	});
+	};
+
+	// Use the mobile popup on smaller screens.
+	if (document.body.clientWidth < 768) {
+		mapCreationParams.infoWindow = new PopupMobile(null, document.createElement("div"));
+	}
+
+	map = new Map("map", mapCreationParams);
 
 	/**
 	 * Parses a string into feet and inches.
