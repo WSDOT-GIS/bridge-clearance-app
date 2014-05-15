@@ -9,8 +9,6 @@ require([
 	"esri/tasks/query",
 	"esri/InfoTemplate",
 	"esri/dijit/BasemapGallery",
-	"esri/dijit/Basemap",
-	"esri/dijit/BasemapLayer",
 	"esri/Color",
 	"esri/symbols/CartographicLineSymbol",
 	"esri/geometry/webMercatorUtils",
@@ -19,7 +17,7 @@ require([
 	"esri/urlUtils",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, ArcGISTiledMapServiceLayer, Query, InfoTemplate, BasemapGallery,
-	Basemap, BasemapLayer, Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
+	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
@@ -538,49 +536,25 @@ require([
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
 
-		// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
-		var basemapGallery = new BasemapGallery({
-			map: map,
-			basemaps: [
-				new Basemap({
-					id: "wsdot",
-					title: "WSDOT",
-					thumbnailUrl: "Images/WsdotBasemapThumbnail.jpg",
-					layers: [
-						new BasemapLayer({
-							url: wsdotBasemapUrl
-						})
-					]
-				}),
-				new Basemap({
-					id: "hybrid",
-					title: "Esri Hybrid",
-					thumbnailUrl: "Images/EsriHybridThumbnail.png",
-					layers: [
-						new BasemapLayer({
-							url: "http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer"
-						}),
-						new BasemapLayer({
-							url: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer"
-						}),
-						new BasemapLayer({
-							url: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
-						}),
-					]
-				})
-			],
-			basemapIds: map.layerIds
-		}, "basemapGallery");
-		basemapGallery.startup();
-
-		// Select the WSDOT basemap when the gallery dijit has loaded.
-		// Hide the basemap gallery. (User will show it by clicking a button.)
-		basemapGallery.on("load", function () {
-			basemapGallery.select("wsdot");
-		});
-
 		populateFieldsWithQueryStringValues();
 
+	});
+
+	// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
+	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "085a9cb0bb664d29bf62b731ccc4aa64" } }, "basemapGallery");
+	basemapGallery.startup();
+
+	// When the basemap gallery loads, select the first basemap with 
+	// the title "WSDOT Base Map". (There should be only one, but that's what
+	// the code is doing.)
+	basemapGallery.on("load", function () {
+		var basemap, basemaps = basemapGallery.basemaps.filter(function (basemap) {
+			return basemap.title === "WSDOT Base Map";
+		});
+		if (basemaps && basemaps.length > 0) {
+			basemap = basemaps[0];
+			basemapGallery.select(basemap.id);
+		}
 	});
 
 	// Set up the progress bar to show when the map is loading.
