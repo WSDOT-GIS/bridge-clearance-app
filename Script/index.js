@@ -19,7 +19,10 @@ require([
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile, ArcGISTiledMapServiceLayer) {
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl;
+
+	linesServiceUrl = "http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/1";
+	pointsServiceUrl = "http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
@@ -96,7 +99,7 @@ require([
 	 */
 	function someLanesCanPass(graphic) {
 		var output = 0;
-		if (vehicleHeight <= graphic.attributes.vert_clrnc_route_max) {
+		if (vehicleHeight <= graphic.attributes.VCMAX) {
 			output = 1;
 		}
 		return output;
@@ -285,22 +288,40 @@ require([
 		return dl;
 	}
 
+	function createFieldAliasDictionary(layer) {
+		var output, field, i, l;
+		if (layer && layer.fields) {
+			output = {};
+			for (i = 0, l = layer.fields.length; i < l; i += 1) {
+				field = layer.fields[i];
+				output[field.name] = field.alias || field.name;
+			}
+		}
+		return output;
+	}
+
 	/**
 	 * Creates an HTML table from an object's properties.
-	 * @param {Object} o
+	 * @param {Graphic} graphic
 	 * @param {RegExp} [ignoredNames] - Any properties with names that match this RegExp will be omitted from the table.
 	 * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
 	 */
-	function createTable(o, ignoredNames, feetInchesFields) {
-		var table = document.createElement("table"), tr, th, td, value, tbody;
+	function createTable(graphic, fieldsToInclude, feetInchesFields) {
+		var table = document.createElement("table"), tr, th, td, value, tbody, name, o, aliasDict;
+		o = graphic.attributes;
+		aliasDict = createFieldAliasDictionary(graphic.getLayer());
+		console.log(graphic);
 		table.setAttribute("class", "bridge-info table table-striped table-hover");
 		table.createTHead();
 		tbody = table.createTBody();
-		for (var name in o) {
-			if (o.hasOwnProperty(name) && (!ignoredNames || !ignoredNames.test(name))) {
+		//for (var name in o) {
+
+		for (var i = 0, l = fieldsToInclude.length; i < l; i += 1) {
+			name = fieldsToInclude[i];
+			if (o.hasOwnProperty(name)) {
 				tr = document.createElement("tr");
 				th = document.createElement("th");
-				th.textContent = formatFieldName(name);
+				th.textContent = aliasDict[name]; //formatFieldName(name);
 				tr.appendChild(th);
 
 				td = document.createElement("td");
@@ -347,8 +368,18 @@ require([
 	 * @returns {string}
 	 */
 	function toHtmlContent(graphic) {
-		var ignoredFields;
-		ignoredFields = /^(?:(?:RP)|(VCM(?:(?:AX)|(?:IN)))|(?:((OBJECTID_?)|(Field))\d*)|(?:Shape_Length)|(?:\w+(?:(?:code)|(?:class)|(?:Error)|(?:_gid)|(?:indicator)))|(?:(?:(?:lrs)|(?:list))\w+)|(?:(?:min_)?(?:(?:vert)|(?:horiz))\w+)|(?:(?:(?:lateral)|(?:fed)|(?:sort))\w+)|(?:eventID)|(?:agency_id)|(?:.+\(\)))$/i;
+		var fieldsToInclude;
+
+		fieldsToInclude = [
+			"structure_id",
+			"bridge_no",
+			"crossing_description",
+			"facilities_carried",
+			"feature_intersected",
+			"structure_length",
+			"lrs_traffic_flow_beg",
+			"lrs_traffic_flow_end"
+		];
 
 		var fragment = document.createDocumentFragment();
 
@@ -402,7 +433,7 @@ require([
 			ul.appendChild(li);
 		}
 
-		var table = createTable(graphic.attributes, ignoredFields, fieldsWithWeirdFormatNumbers);
+		var table = createTable(graphic, fieldsToInclude, fieldsWithWeirdFormatNumbers);
 
 		var p;
 		if (table.classList) {
@@ -534,7 +565,7 @@ require([
 		});
 
 		// Create the layer for the "on" features. Features will only appear on the map when they are selected.
-		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/1", {
+		bridgeOnLayer = new FeatureLayer(linesServiceUrl, {
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
@@ -546,10 +577,39 @@ require([
 		bridgeOnLayer.on("selection-clear", handleSelectionClear);
 
 		// Create the bridge under layer. Only selected features will appear on the map.
-		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/0", {
+		bridgeUnderLayer = new FeatureLayer(pointsServiceUrl, {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
-			outFields: ["*"],
+			outFields: ["*"
+				////"structure_id",
+				////"bridge_no",
+				////"lrs_route",
+				////"lrs_traffic_flow_beg",
+				////"crossing_description",
+				////"facilities_carried",
+				////"feature_intersected",
+				////"structure_length",
+				////"VCMAX",
+				////"VCMIN",
+
+				////////"objectid",
+				////////"location_gid",
+				////////"directional_indicator_LOC",
+				////////"arm_beg",
+				////////"arm_end",
+				////////"StackOrder",
+				////////"ahead_back_indicator_1",
+				////////"Latitude",
+				////////"Longitude",
+				////////"vert_clrnc_route_max",
+				////////"vert_clrnc_route_min",
+				////////"vert_clrnc_rvrs_max",
+				////////"vert_clrnc_rvrs_min",
+				////////"min_vert_deck",
+				////////"on_under_code",
+				////////"RP",
+				////////"SHAPE"
+			],
 			infoTemplate: infoTemplate
 		});
 
@@ -656,9 +716,9 @@ require([
 				exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 				if (inches) {
 					vehicleHeight = inchesToCustom(inches + 3);
-					bridgeOnLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
+					bridgeOnLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
 					domUtils.show(onProgress);
-					bridgeUnderLayer.selectFeatures(createQuery("vert_clrnc_route_min", inches, routeText, exactRoute));
+					bridgeUnderLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
 					domUtils.show(underProgress);
 				}
 			}
