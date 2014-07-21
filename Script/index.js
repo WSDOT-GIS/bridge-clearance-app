@@ -21,8 +21,8 @@ require([
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile, ArcGISTiledMapServiceLayer) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl;
 
-	linesServiceUrl = "http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/1";
-	pointsServiceUrl = "http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/0";
+	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/1";
+	pointsServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
