@@ -651,6 +651,79 @@ require([
 	});
 
 	/**
+	 * Determines if the input box contains one of the suggestions from its datalist.
+	 * @param {HTMLInputElement} textbox
+	 * @returns {boolean}
+	 */
+	function inputBoxContainsItemFromList(textbox) {
+		var datalist, options, output = false;
+		datalist = document.getElementById(textbox.getAttribute("list"));
+		options = datalist.querySelectorAll("option");
+
+		for (var i = 0, l = options.length; i < l; i += 1) {
+			if (options[i].value === textbox.value) {
+				output = true;
+				break;
+			}
+		}
+
+		return output;
+	}
+
+	/**
+	 * Pads a numeric string with less than three characters with zeroes
+	 * so that it has three characters.
+	 * @param {string} route
+	 * @returns {string}
+	 */
+	function padRouteWithZeroes(route) {
+		var output;
+		if (route && /^\d+$/.test(route)) {
+			if (route.length === 1) {
+				output = "00" + route;
+			} else if (route.length === 2) {
+				output = "0" + route;
+			}
+		}
+		return output || route;
+	}
+
+	/**
+	 * Checks to make sure all input fields in the form have valid values
+	 * and that all required values are provided.
+	 * @returns {boolean} Returns true if all valid values 
+	 */
+	function validateClearanceForm() {
+		var form, feetAndInches, messages = [], isValid = false;
+		form = document.forms.clearanceForm;
+
+		if (!form.feet.value && !form.inches.value) {
+			messages.push("You must enter a value in feet and/or inches box.");
+		} else {
+			feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
+			if (feetAndInches.totalInches() > 192) {
+				messages.push("Height must not exceed 16'.");
+			}
+		}
+
+		if (form.route.value) {
+			form.route.value = padRouteWithZeroes(form.route.value);
+			if (!inputBoxContainsItemFromList(form.route)) {
+				messages.push("Invalid route specified.");
+			}
+		}
+
+
+		if (messages && messages.length > 0) {
+			alert(messages.join("\n\n"));
+		} else {
+			isValid = true;
+		}
+
+		return isValid;
+	}
+
+	/**
 	 * Creates a layer definition string
 	 * @param {string} clearanceField - The name of the field that contains clearance data.
 	 * @param {number} inches
@@ -686,12 +759,15 @@ require([
 	 * @param {HTMLFormElement} form
 	 */
 	function selectFeatures(form) {
-		var inches, feetAndInches, routeText, exactRoute, state;
+		var inches, feetAndInches, routeText, exactRoute, state, formIsValid;
 
-		if (!form.feet.value && !form.inches.value) {
-			alert("You must enter a value in feet and/or inches box.");
+		formIsValid = validateClearanceForm();
+
+		if (!formIsValid) {
 			return;
 		}
+
+
 
 		// Set the state that will be passed back if successful.
 		state = {
@@ -744,6 +820,8 @@ require([
 		return "?" + output.join("&");
 	}
 
+
+
 	document.forms.clearanceForm.onsubmit = function () {
 		var state = selectFeatures(this);
 
@@ -780,4 +858,39 @@ require([
 	};
 
 	$('#warningModal').modal();
+
+	// Setup route data list.
+	(function () {
+		var routeRequest = new XMLHttpRequest();
+		routeRequest.open("get", "http://www.wsdot.wa.gov/geoservices/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe/routes?f=json");
+		routeRequest.responseType = "json";
+		routeRequest.onloadend = function () {
+			var routeBox, list, option, routes, response;
+
+			response = this.response;
+			if (typeof response === "string") {
+				response = JSON.parse(response);
+			}
+			routes = response.Current;
+
+			routeBox = document.getElementById("routeFilterBox");
+			list = document.createElement("datalist");
+			list.id = "routeList";
+
+			// Go through each property of routes. Add option for property name if it is a mainline.
+			for (var routeName in routes) {
+				if (routes.hasOwnProperty(routeName) && routeName.length === 3) {
+					option = document.createElement("option");
+					option.value = routeName;
+					list.appendChild(option);
+				}
+			}
+
+			document.body.appendChild(list);
+			routeBox.setAttribute("list", list.id);
+
+		};
+		routeRequest.send();
+
+	}());
 });
