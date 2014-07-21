@@ -339,6 +339,7 @@ require([
 
 	/**
 	 * Toggles the bridge details table's visibility.
+	 * @returns {boolean} Returns false so that link is not actually followed when clicked.
 	 */
 	function toggleDetails() {
 		var table, a = this, textNode, icon;
@@ -361,6 +362,19 @@ require([
 		return false;
 	}
 
+	function getSrmpRangeText(graphic) {
+		var output = [];
+		if (graphic && graphic.attributes) {
+			if (graphic.attributes.hasOwnProperty("lrs_traffic_flow_beg")) {
+				output.push(graphic.attributes.lrs_traffic_flow_beg);
+			}
+			if (graphic.attributes.lrs_traffic_flow_end) {
+				output.push(graphic.attributes.lrs_traffic_flow_end);
+			}
+		}
+		return output.join(" — ");
+	}
+
 	/**
 	 * Creates an HTML table of a graphic's attributes.
 	 * @param {esri/Graphic} graphic
@@ -375,9 +389,7 @@ require([
 			"crossing_description",
 			"facilities_carried",
 			"feature_intersected",
-			"structure_length",
-			"lrs_traffic_flow_beg",
-			"lrs_traffic_flow_end"
+			"structure_length"
 		];
 
 		var fragment = document.createDocumentFragment();
@@ -393,23 +405,11 @@ require([
 
 		var dlObj = {};
 
-		var linksHeader = document.createElement("h5");
-		linksHeader.textContent = "Vertical Clearance";
-		fragment.appendChild(linksHeader);
-
-		if (minClearance) {
-			dlObj.Minimum = inchesToFeetAndInchesLabel(minClearance);
-		}
-		if (maxClearance) {
-			dlObj.Maximum = inchesToFeetAndInchesLabel(maxClearance);
-		}
-
+		dlObj["Vertical Clearance"] = (minClearance === maxClearance ? inchesToFeetAndInchesLabel(minClearance) : [inchesToFeetAndInchesLabel(minClearance), inchesToFeetAndInchesLabel(maxClearance)].join(" — "));
+		dlObj.SRMP = getSrmpRangeText(graphic);
 		var dl = toDL(dlObj);
-
 		fragment.appendChild(dl);
-		linksHeader = document.createElement("h5");
-		linksHeader.textContent = "Links";
-		fragment.appendChild(linksHeader);
+
 
 		var ul = document.createElement("ul");
 		ul.setAttribute("class", "link-list");
@@ -757,6 +757,7 @@ require([
 
 	/** Selects the features that match the parameters specified in the form.
 	 * @param {HTMLFormElement} form
+	 * @returns {Object} Returns the history state object.
 	 */
 	function selectFeatures(form) {
 		var inches, feetAndInches, routeText, exactRoute, state, formIsValid;
