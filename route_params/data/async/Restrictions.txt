@@ -1,0 +1,33 @@
+Restriction Name	Description	Availability
+Any Hazmat Prohibited	The route will exclude roads where transporting any kind of hazardous material is prohibited.	Select countries in North America and Europe
+Avoid Carpool Roads	The route will avoid roads designated exclusively for carpool (high-occupancy) vehicles.	All countries
+Avoid Express Lanes	The route will avoid roads designated as express lanes.	All countries
+Avoid Ferries	The route will avoid ferries.	All countries
+Avoid Gates	The route will avoid roads where there are gates, such as keyed-access or guard-controlled entryways.	All countries
+Avoid Limited Access Roads	The route will avoid roads designated as limited-access highways.	All countries
+Avoid Private Roads	The route will avoid roads that are not publicly owned and maintained.	All countries
+Avoid Toll Roads	The route will avoid toll roads.	All countries
+Avoid Unpaved Roads	The route will avoid roads that are not paved (for example, dirt, gravel, etc.).	All countries
+Axle Count Restriction	The route will not include roads where trucks with the specified number of axles are prohibited. The number of axles can be specified using the Number of Axles restriction parameter.	Select countries in North America and Europe
+Driving a Bus	The route will exclude roads where buses are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Driving a Delivery Vehicle	The route will exclude roads where delivery vehicles are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Driving a Taxi	The route will exclude roads where taxis are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Driving a Truck	The route will exclude roads where trucks are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Driving an Automobile	The route will exclude roads where automobiles are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Driving an Emergency Vehicle	The route will exclude roads where emergency vehicles are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Height Restriction	The route will exclude roads where the vehicle height exceeds the maximum allowed height for the road. The vehicle height can be specified using the Vehicle Height (meters) restriction parameter.	Select countries in North America and Europe
+Kingpin to Rear Axle Length Restriction	The route will exclude roads where the vehicle kingpin-to-rear-axle length exceeds the maximum allowed for the road. The vehicle's length between the vehicle kingpin and the rear axle can be specified using the Vehicle Kingpin to Rear Axle Length (meters) restriction parameter.	Select countries in North America and Europe
+Length Restriction	The route will exclude roads where the vehicle length exceeds the maximum allowed length for the road. The vehicle length can be specified using the Vehicle Length (meters) restriction parameter.	Select countries in North America and Europe
+Riding a Motorcycle	The route will exclude roads where motorcycles are prohibited. Using this restriction also ensures the route will honor one-way streets.	All countries
+Roads Under Construction Prohibited	The route will exclude roads that are under construction.	All countries
+Semi or Tractor with One or More Trailers Prohibited	The route will exclude roads where semis or tractors with one or more trailers are prohibited.	Select countries in North America and Europe
+Single Axle Vehicles Prohibited	The route will exclude roads where vehicles with single axles are prohibited.	Select countries in North America and Europe
+Tandem Axle Vehicles Prohibited	The route will exclude roads where vehicles with tandem axles are prohibited.	Select countries in North America and Europe
+Through Traffic Prohibited	The route will exclude roads where through traffic (non-local) is prohibited.	All countries
+Truck with Trailers Restriction	The route will exclude roads where trucks with the specified number of trailers on the truck are prohibited. The number of trailers on the truck can be specified using the Number of Trailers on Truck restriction parameter.	Select countries in North America and Europe
+Use Preferred Hazmat Routes	The route will prefer roads designated for transporting any kind of hazardous materials.	Select countries in North America and Europe
+Use Preferred Truck Routes	The route will prefer roads designated as truck routes, such as the roads that are part of the national network as specified by the National Surface Transportation Assistance Act in the United States, or roads that are designated as truck routes by the state or province, or or roads in an area that are generally more suitable for trucks.	Select countries in North America and Europe
+Walking	The route will exclude roads where pedestrians are prohibited.	All countries
+Weight Restriction	The route will exclude roads where the vehicle weight exceeds the maximum allowed weight for the road. The vehicle weight can be specified using the Vehicle Weight (kilograms) restriction parameter.	Select countries in North America and Europe
+Weight per Axle Restriction	The route will exclude roads where the vehicle's weight per axle exceeds the maximum allowed for the road. The vehicle's weight per axle can be specified using the Vehicle Weight per Axle (kilograms) restriction parameter.	Select countries in North America and Europe
+Width Restriction	The route will roads where the vehicle width exceeds the maximum allowed for the road. The vehicle width can be specified using the Vehicle Width(meters) restriction parameter.	Select countries in North America and Europe

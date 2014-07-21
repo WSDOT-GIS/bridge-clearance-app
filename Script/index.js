@@ -15,9 +15,10 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/urlUtils",
 	"esri/dijit/PopupMobile",
+	"esri/layers/ArcGISTiledMapServiceLayer",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
-	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile) {
+	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile, ArcGISTiledMapServiceLayer) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight;
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
@@ -148,6 +149,10 @@ require([
 	domUtils.hide(underProgress);
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
+
+	["hqolymgis99t:6080", "hqolymgis99t"].forEach(function (serverName) {
+		esriConfig.defaults.io.corsEnabledServers.push(serverName);
+	});
 
 	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
 	var mapCreationParams = {
@@ -316,15 +321,22 @@ require([
 	 * Toggles the bridge details table's visibility.
 	 */
 	function toggleDetails() {
-		var table = document.querySelector("table.bridge-info");
+		var table, a = this, textNode, icon;
+		table = document.querySelector("table.bridge-info");
+		icon = document.createElement("span");
+		a.innerHTML = "";
 		if (table) {
 			if (table.classList.contains("collapsed")) {
 				table.classList.remove("collapsed");
-				this.textContent = "Hide details";
+				textNode = document.createTextNode("Hide Details ");
+				icon.setAttribute("class", "glyphicon glyphicon-chevron-up");
 			} else {
 				table.classList.add("collapsed");
-				this.textContent = "Details...";
+				textNode = document.createTextNode("Details... ");
+				icon.setAttribute("class", "glyphicon glyphicon-chevron-down");
 			}
+			a.appendChild(textNode);
+			a.appendChild(icon);
 		}
 		return false;
 	}
@@ -336,12 +348,12 @@ require([
 	 */
 	function toHtmlContent(graphic) {
 		var ignoredFields;
-		ignoredFields = /^(?:(?:((OBJECTID_?)|(Field))\d*)|(?:Shape_Length)|(?:\w+(?:(?:code)|(?:class)|(?:Error)|(?:_gid)|(?:indicator)))|(?:(?:(?:lrs)|(?:list))\w+)|(?:(?:min_)?(?:(?:vert)|(?:horiz))\w+)|(?:(?:(?:lateral)|(?:fed)|(?:sort))\w+)|(?:eventID)|(?:agency_id))$/i;
+		ignoredFields = /^(?:(?:RP)|(VCM(?:(?:AX)|(?:IN)))|(?:((OBJECTID_?)|(Field))\d*)|(?:Shape_Length)|(?:\w+(?:(?:code)|(?:class)|(?:Error)|(?:_gid)|(?:indicator)))|(?:(?:(?:lrs)|(?:list))\w+)|(?:(?:min_)?(?:(?:vert)|(?:horiz))\w+)|(?:(?:(?:lateral)|(?:fed)|(?:sort))\w+)|(?:eventID)|(?:agency_id)|(?:.+\(\)))$/i;
 
 		var fragment = document.createDocumentFragment();
 
-		var minClearance = customToInches(graphic.attributes.vert_clrnc_route_min);
-		var maxClearance = customToInches(graphic.attributes.vert_clrnc_route_max);
+		var minClearance = customToInches(graphic.attributes.VCMIN);
+		var maxClearance = customToInches(graphic.attributes.VCMAX);
 		if (minClearance > 3) {
 			minClearance -= 3;
 		}
@@ -370,17 +382,21 @@ require([
 		fragment.appendChild(linksHeader);
 
 		var ul = document.createElement("ul");
+		ul.setAttribute("class", "link-list");
 		fragment.appendChild(ul);
 
 		var li, a;
 
-		// Add a google street view, SRView and BEIst urls if possible.
+		// Add a google street view link if possible.
 		var gsvUrl = getGoogleStreetViewUrl(graphic);
 		if (gsvUrl) {
 			li = document.createElement("li");
+			li.setAttribute("class", "google-street-view");
 			a = document.createElement("a");
+			a.setAttribute("class", "google-street-view");
 			a.href = gsvUrl;
 			a.textContent = "Google Street View";
+			a.innerHTML += " <span class='glyphicon glyphicon-new-window'></span>";
 			a.target = "_blank";
 			li.appendChild(a);
 			ul.appendChild(li);
@@ -394,7 +410,7 @@ require([
 			p = document.createElement("p");
 			a = document.createElement("a");
 			a.href = "#";
-			a.textContent = "Details...";
+			a.innerHTML = "Details...<span class='glyphicon glyphicon-chevron-down'></span>";
 			a.onclick = toggleDetails;
 			p.appendChild(a);
 			fragment.appendChild(p);
@@ -476,10 +492,17 @@ require([
 	map.on("load", function () {
 		// Create the cartographic line symbol that will be used to show the selected lines.
 		// This gives them a better appearance than the default behavior.
-		var defaultPointSymbol, defaultLineSymbol, warningLineSymbol, pointRenderer, lineRenderer, defaultColor, warningColor;
+		var milepostLayer, defaultPointSymbol, defaultLineSymbol, warningLineSymbol, pointRenderer, lineRenderer, defaultColor, warningColor;
+
+		milepostLayer = new ArcGISTiledMapServiceLayer("http://wwwi.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/Milepost/MapServer", {
+			id: "mileposts"
+		});
+		map.addLayer(milepostLayer);
 
 		defaultColor = new Color([255, 85, 0, 255]);
 		warningColor = new Color([255, 255, 0, 255]);
+
+		var pointSize = 10;
 
 		defaultLineSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
 			defaultColor, 10,
@@ -489,7 +512,7 @@ require([
 			warningColor, 10,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
-		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor);
+		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor).setSize(pointSize);
 
 		var label = "Can pass in some lanes";
 		var description = "Vehicle may be able to pass in some but not all lanes.";
@@ -505,13 +528,13 @@ require([
 		pointRenderer = new UniqueValueRenderer(defaultPointSymbol, someLanesCanPass);
 		pointRenderer.addValue({
 			value: 1,
-			symbol: new SimpleMarkerSymbol().setColor(warningColor),
+			symbol: new SimpleMarkerSymbol().setColor(warningColor).setSize(pointSize),
 			label: label,
 			description: description
 		});
 
 		// Create the layer for the "on" features. Features will only appear on the map when they are selected.
-		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/1", {
+		bridgeOnLayer = new FeatureLayer("http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/1", {
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
@@ -523,7 +546,7 @@ require([
 		bridgeOnLayer.on("selection-clear", handleSelectionClear);
 
 		// Create the bridge under layer. Only selected features will appear on the map.
-		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t/arcgis/rest/services/Bridges/BridgesAndCrossings_20140417/MapServer/0", {
+		bridgeUnderLayer = new FeatureLayer("http://hqolymgis99t:6080/arcgis/rest/services/Bridges/BridgesAndCrossings_20140630/MapServer/0", {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
@@ -579,6 +602,7 @@ require([
 	function createQuery(clearanceField, inches, srid, exactMatch) {
 		// Create the where clause for the clearance.
 		var where = [clearanceField, " < ", inchesToCustom(inches + 3)];
+		var sridField = "lrs_route";
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.
@@ -589,9 +613,9 @@ require([
 			}
 
 			if (exactMatch) {
-				where.push(" AND SRID = '", srid, "'");
+				where.push(" AND ", sridField, "= '", srid, "'");
 			} else {
-				where.push(" AND SRID LIKE '", srid, "%'");
+				where.push(" AND ", sridField, " LIKE '", srid, "%'");
 			}
 		}
 		var query = new Query();
@@ -692,4 +716,6 @@ require([
 			history.replaceState(state, document.title, location.pathname);
 		}
 	};
+
+	$('#warningModal').modal();
 });

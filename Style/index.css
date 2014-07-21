@@ -149,8 +149,8 @@ table.feature-counts tr > td:last-child {
 }
 
 .legend-symbol {
-	width: 1.5em;
-	height: 1.5em;
+	width: 1em;
+	height: 1em;
 	border: 1px solid black;
 	border-radius: 1em;
 }
@@ -161,4 +161,16 @@ table.feature-counts tr > td:last-child {
 
 .legend-cannot-pass {
 	background-color: rgb(255, 85, 0);
+}
+
+.beta-alert {
+	position:absolute;
+	top:50%;
+	width:90%;
+	z-index: 1;
+}
+
+/* This is to fix a weird esri + bootstrap bug that causes basemap thumbnails to "move around".*/
+.esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail {
+	margin: 1px;
 }
