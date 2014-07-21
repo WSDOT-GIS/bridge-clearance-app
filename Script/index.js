@@ -686,7 +686,7 @@ require([
 	 * @param {HTMLFormElement} form
 	 */
 	function selectFeatures(form) {
-		var clearanceText, inches, feetAndInches, routeText, exactRoute, state;
+		var inches, feetAndInches, routeText, exactRoute, state;
 
 		if (!form.feet.value && !form.inches.value) {
 			alert("You must enter a value in feet and/or inches box.");
