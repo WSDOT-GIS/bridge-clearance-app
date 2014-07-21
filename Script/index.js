@@ -37,8 +37,11 @@ require([
 		var query = urlObj.query;
 
 		if (query) {
-			if (query.clearance) {
-				form.clearance.value = query.clearance;
+			if (query.feet) {
+				form.feet.value = query.feet;
+			}
+			if (query.inches) {
+				form.inches.value = query.inches;
 			}
 			if (query.route) {
 				form.route.value = query.route;
@@ -197,18 +200,14 @@ require([
 
 	/**
 	 * Parses a string into feet and inches.
-	 * @param {string} str
+	 * @param {number} feet
+	 * @param {number} inches
 	 * @property {number} feet
 	 * @property {number} inches
 	 */
-	function FeetAndInches(str) {
-		var feetAndInRe = /(\d+)'\s*(?:(\d+(?:\.\d+)?)")?/i;
-		var match = str.match(feetAndInRe);
-		if (!match) {
-			throw new Error("Invalid format.");
-		}
-		this.feet = Number(match[1]);
-		this.inches = match[2] ? Number(match[2]) : 0;
+	function FeetAndInches(feet, inches) {
+		this.feet = feet ? Number(feet) : 0;
+		this.inches = inches ? Number(inches) : 0;
 	}
 
 	/**
@@ -689,9 +688,15 @@ require([
 	function selectFeatures(form) {
 		var clearanceText, inches, feetAndInches, routeText, exactRoute, state;
 
+		if (!form.feet.value && !form.inches.value) {
+			alert("You must enter a value in feet and/or inches box.");
+			return;
+		}
+
 		// Set the state that will be passed back if successful.
 		state = {
-			clearance: form.clearance.value,
+			feet: form.feet.value,
+			inches: form.inches.value,
 			route: form.route.value,
 			"include-non-mainline": document.getElementById("includeNonMainlineCheckbox").checked
 		};
@@ -699,12 +704,8 @@ require([
 			form.blur();
 
 			// Get the clearance amount.
-			clearanceText = form.clearance.value;
-			inches = Number(clearanceText);
-			if (isNaN(inches)) {
-				feetAndInches = new FeetAndInches(clearanceText);
-				inches = feetAndInches.totalInches();
-			}
+			feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
+			inches = feetAndInches.totalInches();
 
 			// Get the route filter
 			routeText = form.route.value;
@@ -766,7 +767,8 @@ require([
 		vehicleHeight = null;
 
 		var state = {
-			clearance: null,
+			feet: null,
+			inches: null,
 			route: null,
 			"include-non-mainline": null
 		};
