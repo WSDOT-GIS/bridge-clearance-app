@@ -174,3 +174,11 @@ table.feature-counts tr > td:last-child {
 .esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail {
 	margin: 1px;
 }
+
+input[type=checkbox] ~ .ramp-warning {
+	display: none;
+}
+
+input[type=checkbox]:checked ~ .ramp-warning {
+	display: block;
+}
