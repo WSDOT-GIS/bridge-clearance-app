@@ -694,15 +694,19 @@ require([
 	 * @returns {boolean} Returns true if all valid values 
 	 */
 	function validateClearanceForm() {
-		var form, feetAndInches, messages = [], isValid = false;
+		var form, feetAndInches, messages = [], isValid = false, tooHighDiv;
 		form = document.forms.clearanceForm;
 
 		if (!form.feet.value && !form.inches.value) {
 			messages.push("You must enter a value in feet and/or inches box.");
 		} else {
 			feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
+			tooHighDiv = document.getElementById("tooHighWarning");
 			if (feetAndInches.totalInches() > 192) {
 				messages.push("Height must not exceed 16'.");
+				tooHighDiv.classList.remove("hidden");
+			} else {
+				tooHighDiv.classList.add("hidden");
 			}
 		}
 
@@ -856,6 +860,8 @@ require([
 		if (history) {
 			history.replaceState(state, document.title, location.pathname);
 		}
+
+		document.getElementById("tooHighWarning").classList.add("hidden");
 	};
 
 	$('#warningModal').modal();
