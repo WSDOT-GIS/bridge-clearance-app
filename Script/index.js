@@ -691,20 +691,22 @@ require([
 	/**
 	 * Checks to make sure all input fields in the form have valid values
 	 * and that all required values are provided.
-	 * @returns {boolean} Returns true if all valid values 
+	 * @returns {boolean} Returns true if all values are valid, false otherwise.
 	 */
 	function validateClearanceForm() {
-		var form, feetAndInches, messages = [], isValid = false, tooHighDiv;
+		var form, feetAndInches, isValid, tooHighDiv;
 		form = document.forms.clearanceForm;
 
 		if (!form.feet.value && !form.inches.value) {
-			messages.push("You must enter a value in feet and/or inches box.");
+			document.getElementById("heightRequiredWarning").classList.remove("hidden");
+			isValid = false;
 		} else {
+			document.getElementById("heightRequiredWarning").classList.add("hidden");
 			feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
 			tooHighDiv = document.getElementById("tooHighWarning");
 			if (feetAndInches.totalInches() > 192) {
-				messages.push("Height must not exceed 16'.");
 				tooHighDiv.classList.remove("hidden");
+				isValid = false;
 			} else {
 				tooHighDiv.classList.add("hidden");
 			}
@@ -713,14 +715,14 @@ require([
 		if (form.route.value) {
 			form.route.value = padRouteWithZeroes(form.route.value);
 			if (!inputBoxContainsItemFromList(form.route)) {
-				messages.push("Invalid route specified.");
+				document.getElementById("invalidRouteAlert").classList.remove("hidden");
+				isValid = false;
+			} else {
+				document.getElementById("invalidRouteAlert").classList.add("hidden");
 			}
 		}
 
-
-		if (messages && messages.length > 0) {
-			alert(messages.join("\n\n"));
-		} else {
+		if (isValid !== false) {
 			isValid = true;
 		}
 

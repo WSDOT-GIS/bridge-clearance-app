@@ -75,9 +75,15 @@
 									For taller loads, please follow steps in this link:
 									<a class="alert-link" href="http://www.wsdot.wa.gov/CommercialVehicle/superload.htm">Superload Requirements</a>.
 								</div>
+								<div id="heightRequiredWarning" class="alert alert-warning hidden" role="alert">
+									<span class="glyphicon glyphicon-warning-sign"></span> You must enter a value in feet and/or inches box.
+								</div>
 								<div class="form-group">
 									<label for="routeFilterBox">Route (optional)</label>
 									<input id="routeFilterBox" class="form-control" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" />
+								</div>
+								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
+									<span class="glyphicon glyphicon-warning-sign"></span> Invalid Route.
 								</div>
 								<div class="checkbox">
 									<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" /><label for="includeNonMainlineCheckbox">Include ramps, etc.</label>
