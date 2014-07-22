@@ -863,7 +863,9 @@ require([
 			history.replaceState(state, document.title, location.pathname);
 		}
 
+		document.getElementById("heightRequiredWarning").classList.add("hidden");
 		document.getElementById("tooHighWarning").classList.add("hidden");
+		document.getElementById("invalidRouteAlert").classList.add("hidden");
 	};
 
 	$('#warningModal').modal();
