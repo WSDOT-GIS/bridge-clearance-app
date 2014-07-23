@@ -257,42 +257,69 @@ require([
 		return output;
 	}
 
-	/**
-	 * Replaces the underscores in a string with spaces.
-	 * @param {string} name
-	 * @returns {string}
-	 */
-	function formatFieldName(name) {
-		return name.replace(/_/g, " ");
-	}
+	/////**
+	//// * Replaces the underscores in a string with spaces.
+	//// * @param {string} name
+	//// * @returns {string}
+	//// */
+	////function formatFieldName(name) {
+	////	return name.replace(/_/g, " ");
+	////}
 
-	/**
-	 * Creates a definition list from an object's properties.
-	 * @param {Object} o
-	 * @returns {HTMLDListElement}
-	 */
-	function toDL(o, horizontal) {
-		var dl = document.createElement("dl"), dt, dd;
-		if (horizontal) {
-			dl.setAttribute("class", "dl-horizontal");
-		}
-		for (var name in o) {
-			if (o.hasOwnProperty(name)) {
-				dt = document.createElement("dt");
-				dd = document.createElement("dd");
-				dt.textContent = formatFieldName(name);
-				if (typeof o[name] === "object") {
-					dd.appendChild(toDL(o[name], true));
+	/////**
+	//// * Creates a definition list from an object's properties.
+	//// * @param {Object} o
+	//// * @returns {HTMLDListElement}
+	//// */
+	////function toDL(o, horizontal) {
+	////	var dl = document.createElement("dl"), dt, dd;
+	////	if (horizontal) {
+	////		dl.setAttribute("class", "dl-horizontal");
+	////	}
+	////	for (var name in o) {
+	////		if (o.hasOwnProperty(name)) {
+	////			dt = document.createElement("dt");
+	////			dd = document.createElement("dd");
+	////			dt.textContent = formatFieldName(name);
+	////			if (typeof o[name] === "object") {
+	////				dd.appendChild(toDL(o[name], true));
+	////			} else {
+	////				dd.textContent = o[name];
+	////			}
+	////			dl.appendChild(dt);
+	////			dl.appendChild(dd);
+	////		}
+	////	}
+	////	return dl;
+	////}
+
+	function objectToTable(o) {
+		var table, row, cell, value;
+		table = document.createElement("table");
+		table.classList.add("table");
+		for (var propName in o) {
+			if (o.hasOwnProperty(propName)) {
+				row = table.insertRow(-1);
+				cell = document.createElement("th");
+				cell.innerText = propName;
+				value = o[propName];
+				row.appendChild(cell);
+				cell = row.insertCell(-1);
+				if (typeof value === "object") {
+					cell.appendChild(objectToTable(value));
 				} else {
-					dd.textContent = o[name];
+					cell.innerText = o[propName];
 				}
-				dl.appendChild(dt);
-				dl.appendChild(dd);
 			}
 		}
-		return dl;
+		return table;
 	}
 
+	/**
+	 * Creates a dictionary of field aliases for a layer.
+	 * @param {Layer} layer
+	 * @returns {Object.<string, string>}
+	 */
 	function createFieldAliasDictionary(layer) {
 		var output, field, i, l;
 		if (layer && layer.fields) {
@@ -368,12 +395,18 @@ require([
 		return false;
 	}
 
+	/**
+	 * Gets a text string showing the SRMP range from a graphic's attributes.
+	 * @param {Graphic} graphic
+	 * @returns {string}
+	 */
 	function getSrmpRangeText(graphic) {
 		var output = [];
 		if (graphic && graphic.attributes) {
 			if (graphic.attributes.hasOwnProperty("lrs_traffic_flow_beg")) {
 				output.push(graphic.attributes.lrs_traffic_flow_beg);
 			}
+			// If there's an end SRMP value that is non-zero...
 			if (graphic.attributes.lrs_traffic_flow_end) {
 				output.push(graphic.attributes.lrs_traffic_flow_end);
 			}
@@ -411,13 +444,12 @@ require([
 
 		var dlObj = {};
 
-		//dlObj["Vertical Clearance"] = (minClearance === maxClearance ? inchesToFeetAndInchesLabel(minClearance) : [inchesToFeetAndInchesLabel(minClearance), inchesToFeetAndInchesLabel(maxClearance)].join(" — "));
 		dlObj["Vertical Clearance"] = {
 			"Minimum": inchesToFeetAndInchesLabel(minClearance),
 			"Maximum": inchesToFeetAndInchesLabel(maxClearance)
 		};
 		dlObj.SRMP = getSrmpRangeText(graphic);
-		var dl = toDL(dlObj);
+		var dl = objectToTable(dlObj);
 		fragment.appendChild(dl);
 
 
