@@ -271,15 +271,21 @@ require([
 	 * @param {Object} o
 	 * @returns {HTMLDListElement}
 	 */
-	function toDL(o) {
+	function toDL(o, horizontal) {
 		var dl = document.createElement("dl"), dt, dd;
-		dl.setAttribute("class", "dl-horizontal");
+		if (horizontal) {
+			dl.setAttribute("class", "dl-horizontal");
+		}
 		for (var name in o) {
 			if (o.hasOwnProperty(name)) {
 				dt = document.createElement("dt");
 				dd = document.createElement("dd");
 				dt.textContent = formatFieldName(name);
-				dd.textContent = o[name];
+				if (typeof o[name] === "object") {
+					dd.appendChild(toDL(o[name], true));
+				} else {
+					dd.textContent = o[name];
+				}
 				dl.appendChild(dt);
 				dl.appendChild(dd);
 			}
@@ -405,7 +411,11 @@ require([
 
 		var dlObj = {};
 
-		dlObj["Vertical Clearance"] = (minClearance === maxClearance ? inchesToFeetAndInchesLabel(minClearance) : [inchesToFeetAndInchesLabel(minClearance), inchesToFeetAndInchesLabel(maxClearance)].join(" — "));
+		//dlObj["Vertical Clearance"] = (minClearance === maxClearance ? inchesToFeetAndInchesLabel(minClearance) : [inchesToFeetAndInchesLabel(minClearance), inchesToFeetAndInchesLabel(maxClearance)].join(" — "));
+		dlObj["Vertical Clearance"] = {
+			"Minimum": inchesToFeetAndInchesLabel(minClearance),
+			"Maximum": inchesToFeetAndInchesLabel(maxClearance)
+		};
 		dlObj.SRMP = getSrmpRangeText(graphic);
 		var dl = toDL(dlObj);
 		fragment.appendChild(dl);
