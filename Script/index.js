@@ -918,7 +918,7 @@ require([
 		routeRequest.open("get", "http://www.wsdot.wa.gov/geoservices/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe/routes?f=json");
 		routeRequest.responseType = "json";
 		routeRequest.onloadend = function () {
-			var routeBox, list, option, routes, response;
+			var routeBox, list, option, routes, response, routeNames;
 
 			response = this.response;
 			if (typeof response === "string") {
@@ -930,14 +930,24 @@ require([
 			list = document.createElement("datalist");
 			list.id = "routeList";
 
-			// Go through each property of routes. Add option for property name if it is a mainline.
+			routeNames = [];
+
+			// Go through each property of routes. Add property name to array if it is a mainline.
 			for (var routeName in routes) {
 				if (routes.hasOwnProperty(routeName) && routeName.length === 3) {
-					option = document.createElement("option");
-					option.value = routeName;
-					list.appendChild(option);
+					routeNames.push(routeName);
 				}
 			}
+
+			// Sort the route names.
+			routeNames = routeNames.sort();
+
+			// Create an option for each route name.
+			routeNames.forEach(function (name) {
+				option = document.createElement("option");
+				option.value = name;
+				list.appendChild(option);
+			});
 
 			document.body.appendChild(list);
 			routeBox.setAttribute("list", list.id);
