@@ -61,12 +61,6 @@
     <Content Include="Images\WsdotBasemapThumbnail.jpg" />
     <Content Include="proxy\proxy.ashx" />
     <Content Include="proxy\proxy.config" />
-    <Content Include="route_params\data\async\Attribute Parameter Values.txt" />
-    <Content Include="route_params\data\async\Restrictions.txt" />
-    <Content Include="route_params\data\sync\Attribute Names.txt" />
-    <Content Include="route_params\data\sync\Attribute Parameter Values.txt" />
-    <Content Include="route_params\index.html" />
-    <Content Include="route_params\script\index.js" />
     <Content Include="Script\index.min.js.map">
       <DependentUpon>index.min.js</DependentUpon>
     </Content>

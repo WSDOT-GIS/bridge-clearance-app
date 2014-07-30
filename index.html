@@ -66,18 +66,18 @@
 			<div class="col-xs-9 col-sm-5 col-md-3 sidebar-offcanvas" id="sidebar">
 				<div class="panel">
 					<ul id="tabs" class="nav nav-tabs">
-						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span></a></li>
-						<li><a href="#basemaps"><span class="glyphicon glyphicon-th-large"></span></a></li>
+						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span> Input</a></li>
+						<li><a href="#basemaps"><span class="glyphicon globe-icon"></span> Basemaps</a></li>
 					</ul>
 					<div id="tabContent" class="tab-content">
 						<div class="tab-pane active" id="bridgetools">
 							<form id="clearanceForm" role="form">
 								<div class="form-group">
-									<label for="clearanceBox">Vehicle Height</label>
+									<label for="clearanceBox">Enter Vehicle Height</label>
 									<div class="input-group">
-										<input class="form-control" id="feetBox" name="feet" type="number" min="0" max="16" />
+										<input class="form-control" id="feetBox" name="feet" type="number" min="0" />
 										<span class="input-group-addon">ft.</span>
-										<input class="form-control" id="inchesBox" name="inches" type="number" min="0" max="192" />
+										<input class="form-control" id="inchesBox" name="inches" type="number" min="0" />
 										<span class="input-group-addon">in.</span>
 									</div>
 								</div>
@@ -90,7 +90,7 @@
 									<span class="glyphicon glyphicon-warning-sign"></span> You must enter a value in feet and/or inches box.
 								</div>
 								<div class="form-group">
-									<label for="routeFilterBox">Route (optional)</label>
+									<label for="routeFilterBox">Enter Route (optional)</label>
 									<input id="routeFilterBox" class="form-control" name="route" type="text" placeholder="E.g. 005" title="Enter route filter here" />
 								</div>
 								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">

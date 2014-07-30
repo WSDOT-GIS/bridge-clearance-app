@@ -182,3 +182,11 @@ input[type=checkbox] ~ .ramp-warning {
 input[type=checkbox]:checked ~ .ramp-warning {
 	display: block;
 }
+
+.globe-icon, .globe-icon:before {
+	font-family: 'Symbola', 'Segoe UI Symbol', 'Segoe UI Emoji', 'Quivira'
+}
+
+.globe-icon:before {
+	content:'🌏';
+}
