@@ -62,7 +62,11 @@ require([
 
 	// Setup the offcanvas button functionality.
 	$("[data-toggle=offcanvas]").click(function () {
+		var span;
 		$(".row-offcanvas").toggleClass('active');
+		// Change icon on button.
+		span = this.querySelector("span");
+		$(span).toggleClass("glyphicon-list").toggleClass("glyphicon-globe");
 	});
 
 	/** Set the height of the map div.
