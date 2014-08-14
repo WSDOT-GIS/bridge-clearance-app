@@ -15,10 +15,10 @@ require([
 	"esri/symbols/SimpleMarkerSymbol",
 	"esri/urlUtils",
 	"esri/dijit/PopupMobile",
-	"esri/layers/ArcGISTiledMapServiceLayer",
+	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
-	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile, ArcGISTiledMapServiceLayer) {
+	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils, PopupMobile, ArcGISDynamicMapServiceLayer) {
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl;
 
 	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/1";
@@ -570,7 +570,7 @@ require([
 		// This gives them a better appearance than the default behavior.
 		var milepostLayer, defaultPointSymbol, defaultLineSymbol, warningLineSymbol, pointRenderer, lineRenderer, defaultColor, warningColor;
 
-		milepostLayer = new ArcGISTiledMapServiceLayer("http://wwwi.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/Milepost/MapServer", {
+		milepostLayer = new ArcGISDynamicMapServiceLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/MilepostValues/MapServer", {
 			id: "mileposts"
 		});
 		map.addLayer(milepostLayer);
