@@ -164,9 +164,11 @@ require([
 		esriConfig.defaults.io.corsEnabledServers.push(serverName);
 	});
 
+	var mapInitExtent = new Extent({ "xmin": -14058520.2360666, "ymin": 5539437.0343901999, "ymax": 6499798.1008670302, "xmax": -12822768.6769759, "spatialReference": { "wkid": 3857 } });
+
 	// Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
 	var mapCreationParams = {
-		extent: new Extent({ "xmin": -14058520.2360666, "ymin": 5539437.0343901999, "ymax": 6499798.1008670302, "xmax": -12822768.6769759, "spatialReference": { "wkid": 3857 } }),
+		extent: mapInitExtent,
 		lods: [
 			{ "level": 0, "resolution": 156543.033928, "scale": 591657527.591555 },
 			{ "level": 1, "resolution": 78271.5169639999, "scale": 295828763.795777 },
@@ -912,6 +914,8 @@ require([
 		document.getElementById("heightRequiredWarning").classList.add("hidden");
 		document.getElementById("tooHighWarning").classList.add("hidden");
 		document.getElementById("invalidRouteAlert").classList.add("hidden");
+
+		map.setExtent(mapInitExtent);
 	};
 
 	$('#warningModal').modal();
