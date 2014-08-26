@@ -307,14 +307,14 @@ require([
 			if (o.hasOwnProperty(propName)) {
 				row = table.insertRow(-1);
 				cell = document.createElement("th");
-				cell.innerText = propName;
+				cell.textContent = propName;
 				value = o[propName];
 				row.appendChild(cell);
 				cell = row.insertCell(-1);
 				if (typeof value === "object") {
 					cell.appendChild(objectToTable(value));
 				} else {
-					cell.innerText = o[propName];
+					cell.textContent = o[propName];
 				}
 			}
 		}
