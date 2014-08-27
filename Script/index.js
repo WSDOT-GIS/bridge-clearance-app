@@ -17,13 +17,29 @@ require([
 	"esri/dijit/PopupMobile",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/tasks/QueryTask",
+	"dojo/dnd/Moveable",
+	"dojo/promise/all",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, Moveable, all
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null;
+
+	/**
+	 * Makes the popup draggable.
+	 * @returns {dojo/dnd/Moveable}
+	 */
+	function makePopupDraggable() {
+		var popupDiv = document.querySelector(".esriPopup");
+		var dnd;
+		if (popupDiv) {
+			dnd = new Moveable(popupDiv);
+		}
+		// TODO: Figure out how to make the little arrow point the right way after dragging.
+		return dnd;
+	}
 
 	/** 
 	 * Create a dictionary of route extents.
@@ -705,6 +721,8 @@ require([
 
 		populateFieldsWithQueryStringValues();
 
+		makePopupDraggable();
+
 	});
 
 	// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
@@ -849,7 +867,24 @@ require([
 	 * @returns {Object} Returns the history state object.
 	 */
 	function selectFeatures(form) {
-		var inches, feetAndInches, routeText, exactRoute, state, formIsValid;
+		var inches, feetAndInches, routeText, exactRoute, state, formIsValid, onSelectDeferred, underSelectDeferred;
+
+		/**
+		 * Shows an alert if no features were selected.
+		 * @param {Array.<Array.<(boolean|esri/Graphic)>> dListResponse - Response from a dojo/DeferredList.
+		 */
+		function showAlert(dListResponse) {
+			var count = 0; // This will be used to count the number of selected features.
+			// Count the selected features.
+			dListResponse.forEach(function (response) {
+				if (response.length > 1) {
+					count += response[1].length;
+				}
+			});
+			if (count === 0) {
+				alert("The search returned no issues.");
+			}
+		}
 
 		formIsValid = validateClearanceForm();
 
@@ -883,10 +918,11 @@ require([
 				exactRoute = !document.getElementById("includeNonMainlineCheckbox").checked;
 				if (inches) {
 					vehicleHeight = inchesToCustom(inches + 3);
-					bridgeOnLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
+					onSelectDeferred = bridgeOnLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
 					domUtils.show(onProgress);
-					bridgeUnderLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
+					underSelectDeferred = bridgeUnderLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
 					domUtils.show(underProgress);
+					all([onSelectDeferred, underSelectDeferred]).then(showAlert);
 				}
 			}
 
