@@ -379,33 +379,32 @@ require([
 	 * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
 	 */
 	function createTable(graphic, fieldsToInclude, feetInchesFields) {
-		var table = document.createElement("table"), tr, th, td, value, tbody, name, o, aliasDict;
+		var table = document.createElement("table"), tr, th, td, value, tbody, o, aliasDict;
 		o = graphic.attributes;
 		aliasDict = createFieldAliasDictionary(graphic.getLayer());
-		console.log(graphic);
 		table.setAttribute("class", "bridge-info table table-striped table-hover");
 		table.createTHead();
 		tbody = table.createTBody();
-		//for (var name in o) {
+		
+		if (fieldsToInclude) {
+			fieldsToInclude.forEach(function (name) {
+				if (o.hasOwnProperty(name)) {
+					tr = document.createElement("tr");
+					th = document.createElement("th");
+					th.textContent = aliasDict[name]; //formatFieldName(name);
+					tr.appendChild(th);
 
-		for (var i = 0, l = fieldsToInclude.length; i < l; i += 1) {
-			name = fieldsToInclude[i];
-			if (o.hasOwnProperty(name)) {
-				tr = document.createElement("tr");
-				th = document.createElement("th");
-				th.textContent = aliasDict[name]; //formatFieldName(name);
-				tr.appendChild(th);
-
-				td = document.createElement("td");
-				value = o[name];
-				// If this is a feet+inches field, format it appropriately.
-				if (feetInchesFields && feetInchesFields.test(name) && value > 0) {
-					value = inchesToFeetAndInchesLabel(customToInches(value) - 3);
+					td = document.createElement("td");
+					value = o[name];
+					// If this is a feet+inches field, format it appropriately.
+					if (feetInchesFields && feetInchesFields.test(name) && value > 0) {
+						value = inchesToFeetAndInchesLabel(customToInches(value) - 3);
+					}
+					td.textContent = value;
+					tr.appendChild(td);
+					tbody.appendChild(tr);
 				}
-				td.textContent = value;
-				tr.appendChild(td);
-				tbody.appendChild(tr);
-			}
+			});
 		}
 		return table;
 	}
@@ -414,8 +413,8 @@ require([
 	 * Toggles the bridge details table's visibility.
 	 * @returns {boolean} Returns false so that link is not actually followed when clicked.
 	 */
-	function toggleDetails() {
-		var table, a = this, textNode, icon;
+	function toggleDetails(e) {
+		var table, a = e.target, textNode, icon;
 		table = document.querySelector("table.bridge-info");
 		icon = document.createElement("span");
 		a.innerHTML = "";
@@ -581,6 +580,7 @@ require([
 	 * @this {FeatureLayer}
 	 */
 	function handleSelectionClear() {
+		/*jshint validthis:true*/
 		var divId, noPassId, somePassId;
 		if (this && this.id) {
 			if (this.id === "bridge-on") {
@@ -599,6 +599,7 @@ require([
 				document.getElementById(somePassId).textContent = "0";
 			}
 		}
+		/*jshint validthis:false*/
 	}
 
 	map.on("load", function () {
@@ -889,7 +890,7 @@ require([
 				}
 			}
 
-			if (routeText && routeExtents[routeText]) {
+			if (routeText && routeExtents && routeExtents[routeText]) {
 				map.setExtent(routeExtents[routeText]);
 			}
 		} catch (err) {
