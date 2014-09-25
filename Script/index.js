@@ -877,7 +877,7 @@ require([
 			var count = 0; // This will be used to count the number of selected features.
 			// Count the selected features.
 			dListResponse.forEach(function (response) {
-				if (response.length > 1) {
+				if (response.length >= 1) {
 					count += response[1].length;
 				}
 			});
