@@ -17,29 +17,56 @@ require([
 	"esri/dijit/PopupMobile",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/tasks/QueryTask",
-	"dojo/dnd/Moveable",
 	"dojo/promise/all",
 	"dojo/domReady!"
 ], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, Moveable, all
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null;
 
-	/**
-	 * Makes the popup draggable.
-	 * @returns {dojo/dnd/Moveable}
-	 */
-	function makePopupDraggable() {
-		var popupDiv = document.querySelector(".esriPopup");
-		var dnd;
-		if (popupDiv) {
-			dnd = new Moveable(popupDiv);
-		}
-		// TODO: Figure out how to make the little arrow point the right way after dragging.
-		return dnd;
+	function hideResults() {
+		document.getElementById("results").classList.add("hidden");
 	}
+
+	function showResults() {
+		document.getElementById("results").classList.remove("hidden");
+	}
+
+	/**
+	 * Makes it so that anchor elements marked with "disabled" class don't funciton.
+	 */
+	function disableLinkBasedOnClass() {
+
+		function doNothing() {
+			return false;
+		}
+
+		var disabledLinks = document.querySelectorAll(".disabled > a");
+		
+		var link;
+		for (var i = 0; i < disabledLinks.length; i++) {
+			link = disabledLinks[0];
+			link.onclick = doNothing;
+		}
+	}
+
+	/////**
+	//// * Makes the popup draggable.
+	//// * @returns {dojo/dnd/Moveable}
+	//// */
+	////function makePopupDraggable() {
+	////	var popupDiv = document.querySelector(".esriPopup");
+	////	var dnd;
+	////	if (popupDiv) {
+	////		dnd = new Moveable(popupDiv);
+	////	}
+	////	// TODO: Figure out how to make the little arrow point the right way after dragging.
+	////	return dnd;
+	////}
+
+	disableLinkBasedOnClass();
 
 	/** 
 	 * Create a dictionary of route extents.
@@ -63,7 +90,7 @@ require([
 		var query = new Query();
 		query.outFields = ["RouteID"];
 		query.where = "RelRouteType = ''";
-		query.maxAllowableOffset = 1000000;
+		query.maxAllowableOffset = 100;
 		query.returnGeometry = true;
 		query.outSpatialReference = { wkid: 3857 };
 		queryTask.execute(query, function (results) {
@@ -210,7 +237,7 @@ require([
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
-	["hqolymgis99t:6080", "hqolymgis99t"].forEach(function (serverName) {
+	["www.wsdot.wa.gov"].forEach(function (serverName) {
 		esriConfig.defaults.io.corsEnabledServers.push(serverName);
 	});
 
@@ -312,42 +339,6 @@ require([
 		}
 		return output;
 	}
-
-	/////**
-	//// * Replaces the underscores in a string with spaces.
-	//// * @param {string} name
-	//// * @returns {string}
-	//// */
-	////function formatFieldName(name) {
-	////	return name.replace(/_/g, " ");
-	////}
-
-	/////**
-	//// * Creates a definition list from an object's properties.
-	//// * @param {Object} o
-	//// * @returns {HTMLDListElement}
-	//// */
-	////function toDL(o, horizontal) {
-	////	var dl = document.createElement("dl"), dt, dd;
-	////	if (horizontal) {
-	////		dl.setAttribute("class", "dl-horizontal");
-	////	}
-	////	for (var name in o) {
-	////		if (o.hasOwnProperty(name)) {
-	////			dt = document.createElement("dt");
-	////			dd = document.createElement("dd");
-	////			dt.textContent = formatFieldName(name);
-	////			if (typeof o[name] === "object") {
-	////				dd.appendChild(toDL(o[name], true));
-	////			} else {
-	////				dd.textContent = o[name];
-	////			}
-	////			dl.appendChild(dt);
-	////			dl.appendChild(dd);
-	////		}
-	////	}
-	////	return dl;
-	////}
 
 	function objectToTable(o) {
 		var table, row, cell, value;
@@ -564,29 +555,25 @@ require([
 		// Determine which layer triggered the selection-complete event.
 		// Get the corresponding table cell that holds its feature count.
 		// Update the value in that table cell.
-		var cellId = null, noPassCellId = null, somePassCellId = null, cell, noPassCell, somePassCell, somePassCount, totalCount;
+		var noPassCellId = null, somePassCellId = null, noPassCell, somePassCell, somePassCount, totalCount;
 
 		if (results.target.id === "bridge-on") {
-			cellId = "oncount";
 			noPassCellId = "noPassOn";
 			somePassCellId = "somePassOn";
 			domUtils.hide(onProgress);
 		} else if (results.target.id === "bridge-under") {
-			cellId = "undercount";
 			noPassCellId = "noPassUnder";
 			somePassCellId = "somePassUnder";
 			domUtils.hide(underProgress);
 		}
 
-		if (cellId) {
-			cell = document.getElementById(cellId);
+		if (noPassCellId && somePassCellId) {
 			noPassCell = document.getElementById(noPassCellId);
 			somePassCell = document.getElementById(somePassCellId);
 			totalCount = results.features.length;
 			somePassCount = results.features.filter(function (graphic) {
 				return !!someLanesCanPass(graphic);
 			}).length;
-			cell.textContent = totalCount;
 			noPassCell.textContent = totalCount - somePassCount;
 			somePassCell.textContent = somePassCount;
 		}
@@ -600,17 +587,16 @@ require([
 		var divId, noPassId, somePassId;
 		if (this && this.id) {
 			if (this.id === "bridge-on") {
-				divId = "oncount";
+				//divId = "oncount";
 				noPassId = "noPassOn";
 				somePassId = "somePassOn";
 			} else if (this.id === "bridge-under") {
-				divId = "undercount";
+				//divId = "undercount";
 				noPassId = "noPassUnder";
 				somePassId = "somePassUnder";
 			}
 
 			if (divId) {
-				document.getElementById(divId).textContent = "0";
 				document.getElementById(noPassId).textContent = "0";
 				document.getElementById(somePassId).textContent = "0";
 			}
@@ -721,7 +707,7 @@ require([
 
 		populateFieldsWithQueryStringValues();
 
-		makePopupDraggable();
+		////makePopupDraggable();
 
 	});
 
@@ -758,7 +744,8 @@ require([
 	 */
 	function inputBoxContainsItemFromList(textbox) {
 		var datalist, options, output = false;
-		datalist = document.getElementById(textbox.getAttribute("list"));
+		////datalist = document.getElementById(textbox.getAttribute("list"));
+		datalist = document.getElementsByTagName("datalist")[0];
 		options = datalist.querySelectorAll("option");
 
 		for (var i = 0, l = options.length; i < l; i += 1) {
@@ -875,6 +862,7 @@ require([
 		 */
 		function showAlert(dListResponse) {
 			var count = 0; // This will be used to count the number of selected features.
+			var msg;
 			// Count the selected features.
 			dListResponse.forEach(function (response) {
 				if (response.length >= 1) {
@@ -882,8 +870,18 @@ require([
 				}
 			});
 			if (count === 0) {
-				alert("The search returned no issues.");
+				// {feet: "5", inches: "", route: "", include-non-mainline: false} 
+				msg = ["No bridges found lower than ", state.feet, "′"];
+				if (state.inches) {
+					msg.push(state.inches, '″');
+				}
+				if (state.route) {
+					msg.push(" on route ", state.route);
+				}
+				alert(msg.join(""));
 			}
+			//document.getElementById("results").classList.remove("hidden");
+			showResults();
 		}
 
 		formIsValid = validateClearanceForm();
@@ -970,6 +968,8 @@ require([
 	 * Clear the selections from the layers.
 	 */
 	document.forms.clearanceForm.onreset = function () {
+		// document.getElementById("results").classList.add("hidden");
+		hideResults();
 		bridgeOnLayer.clearSelection();
 		bridgeUnderLayer.clearSelection();
 		vehicleHeight = null;
@@ -1033,10 +1033,20 @@ require([
 			});
 
 			document.body.appendChild(list);
-			routeBox.setAttribute("list", list.id);
+			////routeBox.setAttribute("list", list.id);
 
 		};
 		routeRequest.send();
 
 	}());
+
+	// Hide the results when the user modifies fields.
+	(function (inputElements) {
+		var i, l, input;
+		for (i = 0, l = inputElements.length; i < l; i++) {
+			input = inputElements[i];
+			input.addEventListener("change", hideResults);
+		}
+	}(document.getElementById("clearanceForm").querySelectorAll("input")));
+
 });
