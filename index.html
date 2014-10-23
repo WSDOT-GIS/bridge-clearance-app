@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en-us">
+<html lang="en-us" role="application">
 <head>
 	<title>Bridge Vertical Clearance Trip Planner</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
@@ -32,7 +32,7 @@
 </head>
 <body class="claro">
 
-	<div id="warningModal" class="modal fade">
+	<div id="warningModal" class="modal fade" role="alertdialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -89,7 +89,7 @@
 		<div class="row row-offcanvas row-offcanvas-right">
 
 			<!-- Map -->
-			<div id="map" class="col-sm-7 col-md-9" role="img" title="map">
+			<div id="map" class="col-sm-9 col-md-9" role="img">
 				<div id="tools">
 					<button type="button" class="btn btn-primary visible-xs" data-toggle="offcanvas" title="Toggle Tools"><span class="glyphicon glyphicon-list"></span></button>
 				</div>
@@ -97,7 +97,7 @@
 			</div>
 
 			<!-- Tools panel-->
-			<div class="col-xs-9 col-sm-5 col-md-3 sidebar-offcanvas" id="sidebar">
+			<div class="col-xs-9 col-sm-3 col-md-3 sidebar-offcanvas" id="sidebar">
 				<div class="panel">
 					<ul id="tabs" class="nav nav-tabs">
 						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span> Input</a></li>
@@ -208,8 +208,21 @@
 
 	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script data-dojo-config="async: true"></script>
+	<script>
+		(function () {
+			var root = location.pathname.replace(/\/[^\/]*$/, "");
+			var dojoConfig = {
+				async: true,
+				packages: [{
+					name: "elc",
+					location: [root, "Scripts/elc-js"].join("/") ,
+					main: "elc"
+				}]
+			};
+			window.dojoConfig = dojoConfig;
+		}());
+	</script>
 	<script src="//js.arcgis.com/3.11compact/init.js"></script>
-	<script src="Scripts/index.min.js"></script>
+	<script src="Scripts/index.js"></script>
 </body>
 </html>
