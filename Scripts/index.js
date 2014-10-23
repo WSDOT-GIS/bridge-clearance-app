@@ -617,7 +617,7 @@ require([
 	function handleLayerError(evt) {
 		console.error("layer error", evt);
 		document.head.innerHTML = "";
-		document.body.innerHTML = "A problem was encountered contacting the bridge services. Please try again later.";
+		document.body.innerHTML = "<p>A problem was encountered contacting the bridge services. Please try again later.</p>";
 	}
 
 	map.on("load", function () {
