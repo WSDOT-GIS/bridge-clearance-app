@@ -608,6 +608,18 @@ require([
 		/*jshint validthis:false*/
 	}
 
+	/**
+	 * 
+	 * @param {Object} evt
+	 * @param {Error} evt.error
+	 * @param {Object} evt.target
+	 */
+	function handleLayerError(evt) {
+		console.error("layer error", evt);
+		document.head.innerHTML = "";
+		document.body.innerHTML = "A problem was encountered contacting the bridge services. Please try again later.";
+	}
+
 	map.on("load", function () {
 		// Create the cartographic line symbol that will be used to show the selected lines.
 		// This gives them a better appearance than the default behavior.
@@ -705,6 +717,10 @@ require([
 		// Attach events.
 		bridgeUnderLayer.on("selection-complete", handleSelectionComplete);
 		bridgeUnderLayer.on("selection-clear", handleSelectionClear);
+
+		bridgeOnLayer.on("error", handleLayerError);
+		bridgeUnderLayer.on("error", handleLayerError);
+
 		// Add these layers to the map.
 		map.addLayer(bridgeOnLayer);
 		map.addLayer(bridgeUnderLayer);
