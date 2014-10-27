@@ -26,7 +26,7 @@ require([
 	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all, elc
 ) {
 	"use strict";
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null, routeLocator;
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null, routeLocator, isMobile;
 
 	routeLocator = new elc.RouteLocator();
 
@@ -278,8 +278,10 @@ require([
 		showAttribution: true
 	};
 
+	isMobile = document.body.clientWidth < 768;
+
 	// Use the mobile popup on smaller screens.
-	if (document.body.clientWidth < 768) {
+	if (isMobile) {
 		mapCreationParams.infoWindow = new PopupMobile(null, document.createElement("div"));
 	}
 
@@ -633,14 +635,14 @@ require([
 		defaultColor = new Color([255, 85, 0, 255]);
 		warningColor = new Color([255, 255, 0, 255]);
 
-		var pointSize = 10;
+		var pointSize = isMobile ? 20 : 10; // Use larger symbols for mobile.
 
 		defaultLineSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
-			defaultColor, 10,
+			defaultColor, pointSize,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
 		warningLineSymbol = new CartographicLineSymbol(CartographicLineSymbol.STYLE_SOLID,
-			warningColor, 10,
+			warningColor, pointSize,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
 		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor).setSize(pointSize);
