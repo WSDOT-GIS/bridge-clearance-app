@@ -64,8 +64,6 @@
     <Content Include="mstile-310x150.png" />
     <Content Include="mstile-310x310.png" />
     <Content Include="mstile-70x70.png" />
-    <Content Include="Scripts\elc-js\elc.js" />
-    <Content Include="Scripts\elc-js\elc.min.js" />
     <Content Include="Scripts\index.min.js.map">
       <DependentUpon>index.min.js</DependentUpon>
     </Content>
@@ -73,7 +71,6 @@
     <None Include="Properties\PublishProfiles\Test.pubxml">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\elc-js\elc.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />

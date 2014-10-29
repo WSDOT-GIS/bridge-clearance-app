@@ -196,7 +196,7 @@
 										<span class="glyphicon glyphicon-info-sign"></span> To obtain a permit: <a href="http://www.wsdot.wa.gov/CommercialVehicle/default.htm" target="_blank">Commercial Vehicle Services</a>
 									</p>
 								</div>
-							</div id="results">
+							</div>
 						</div>
 						<div class="tab-pane" id="basemaps">
 							<div id="basemapGallery" class="claro"></div>
@@ -211,20 +211,7 @@
 
 	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	<script>
-		(function () {
-			var root = location.pathname.replace(/\/[^\/]*$/, "");
-			var dojoConfig = {
-				async: true,
-				packages: [{
-					name: "elc",
-					location: [root, "Scripts/elc-js"].join("/") ,
-					main: "elc.min"
-				}]
-			};
-			window.dojoConfig = dojoConfig;
-		}());
-	</script>
+	<script data-dojo-config="async: true"></script>
 	<!--<script src="//js.arcgis.com/3.11compact/init.js"></script>-->
 	<script src="//js.arcgis.com/o/JacobsJ_WSDOT/bridge-clearance/dojo/dojo.js"></script>
 	<script src="Scripts/index.min.js"></script>
