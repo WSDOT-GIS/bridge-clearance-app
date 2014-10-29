@@ -50,8 +50,8 @@ img.wsdot-logo {
 
 #tools {
 	position: absolute;
-	top: 1em;
-	right: 2em;
+	top: 9em;
+	left: 3.5em;
 	z-index: 1;
 }
 
@@ -100,11 +100,11 @@ img.wsdot-logo {
 	}
 
 	.row-offcanvas-right.active {
-		right: 88%; /* 10 columns */
+		right: 83%; /* 10 columns */
 	}
 
 	.row-offcanvas-left.active {
-		left: 83%; /* 10 columns */
+		left: 88%; /* 10 columns */
 	}
 
 	.sidebar-offcanvas {
