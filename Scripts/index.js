@@ -1,6 +1,7 @@
 ﻿/*global require*/
 require([
 	"esri/map",
+	"esri/graphic",
 	"esri/geometry/Extent",
 	"esri/config",
 	"esri/domUtils",
@@ -18,13 +19,16 @@ require([
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/tasks/QueryTask",
 	"dojo/promise/all",
+	"elc",
 	"dojo/domReady!"
-], function (Map, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
+], function (Map, Graphic, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all, elc
 ) {
 	"use strict";
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null;
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null, routeLocator, isMobile;
+
+	routeLocator = new elc.RouteLocator();
 
 	function hideResults() {
 		document.getElementById("results").classList.add("hidden");
@@ -274,7 +278,7 @@ require([
 		showAttribution: true
 	};
 
-	var isMobile = document.body.clientWidth < 768;
+	isMobile = document.body.clientWidth < 768;
 
 	// Use the mobile popup on smaller screens.
 	if (isMobile) {
@@ -1015,47 +1019,43 @@ require([
 
 	// Setup route data list.
 	(function () {
-		var routeRequest = new XMLHttpRequest();
-		routeRequest.open("get", "http://www.wsdot.wa.gov/geoservices/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe/routes?f=json");
-		routeRequest.responseType = "json";
-		routeRequest.onloadend = function () {
-			var routeBox, list, option, routes, response, routeNames;
+		routeLocator.getRouteList(function (response) {
+			var routeBox, list, option, routes;
 
-			response = this.response;
 			if (typeof response === "string") {
 				response = JSON.parse(response);
 			}
 			routes = response.Current;
 
+			// Sort the items in the array by route name.
+			routes.sort(function (routeA, routeB) {
+				if (routeA.name === routeB.name) {
+					return 0;
+				} else if (routeA.name > routeB.name) {
+					return 1;
+				} else {
+					return -1;
+				}
+			});
+
 			routeBox = document.getElementById("routeFilterBox");
 			list = document.createElement("datalist");
 			list.id = "routeList";
 
-			routeNames = [];
-
-			// Go through each property of routes. Add property name to array if it is a mainline.
-			for (var routeName in routes) {
-				if (routes.hasOwnProperty(routeName) && routeName.length === 3) {
-					routeNames.push(routeName);
+			routes.forEach(function (/** {Route} */ r) {
+				if (r.name.length <= 3) {
+					option = document.createElement("option");
+					option.value = r.name;
+					option.setAttribute("data-lrs-types", r.lrsTypes);
+					list.appendChild(option);
 				}
-			}
-
-			// Sort the route names.
-			routeNames = routeNames.sort();
-
-			// Create an option for each route name.
-			routeNames.forEach(function (name) {
-				option = document.createElement("option");
-				option.value = name;
-				list.appendChild(option);
 			});
+
+			
 
 			document.body.appendChild(list);
 			////routeBox.setAttribute("list", list.id);
-
-		};
-		routeRequest.send();
-
+		});
 	}());
 
 	// Hide the results when the user modifies fields.
@@ -1066,5 +1066,64 @@ require([
 			input.addEventListener("change", hideResults);
 		}
 	}(document.getElementById("clearanceForm").querySelectorAll("input")));
+
+	/**
+	 * Converts an ELC route location into a graphic.
+	 * @param {RouteLocation} routeLocation
+	 * @returns {Graphic}
+	 */
+	function routeLocationToGraphic(routeLocation) {
+		var ignoredFields = /(?:(?:Geometry)|(?:Point)|(?:id))/i;
+		var graphic = {
+			attributes: {
+
+			},
+			geometry: routeLocation.RouteGeometry,
+			infoTemplate: {
+				title: "${Route} @ MP ${Srmp}",
+				content: "<dl><dt>Route</dt><dd>${Route}</dd><dt>Milepost</dt><dd>${Srmp}</dd></dl>"
+			}
+		};
+
+		for (var name in routeLocation) {
+			/*jshint eqnull:true*/
+			if (routeLocation.hasOwnProperty(name) && !ignoredFields.test(name) && routeLocation[name] != null) {
+				graphic.attributes[name] = routeLocation[name];
+			}
+			/*jshint eqnull:false*/
+		}
+
+		graphic = new Graphic(graphic);
+		return graphic;
+	}
+
+	// Show an info window with the route location at the clicked point (if available).
+	map.on("click", function (evt) {
+		var mapPoint, graphicTagNames = /(?:(?:circle)|(?:path))/i;
+
+		// Only proceed if the target is not a graphic.
+		if (!graphicTagNames.test(evt.target.tagName)) {
+			mapPoint = evt.mapPoint;
+			routeLocator.findNearestRouteLocations({
+				coordinates: [mapPoint.x, mapPoint.y],
+				referenceDate: new Date(),
+				searchRadius: 200,
+				inSR: mapPoint.spatialReference.wkid,
+				outSR: mapPoint.spatialReference.wkid,
+				useCors: true,
+				successHandler: function (elcResults) {
+					if (elcResults.length) {
+						map.infoWindow.setFeatures(elcResults.map(routeLocationToGraphic));
+						map.infoWindow.show(mapPoint);
+					}
+				},
+				errorHandler: function (error) {
+					console.log("elc error", error);
+				}
+			});
+		}
+
+		
+	});
 
 });
