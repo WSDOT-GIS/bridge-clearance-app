@@ -164,7 +164,7 @@ table.feature-counts tr > td:last-child {
 }
 
 .legend-cannot-pass {
-	background-color: rgb(255, 85, 0);
+	background-color: rgb(255, 0, 0);
 }
 
 .beta-alert {

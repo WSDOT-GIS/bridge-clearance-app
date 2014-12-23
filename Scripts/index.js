@@ -632,7 +632,7 @@ require([
 		});
 		map.addLayer(milepostLayer);
 
-		defaultColor = new Color([255, 85, 0, 255]);
+		defaultColor = new Color([255, 0, 0, 255]);
 		warningColor = new Color([255, 255, 0, 255]);
 
 		var pointSize = isMobile ? 20 : 10; // Use larger symbols for mobile.
