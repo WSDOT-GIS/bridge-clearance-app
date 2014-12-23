@@ -150,13 +150,12 @@ table.feature-counts tr > td:last-child {
 .legend-symbol {
 	width: 1em;
 	height: 1em;
-	border: 1px solid black;
 	border-radius: 1em;
 }
 
 .legend-symbol-through {
 	border: none;
-	width: 2em;
+	height: 5em;
 }
 
 .legend-can-pass {

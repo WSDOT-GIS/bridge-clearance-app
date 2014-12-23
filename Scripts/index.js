@@ -645,7 +645,7 @@ require([
 			warningColor, pointSize,
 			CartographicLineSymbol.CAP_ROUND, CartographicLineSymbol.JOIN_MITER, 5);
 
-		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor).setSize(pointSize);
+		defaultPointSymbol = new SimpleMarkerSymbol().setColor(defaultColor).setSize(pointSize).setOutline(null);
 
 		var label = "Can pass in some lanes";
 		var description = "Vehicle may be able to pass in some but not all lanes.";
@@ -661,7 +661,7 @@ require([
 		pointRenderer = new UniqueValueRenderer(defaultPointSymbol, someLanesCanPass);
 		pointRenderer.addValue({
 			value: 1,
-			symbol: new SimpleMarkerSymbol().setColor(warningColor).setSize(pointSize),
+			symbol: new SimpleMarkerSymbol().setColor(warningColor).setSize(pointSize).setOutline(null),
 			label: label,
 			description: description
 		});
