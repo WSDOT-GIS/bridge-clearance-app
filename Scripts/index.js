@@ -888,7 +888,7 @@ require([
 			// Count the selected features.
 			dListResponse.forEach(function (response) {
 				if (response.length >= 1) {
-					count += response[1].length;
+					count += response.length;
 				}
 			});
 			if (count === 0) {
