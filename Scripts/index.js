@@ -388,8 +388,9 @@ require([
 	/**
 	 * Creates an HTML table from an object's properties.
 	 * @param {Graphic} graphic
-	 * @param {RegExp} [ignoredNames] - Any properties with names that match this RegExp will be omitted from the table.
+	 * @param {RegExp} [fieldsToInclude] - Only the fields with names contained in this list will be included in the output table.
 	 * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
+	 * @returns {HTMLTableElement}
 	 */
 	function createTable(graphic, fieldsToInclude, feetInchesFields) {
 		var table = document.createElement("table"), tr, th, td, value, tbody, o, aliasDict;
@@ -880,7 +881,7 @@ require([
 
 		/**
 		 * Shows an alert if no features were selected.
-		 * @param {Array.<Array.<(boolean|esri/Graphic)>> dListResponse - Response from a dojo/DeferredList.
+		 * @param {Array.<Array.<(boolean|esri/Graphic)>>} dListResponse - Response from a dojo/DeferredList.
 		 */
 		function showAlert(dListResponse) {
 			var count = 0; // This will be used to count the number of selected features.
