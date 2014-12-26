@@ -346,6 +346,11 @@ require([
 		return output;
 	}
 
+	/**
+	 * Creates an HTML table listing an object's properties.
+	 * @param {Object} o
+	 * @returns {HTMLTableElement}
+	 */
 	function objectToTable(o) {
 		var table, row, cell, value;
 		var aliases = {
