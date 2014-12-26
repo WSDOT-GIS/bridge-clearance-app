@@ -1018,6 +1018,16 @@ require([
 
 	$('#warningModal').modal();
 
+	/**
+	 * Hides the map's info window.
+	 */
+	function hideInfoWindow() {
+		map.infoWindow.hide();
+	}
+
+	document.forms.clearanceForm.addEventListener("reset", hideInfoWindow);
+	document.forms.clearanceForm.addEventListener("submit", hideInfoWindow);
+
 	// Setup route data list.
 	(function () {
 		routeLocator.getRouteList(function (response) {
