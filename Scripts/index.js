@@ -348,13 +348,16 @@ require([
 
 	function objectToTable(o) {
 		var table, row, cell, value;
+		var aliases = {
+			"SRMP": "Milepost"
+		};
 		table = document.createElement("table");
 		table.classList.add("table");
 		for (var propName in o) {
 			if (o.hasOwnProperty(propName)) {
 				row = table.insertRow(-1);
 				cell = document.createElement("th");
-				cell.textContent = propName;
+				cell.textContent = aliases.hasOwnProperty(propName) ? aliases[propName] : propName;
 				value = o[propName];
 				row.appendChild(cell);
 				cell = row.insertCell(-1);
