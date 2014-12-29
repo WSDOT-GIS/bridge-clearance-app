@@ -166,6 +166,10 @@ table.feature-counts tr > td:last-child {
 	background-color: rgb(255, 0, 0);
 }
 
+.checkbox label {
+	font-weight: bold;
+}
+
 .beta-alert {
 	position: absolute;
 	top: 50%;
@@ -176,4 +180,11 @@ table.feature-counts tr > td:last-child {
 /* This is to fix a weird esri + bootstrap bug that causes basemap thumbnails to "move around".*/
 .esriBasemapGallerySelectedNode .esriBasemapGalleryThumbnail {
 	margin: 1px;
+}
+
+#hovertext {
+	margin: 1em;
+	padding: 0.5em;
+	background-color: rgba(255,255,255,0.7);
+	border: 1px solid black;
 }
