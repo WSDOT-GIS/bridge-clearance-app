@@ -654,6 +654,9 @@ require([
 			console.log("mouse-over", e);
 		}
 
+		/**
+		 * Hides the hover tooltip text element.
+		 */
 		function hideHoverText() {
 			var div = document.getElementById("hovertext");
 			if (div) {
@@ -1109,10 +1112,15 @@ require([
 
 	// Hide the results when the user modifies fields.
 	(function (inputElements) {
-		var i, l, input;
+		var i, l, input, f;
+		f = function () {
+			hideResults();
+			bridgeOnLayer.clearSelection();
+			bridgeUnderLayer.clearSelection();
+		};
 		for (i = 0, l = inputElements.length; i < l; i++) {
 			input = inputElements[i];
-			input.addEventListener("change", hideResults);
+			input.addEventListener("change", f);
 		}
 	}(document.getElementById("clearanceForm").querySelectorAll("input")));
 
