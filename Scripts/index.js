@@ -955,9 +955,9 @@ require([
 				}
 			}
 
-			if (routeText && routeExtents && routeExtents[routeText]) {
-				map.setExtent(routeExtents[routeText]);
-			}
+			////if (routeText && routeExtents && routeExtents[routeText]) {
+			////	map.setExtent(routeExtents[routeText]);
+			////}
 		} catch (err) {
 			console.error(err);
 			state = null;
