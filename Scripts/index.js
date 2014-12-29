@@ -26,7 +26,7 @@ require([
 	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all, elc
 ) {
 	"use strict";
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeExtents = null, routeLocator, isMobile;
+	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
 
 	routeLocator = new elc.RouteLocator();
 
@@ -71,36 +71,6 @@ require([
 	////}
 
 	disableLinkBasedOnClass();
-
-	/** 
-	 * Create a dictionary of route extents.
-	 */
-	(function () {
-		function featureSetToExtents(featureSet, keyField) {
-			var extents = {};
-			if (!keyField) {
-				keyField = "RouteID";
-			}
-			featureSet.features.forEach(function (feature) {
-				var extent = feature.geometry.getExtent();
-				var name = feature.attributes[keyField];
-				extents[name] = extent;
-			});
-			return extents;
-		}
-
-		var routeFeaturesUrl = "http://www.wsdot.wa.gov/geoservices/arcgis/rest/services/Shared/ElcRestSOE/MapServer/1/";
-		var queryTask = new QueryTask(routeFeaturesUrl);
-		var query = new Query();
-		query.outFields = ["RouteID"];
-		query.where = "RelRouteType = ''";
-		query.maxAllowableOffset = 100;
-		query.returnGeometry = true;
-		query.outSpatialReference = { wkid: 3857 };
-		queryTask.execute(query, function (results) {
-			routeExtents = featureSetToExtents(results);
-		});
-	}());
 
 	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/1";
 	pointsServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/0";
@@ -987,10 +957,6 @@ require([
 					all([onSelectDeferred, underSelectDeferred]).then(showAlert);
 				}
 			}
-
-			////if (routeText && routeExtents && routeExtents[routeText]) {
-			////	map.setExtent(routeExtents[routeText]);
-			////}
 		} catch (err) {
 			console.error(err);
 			state = null;
