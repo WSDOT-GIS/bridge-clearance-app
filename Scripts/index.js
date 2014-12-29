@@ -636,6 +636,31 @@ require([
 		// This gives them a better appearance than the default behavior.
 		var milepostLayer, defaultPointSymbol, defaultLineSymbol, warningLineSymbol, pointRenderer, lineRenderer, defaultColor, warningColor;
 
+		/**
+		 * Shows a div over the map at the point where the mouse cursor is.
+		 * @param {MouseEvent} e
+		 * @param {Graphic} e.graphic
+		 */
+		function showHoverText(e) {
+			var div;
+			div = document.getElementById("hovertext");
+			if (!div) {
+				div = document.createElement("div");
+				div.id = "hovertext";
+				document.body.appendChild(div);
+			}
+			div.textContent = e.graphic.attributes.crossing_description;
+			div.setAttribute("style", ["position: fixed; left: ", e.clientX, "px; top: ", e.clientY, "px; display: block"].join(""));
+			console.log("mouse-over", e);
+		}
+
+		function hideHoverText() {
+			var div = document.getElementById("hovertext");
+			if (div) {
+				div.setAttribute("style", "display: none");
+			}
+		}
+
 		milepostLayer = new ArcGISDynamicMapServiceLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/MilepostValues/MapServer", {
 			id: "mileposts"
 		});
@@ -731,6 +756,11 @@ require([
 
 		bridgeOnLayer.on("error", handleLayerError);
 		bridgeUnderLayer.on("error", handleLayerError);
+
+		bridgeOnLayer.on("mouse-over", showHoverText);
+		bridgeOnLayer.on("mouse-out", hideHoverText);
+		bridgeUnderLayer.on("mouse-over", showHoverText);
+		bridgeUnderLayer.on("mouse-out", hideHoverText);
 
 		// Add these layers to the map.
 		map.addLayer(bridgeOnLayer);
