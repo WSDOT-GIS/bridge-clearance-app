@@ -24,12 +24,12 @@
 	<meta name="msapplication-TileColor" content="#007c66">
 	<meta name="msapplication-TileImage" content="mstile-144x144.png">
 	<!-- #endregion favicon -->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-	<!--<link rel="stylesheet" href="//js.arcgis.com/3.12compact/esri/css/esri.css" />
-	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/dijit/themes/claro/claro.css" />-->
-	<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/esri/css/esri.css" />
-	<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dijit/themes/claro/claro.css" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/esri/css/esri.css" />
+	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/dijit/themes/claro/claro.css" />
+	<!--<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/esri/css/esri.css" />
+	<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dijit/themes/claro/claro.css" />-->
 
 	<link rel="stylesheet" href="Style/index.min.css" />
 </head>
@@ -121,7 +121,7 @@
 								</div>
 								<div class="form-group">
 									<label for="routeFilterBox">Enter Route Number (optional)</label>
-									<input id="routeFilterBox" class="form-control" name="route" type="number" placeholder="E.g. 101" title="Enter route number" inputmode="numeric" min="0" max="999" />
+									<input id="routeFilterBox" class="form-control" name="route" type="text" autocomplete="off" inputmode="numeric" maxlength="3" />
 									<span class="help-block">Enter only the numeric portion of a route name into this box.</span>
 								</div>
 								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
@@ -198,8 +198,8 @@
 
 
 
-	<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 	<script>
 		(function () {
 			var root = location.pathname.replace(/\/[^\/]*$/, "");
@@ -214,8 +214,8 @@
 			window.dojoConfig = dojoConfig;
 		}());
 	</script>
-	<!--<script src="//js.arcgis.com/3.12compact/init.js"></script>-->
-	<script src="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dojo/dojo.js"></script>
+	<script src="//js.arcgis.com/3.12compact/init.js"></script>
+	<!--<script src="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dojo/dojo.js"></script>-->
 	<script src="Scripts/index.min.js"></script>
 </body>
 </html>

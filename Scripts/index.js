@@ -26,9 +26,38 @@ require([
 	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all, elc
 ) {
 	"use strict";
-	var map, bridgeOnLayer, bridgeUnderLayer, onProgress, underProgress, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
+	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
 
 	routeLocator = new elc.RouteLocator();
+
+	// Prevent user from entering non-numeric characters in number boxes.
+	(function (inputs) {
+		var input;
+		var f = function (e) {
+			var unicodeRe = /U\+(\d+)/;
+			// Chrome doesn't support the standard key property, so use keyIdentifier instead.
+			// Instead of the actual character that "key" returns, keyIdentifier returns
+			// A string such as "U+004F" representing the unicode character.
+
+			// For special characters (e.g., "Shift", a string containing the name of the key is returned.)
+			var ch = e.key || e.keyIdentifier;
+			var match = ch.match(unicodeRe);
+			// keyIdentifier returns a unicode. Convert to string.
+			if (match) {
+				ch = String.fromCharCode(Number.parseInt(match[1], 16));
+			}
+			console.log(ch);
+			if (ch.length === 1 && /[^0-9\t]/.test(ch)) {
+				if (!/[\b]/.test(ch)) { // Don't prevent backspace.
+					e.preventDefault();
+				}
+			}
+		};
+		for (var i = 0, l = inputs.length; i < l; i += 1) {
+			input = inputs[i];
+			input.onkeydown = f;
+		}
+	}(document.querySelectorAll("input[type=number],#routeFilterBox")));
 
 	function hideResults() {
 		document.getElementById("results").classList.add("hidden");
@@ -202,12 +231,6 @@ require([
 		var feetPart = (inches - inchesPart) / 12;
 		return [feetPart, "'", inchesPart, '"'].join("");
 	}
-
-	onProgress = document.getElementById("onProgress");
-	underProgress = document.getElementById("underProgress");
-
-	domUtils.hide(onProgress);
-	domUtils.hide(underProgress);
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
@@ -828,7 +851,6 @@ require([
 		}
 
 		if (form.route.value) {
-			form.route.value = padRouteWithZeroes(form.route.value);
 			if (!inputBoxContainsItemFromList(form.route)) {
 				document.getElementById("invalidRouteAlert").classList.remove("hidden");
 				isValid = false;
@@ -859,11 +881,7 @@ require([
 		// If an SRID is specified, add to the where clause...
 		if (srid) {
 			// Pad the srid with zeroes if necessary.
-			if (/^\d$/.test(srid)) {
-				srid = "00" + srid;
-			} else if (/^\d{2}$/.test(srid)) {
-				srid = "0" + srid;
-			}
+			srid = padRouteWithZeroes(srid);
 
 			if (exactMatch) {
 				where.push(" AND ", sridField, "= '", srid, "'");
@@ -944,9 +962,7 @@ require([
 				if (inches) {
 					vehicleHeight = inchesToCustom(inches + 3);
 					onSelectDeferred = bridgeOnLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
-					domUtils.show(onProgress);
 					underSelectDeferred = bridgeUnderLayer.selectFeatures(createQuery("VCMIN", inches, routeText, exactRoute));
-					domUtils.show(underProgress);
 					all([onSelectDeferred, underSelectDeferred]).then(showAlert);
 				}
 			}
@@ -1054,9 +1070,12 @@ require([
 			list.id = "routeList";
 
 			routes.forEach(function (/** {Route} */ r) {
+				var v;
 				if (r.name.length <= 3) {
+					v = Number(r.name);
 					option = document.createElement("option");
-					option.value = r.name;
+					option.value = v; // r.name;
+					option.textContent = v;
 					option.setAttribute("data-lrs-types", r.lrsTypes);
 					list.appendChild(option);
 				}
