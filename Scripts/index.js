@@ -533,6 +533,12 @@ require([
 	 * @param {FeatureLayer} target
 	 */
 
+	function calulateTotal(element) {
+		var onCount = Number(element.getAttribute("data-on-count"));
+		var underCount = Number(element.getAttribute("data-under-count"));
+		element.textContent = onCount + underCount;
+	}
+
 	/** Updates the feature count table.
 	 * @param {FeatureSelectionCompleteResult} results
 	 */
@@ -540,28 +546,22 @@ require([
 		// Determine which layer triggered the selection-complete event.
 		// Get the corresponding table cell that holds its feature count.
 		// Update the value in that table cell.
-		var noPassCellId = null, somePassCellId = null, noPassCell, somePassCell, somePassCount, totalCount;
+		var noPassCell, somePassCell, somePassCount, noPassCount, totalCount;
 
-		if (results.target.id === "bridge-on") {
-			noPassCellId = "noPassOn";
-			somePassCellId = "somePassOn";
-			domUtils.hide(onProgress);
-		} else if (results.target.id === "bridge-under") {
-			noPassCellId = "noPassUnder";
-			somePassCellId = "somePassUnder";
-			domUtils.hide(underProgress);
-		}
+		noPassCell = document.getElementById("noPassCount");
+		somePassCell = document.getElementById("somePassCount");
 
-		if (noPassCellId && somePassCellId) {
-			noPassCell = document.getElementById(noPassCellId);
-			somePassCell = document.getElementById(somePassCellId);
-			totalCount = results.features.length;
-			somePassCount = results.features.filter(function (graphic) {
-				return !!someLanesCanPass(graphic);
-			}).length;
-			noPassCell.textContent = totalCount - somePassCount;
-			somePassCell.textContent = somePassCount;
-		}
+		totalCount = results.features.length;
+		somePassCount = results.features.filter(function (graphic) {
+			return !!someLanesCanPass(graphic);
+		}).length;
+		noPassCount = totalCount - somePassCount;
+
+		var propertyName = results.target.id === "bridge-on" ? "data-on-count" : "data-under-count";
+		noPassCell.setAttribute(propertyName, noPassCount);
+		somePassCell.setAttribute(propertyName, somePassCount);
+		calulateTotal(noPassCell);
+		calulateTotal(somePassCell);
 	}
 
 	/** Resets the feature count table cell corresponding to the layer that triggered the event to zero.
@@ -569,23 +569,16 @@ require([
 	 */
 	function handleSelectionClear() {
 		/*jshint validthis:true*/
-		var divId, noPassId, somePassId;
-		if (this && this.id) {
-			if (this.id === "bridge-on") {
-				//divId = "oncount";
-				noPassId = "noPassOn";
-				somePassId = "somePassOn";
-			} else if (this.id === "bridge-under") {
-				//divId = "undercount";
-				noPassId = "noPassUnder";
-				somePassId = "somePassUnder";
-			}
+		var noPassCell, somePassCell;
 
-			if (divId) {
-				document.getElementById(noPassId).textContent = "0";
-				document.getElementById(somePassId).textContent = "0";
-			}
-		}
+		noPassCell = document.getElementById("noPassCount");
+		somePassCell = document.getElementById("somePassCount");
+
+		var propertyName = this.id === "bridge-on" ? "data-on-count" : "data-under-count";
+		noPassCell.setAttribute(propertyName, 0);
+		somePassCell.setAttribute(propertyName, 0);
+		calulateTotal(noPassCell);
+		calulateTotal(somePassCell);
 		/*jshint validthis:false*/
 	}
 
