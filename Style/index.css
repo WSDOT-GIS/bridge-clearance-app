@@ -192,3 +192,14 @@ table.feature-counts tr > td:last-child {
 datalist {
 	max-height: 100px;
 }
+
+.ramp-warning .glyphicon {
+	color: red;
+}
+
+#homeButton {
+	position: absolute;
+	left: 3.5em;
+	top: 9em;
+	z-index: 1;
+}
