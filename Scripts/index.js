@@ -18,12 +18,13 @@ require([
 	"esri/dijit/PopupMobile",
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/tasks/QueryTask",
+	"esri/dijit/HomeButton",
 	"dojo/promise/all",
 	"elc",
 	"dojo/domReady!"
 ], function (Map, Graphic, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, all, elc
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, all, elc
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
@@ -522,11 +523,21 @@ require([
 			a.setAttribute("class", "google-street-view");
 			a.href = gsvUrl;
 			a.textContent = "Google Street View";
-			a.innerHTML += " <span class='glyphicon glyphicon-new-window'></span>";
+			////a.innerHTML += " <span class='glyphicon glyphicon-new-window'></span>";
 			a.target = "_blank";
 			li.appendChild(a);
 			ul.appendChild(li);
 		}
+
+		// Add link
+		// <a href="http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">Local agency contacts</a>
+		li = document.createElement("li");
+		a = document.createElement("a");
+		a.href = "http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
+		a.target = "_blank";
+		a.textContent = "Local agency contacts";
+		li.appendChild(a);
+		ul.appendChild(li);
 
 		var table = createTable(graphic, fieldsToInclude, fieldsWithWeirdFormatNumbers);
 
@@ -616,6 +627,11 @@ require([
 		document.head.innerHTML = "";
 		document.body.innerHTML = "<p>A problem was encountered contacting the bridge services. Please try again later.</p>";
 	}
+
+	// Create the home button.
+	new HomeButton({
+		map: map
+	}, "homeButton").startup();
 
 	map.on("load", function () {
 		// Create the cartographic line symbol that will be used to show the selected lines.

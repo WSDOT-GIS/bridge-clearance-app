@@ -16,5 +16,6 @@
 "esri/dijit/PopupMobile",
 "esri/layers/ArcGISDynamicMapServiceLayer",
 "esri/tasks/QueryTask",
+"esri/dijit/HomeButton",
 "dojo/promise/all",
 "dojo/domReady"
