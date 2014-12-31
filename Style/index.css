@@ -203,3 +203,10 @@ datalist {
 	top: 9em;
 	z-index: 1;
 }
+
+#geocoder {
+	position: absolute;
+	right: 3.5em;
+	top: 1em;
+	z-index: 1;
+}

@@ -1,6 +1,7 @@
 "esri/map",
 "esri/graphic",
 "esri/geometry/Extent",
+"esri/SpatialReference",
 "esri/config",
 "esri/domUtils",
 "esri/layers/FeatureLayer",
@@ -17,5 +18,6 @@
 "esri/layers/ArcGISDynamicMapServiceLayer",
 "esri/tasks/QueryTask",
 "esri/dijit/HomeButton",
+"esri/dijit/Geocoder",
 "dojo/promise/all",
 "dojo/domReady"
