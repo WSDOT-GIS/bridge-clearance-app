@@ -3,6 +3,7 @@ require([
 	"esri/map",
 	"esri/graphic",
 	"esri/geometry/Extent",
+	"esri/SpatialReference",
 	"esri/config",
 	"esri/domUtils",
 	"esri/layers/FeatureLayer",
@@ -19,12 +20,13 @@ require([
 	"esri/layers/ArcGISDynamicMapServiceLayer",
 	"esri/tasks/QueryTask",
 	"esri/dijit/HomeButton",
+	"esri/dijit/Geocoder",
 	"dojo/promise/all",
 	"elc",
 	"dojo/domReady!"
-], function (Map, Graphic, Extent, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
+], function (Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, all, elc
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, elc
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
@@ -633,6 +635,18 @@ require([
 		map: map
 	}, "homeButton").startup();
 
+	// Create Geocoder
+	new Geocoder({
+		map: map,
+		autoComplete: true,
+		highlightLocation: true,
+		arcgisGeocoder: {
+			sourceCountry: "US",
+			searchExtent: mapInitExtent,
+			placeholder: "Find an address"
+		}
+	}, "geocoder");
+
 	map.on("load", function () {
 		// Create the cartographic line symbol that will be used to show the selected lines.
 		// This gives them a better appearance than the default behavior.
@@ -778,7 +792,7 @@ require([
 	});
 
 	// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
-	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "085a9cb0bb664d29bf62b731ccc4aa64" } }, "basemapGallery");
+	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" } }, "basemapGallery");
 	basemapGallery.startup();
 
 	// When the basemap gallery loads, select the first basemap with 
