@@ -26,6 +26,7 @@
 	<!-- #endregion favicon -->
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/esri/css/esri.css" />
 	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/dijit/themes/claro/claro.css" />
 	<!--<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/esri/css/esri.css" />
@@ -132,10 +133,12 @@
 								<div id="heightRequiredWarning" class="alert alert-warning hidden" role="alert">
 									<span class="glyphicon glyphicon-warning-sign"></span> You must enter a value in feet and/or inches box.
 								</div>
-								<div class="form-group">
+								<div class="form-group ui-widget">
 									<label for="routeFilterBox">Enter Route Number (optional)</label>
-									<input id="routeFilterBox" class="form-control" name="route" type="number" autocomplete="off" inputmode="numeric" maxlength="3" />
-									<span class="help-block">Enter only the numeric portion of a route name into this box.</span>
+									<!--<input id="routeFilterBox" class="form-control" name="route" type="number" autocomplete="off" inputmode="numeric" maxlength="3" />-->
+									<select id="routeFilterBox" class="form-control" name="route">
+										<option value=""></option>
+									</select>
 								</div>
 								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
 									<span class="glyphicon glyphicon-warning-sign"></span> Invalid Route.
@@ -220,6 +223,8 @@
 
 	<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+	<script src="Scripts/jquery-custom-combobox.min.js"></script>
 	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer/1.0.4/terraformer.min.js"></script>
 	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer-arcgis-parser/1.0.4/terraformer-arcgis-parser.min.js"></script>
 	<script>

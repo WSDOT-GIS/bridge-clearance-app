@@ -49,7 +49,7 @@ require([
 			if (match) {
 				ch = String.fromCharCode(Number.parseInt(match[1], 16));
 			}
-			if (/[^0-9]/.test(ch)) {
+			if (ch.length === 1 && /[^0-9]/.test(ch)) {
 				e.preventDefault();
 			}
 		};
@@ -57,7 +57,7 @@ require([
 			input = inputs[i];
 			input.onkeypress = f;
 		}
-	}(document.querySelectorAll("input[type=number],#routeFilterBox")));
+	}(document.querySelectorAll("input[type=number]")));
 
 	/**
 	 * Gets the extent of all graphics' geometries.
@@ -65,9 +65,13 @@ require([
 	 * @returns {Extent}
 	 */
 	function getExtentOfGraphics(graphics) {
+		// Convert the graphics' geometries from ArcGIS to Terraformer Primitive. 
+		// Output will be an array of Terraformer geometry objects.
 		var geoJsons = graphics.map(function (g) {
 			return Terraformer.ArcGIS.parse(g.geometry);
 		});
+		// Create a GeoJSON GeometryCollection, then calculate the bounds.
+		// Use the result to create an ArcGIS Extent.
 		var geometryCollection = new Terraformer.GeometryCollection(geoJsons);
 		var env = Terraformer.Tools.calculateBounds(geometryCollection);
 		env = new Extent(env[0], env[1], env[2], env[3]);
@@ -838,26 +842,26 @@ require([
 		domUtils.show(document.getElementById("mapProgress"));
 	});
 
-	/**
-	 * Determines if the input box contains one of the suggestions from its datalist.
-	 * @param {HTMLInputElement} textbox
-	 * @returns {boolean}
-	 */
-	function inputBoxContainsItemFromList(textbox) {
-		var datalist, options, output = false;
-		////datalist = document.getElementById(textbox.getAttribute("list"));
-		datalist = document.getElementsByTagName("datalist")[0];
-		options = datalist.querySelectorAll("option");
+	/////**
+	//// * Determines if the input box contains one of the suggestions from its datalist.
+	//// * @param {HTMLInputElement} textbox
+	//// * @returns {boolean}
+	//// */
+	////function inputBoxContainsItemFromList(textbox) {
+	////	var datalist, options, output = false;
+	////	////datalist = document.getElementById(textbox.getAttribute("list"));
+	////	datalist = document.getElementsByTagName("datalist")[0];
+	////	options = datalist.querySelectorAll("option");
 
-		for (var i = 0, l = options.length; i < l; i += 1) {
-			if (options[i].value === textbox.value) {
-				output = true;
-				break;
-			}
-		}
+	////	for (var i = 0, l = options.length; i < l; i += 1) {
+	////		if (options[i].value === textbox.value) {
+	////			output = true;
+	////			break;
+	////		}
+	////	}
 
-		return output;
-	}
+	////	return output;
+	////}
 
 	/**
 	 * Pads a numeric string with less than three characters with zeroes
@@ -901,14 +905,14 @@ require([
 			}
 		}
 
-		if (form.route.value) {
-			if (!inputBoxContainsItemFromList(form.route)) {
-				document.getElementById("invalidRouteAlert").classList.remove("hidden");
-				isValid = false;
-			} else {
-				document.getElementById("invalidRouteAlert").classList.add("hidden");
-			}
-		}
+		////if (form.route.value) {
+		////	if (!inputBoxContainsItemFromList(form.route)) {
+		////		document.getElementById("invalidRouteAlert").classList.remove("hidden");
+		////		isValid = false;
+		////	} else {
+		////		document.getElementById("invalidRouteAlert").classList.add("hidden");
+		////	}
+		////}
 
 		if (isValid !== false) {
 			isValid = true;
@@ -1100,7 +1104,7 @@ require([
 	// Setup route data list.
 	(function () {
 		routeLocator.getRouteList(function (response) {
-			var routeBox, list, option, routes;
+			var routeBox, option, routes;
 
 			if (typeof response === "string") {
 				response = JSON.parse(response);
@@ -1119,8 +1123,8 @@ require([
 			});
 
 			routeBox = document.getElementById("routeFilterBox");
-			list = document.createElement("datalist");
-			list.id = "routeList";
+			////list = document.createElement("datalist");
+			////list.id = "routeList";
 
 			routes.forEach(function (/** {Route} */ r) {
 				var v;
@@ -1130,14 +1134,17 @@ require([
 					option.value = v; // r.name;
 					option.textContent = v;
 					option.setAttribute("data-lrs-types", r.lrsTypes);
-					list.appendChild(option);
+					////list.appendChild(option);
+					routeBox.appendChild(option);
 				}
 			});
 
 			
 
-			document.body.appendChild(list);
+			////document.body.appendChild(list);
 			////routeBox.setAttribute("list", list.id);
+
+			$(routeBox).combobox();
 		});
 	}());
 
