@@ -1,4 +1,4 @@
-﻿/*global require*/
+﻿/*global require, Terraformer */
 require([
 	"esri/map",
 	"esri/graphic",
@@ -49,7 +49,6 @@ require([
 			if (match) {
 				ch = String.fromCharCode(Number.parseInt(match[1], 16));
 			}
-			console.log(ch);
 			if (/[^0-9]/.test(ch)) {
 				e.preventDefault();
 			}
@@ -59,6 +58,30 @@ require([
 			input.onkeypress = f;
 		}
 	}(document.querySelectorAll("input[type=number],#routeFilterBox")));
+
+	/**
+	 * Gets the extent of all graphics' geometries.
+	 * @param {Graphic[]} graphics
+	 * @returns {Extent}
+	 */
+	function getExtentOfGraphics(graphics) {
+		var geoJsons = graphics.map(function (g) {
+			return Terraformer.ArcGIS.parse(g.geometry);
+		});
+		var geometryCollection = new Terraformer.GeometryCollection(geoJsons);
+		var env = Terraformer.Tools.calculateBounds(geometryCollection);
+		env = new Extent(env[0], env[1], env[2], env[3]);
+		return env;
+	}
+
+	// Setup zoom to results link.
+	(function (link) {
+		link.onclick = function () {
+			var extent = getExtentOfGraphics(bridgeOnLayer.graphics.concat(bridgeUnderLayer.graphics));
+			map.setExtent(extent, true);
+			return false;
+		};
+	}(document.getElementById("zoomToResultsLink")));
 
 	function hideResults() {
 		document.getElementById("results").classList.add("hidden");

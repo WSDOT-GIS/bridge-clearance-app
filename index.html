@@ -53,18 +53,22 @@
 
 						<a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=468-38-070" target="_blank">WAC 468-38-070</a> states
 
-						<q>It is the responsibility of the permit applicant to check, or prerun, the proposed route and provide for safe maneuvers around
-						the obstruction or detours as necessary.</q>
+						<q>
+							It is the responsibility of the permit applicant to check, or prerun, the proposed route and provide for safe maneuvers around
+							the obstruction or detours as necessary.
+						</q>
 					</p>
 
-						<p>Note that the lane in which the maximum and minimum clearances occur are not listed.
+					<p>
+						Note that the lane in which the maximum and minimum clearances occur are not listed.
 						This must be determined by the operator. In accordance with state law, the owner or operator of a vehicle or combination of
 						vehicles shall exercise due care in determining that sufficient vertical clearance is provided upon the public highways
 						where the vehicle or combination of vehicles is being operated.  Also note that the clearances displayed are approximately
 						three inches less than the actual measured clearances.  This adjustment is intended to enhance safety and increase the margin
 						of error for judgments made by highway users hauling oversize loads.  For that reason, and due to the variations in structure
 						clearance partially cataloged above, such users should not assume that clearance is in excess of what is published,
-						and should utilize check and prerun methods to assure safe passage.</p>
+						and should utilize check and prerun methods to assure safe passage.
+					</p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Accept</button>
@@ -80,7 +84,7 @@
 					<a href="http://www.wsdot.wa.gov/" target="_blank"><img class="wsdot-logo" src="Images/WSDOT_ACRONYM_logo.png" alt="WSDOT" /></a>
 					<span class="hidden-xs">State Route</span>
 					Bridge<span class="hidden-xs"> Vertical</span> Clearance<span class="hidden-xs"> Trip Planner</span> (BETA)
-</h1>
+				</h1>
 			</div>
 
 			<ul class="nav navbar-nav navbar-right hidden-xs">
@@ -159,6 +163,12 @@
 							</form>
 							<hr />
 							<div id="results" class="hidden">
+								<p>
+									<span class="glyphicon glyphicon-zoom-in"></span>
+									<a id="zoomToResultsLink" href="#">
+										Zoom to results
+									</a>
+								</p>
 								<table id="resultsTable" class="table">
 									<thead>
 										<tr>
@@ -212,6 +222,8 @@
 
 	<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer/1.0.4/terraformer.min.js"></script>
+	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer-arcgis-parser/1.0.4/terraformer-arcgis-parser.min.js"></script>
 	<script>
 		(function () {
 			var root = location.pathname.replace(/\/[^\/]*$/, "");
