@@ -918,6 +918,8 @@ require([
 			} else {
 				where.push(" AND ", sridField, " LIKE '", srid, "%'");
 			}
+		} else if (exactMatch) {
+			where.push(" AND LEN(lrs_route) = 3");
 		}
 		var query = new Query();
 		query.where = where.join("");
@@ -1118,19 +1120,20 @@ require([
 		});
 	}());
 
-	// Hide the results when the user modifies fields.
-	(function (inputElements) {
+	// Submit when the user modifies fields.
+	(function (form, inputElements) {
 		var i, l, input, f;
 		f = function () {
-			hideResults();
-			bridgeOnLayer.clearSelection();
-			bridgeUnderLayer.clearSelection();
+			////hideResults();
+			////bridgeOnLayer.clearSelection();
+			////bridgeUnderLayer.clearSelection();
+			form.onsubmit();
 		};
 		for (i = 0, l = inputElements.length; i < l; i++) {
 			input = inputElements[i];
 			input.addEventListener("change", f);
 		}
-	}(document.getElementById("clearanceForm").querySelectorAll("input")));
+	}(document.getElementById("clearanceForm"), document.getElementById("clearanceForm").querySelectorAll("input")));
 
 	/**
 	 * Converts an ELC route location into a graphic.

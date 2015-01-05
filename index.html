@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="en-us" role="application">
 <head>
-	<title>Bridge Vertical Clearance Trip Planner</title>
+	<title>State Route Bridge Vertical Clearance Trip Planner</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -78,8 +78,9 @@
 			<div class="navbar-header">
 				<h1 class="navbar-brand">
 					<a href="http://www.wsdot.wa.gov/" target="_blank"><img class="wsdot-logo" src="Images/WSDOT_ACRONYM_logo.png" alt="WSDOT" /></a>
+					<span class="hidden-xs">State Route</span>
 					Bridge<span class="hidden-xs"> Vertical</span> Clearance<span class="hidden-xs"> Trip Planner</span> (BETA)
-				</h1>
+</h1>
 			</div>
 
 			<ul class="nav navbar-nav navbar-right hidden-xs">
@@ -131,7 +132,7 @@
 								</div>
 								<div class="form-group">
 									<label for="routeFilterBox">Enter Route Number (optional)</label>
-									<input id="routeFilterBox" class="form-control" name="route" type="text" autocomplete="off" inputmode="numeric" maxlength="3" />
+									<input id="routeFilterBox" class="form-control" name="route" type="number" autocomplete="off" inputmode="numeric" maxlength="3" />
 									<span class="help-block">Enter only the numeric portion of a route name into this box.</span>
 								</div>
 								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
