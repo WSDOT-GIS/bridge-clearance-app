@@ -33,31 +33,39 @@ require([
 
 	routeLocator = new elc.RouteLocator();
 
-	// Prevent user from entering non-numeric characters in number boxes.
-	(function (inputs) {
-		var input;
-		var f = function (e) {
-			var unicodeRe = /U\+(\d+)/;
-			// Chrome doesn't support the standard key property, so use keyIdentifier instead.
-			// Instead of the actual character that "key" returns, keyIdentifier returns
-			// A string such as "U+004F" representing the unicode character.
+	function rejectNonNumericInput(e) {
+		var unicodeRe = /U\+(\d+)/;
+		// Chrome doesn't support the standard key property, so use keyIdentifier instead.
+		// Instead of the actual character that "key" returns, keyIdentifier returns
+		// A string such as "U+004F" representing the unicode character.
 
-			// For special characters (e.g., "Shift", a string containing the name of the key is returned.)
-			var ch = e.key || e.keyIdentifier;
-			var match = ch.match(unicodeRe);
-			// keyIdentifier returns a unicode. Convert to string.
-			if (match) {
-				ch = String.fromCharCode(Number.parseInt(match[1], 16));
-			}
-			if (ch.length === 1 && /[^0-9]/.test(ch)) {
-				e.preventDefault();
-			}
-		};
+		// For special characters (e.g., "Shift", a string containing the name of the key is returned.)
+		var ch = e.key || e.keyIdentifier;
+		var match = ch.match(unicodeRe);
+		// keyIdentifier returns a unicode. Convert to string.
+		if (match) {
+			ch = String.fromCharCode(Number.parseInt(match[1], 16));
+		}
+		console.log(ch);
+		if (!/(?:^[0-9\t]$)|((Backspace)|(Tab)|(Delete)|(Home)|(End))/i.test(ch)) {
+			e.preventDefault();
+		}
+	}
+
+	/**
+	 * 
+	 * @param {NodeList} inputs
+	 */
+	function restrictToNumericInput(inputs) {
+		var input;
 		for (var i = 0, l = inputs.length; i < l; i += 1) {
 			input = inputs[i];
-			input.onkeypress = f;
+			input.onkeypress = rejectNonNumericInput;
 		}
-	}(document.querySelectorAll("input[type=number]")));
+	}
+
+	// Prevent user from entering non-numeric characters in number boxes.
+	restrictToNumericInput(document.querySelectorAll("input[type=number]"));
 
 	/**
 	 * Gets the extent of all graphics' geometries.
@@ -1145,6 +1153,8 @@ require([
 			////routeBox.setAttribute("list", list.id);
 
 			$(routeBox).combobox();
+
+			restrictToNumericInput(document.querySelector(".custom-combobox-input"));
 		});
 	}());
 
