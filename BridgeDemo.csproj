@@ -74,12 +74,19 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Scripts\elc-js\elc.min.js.map" />
+    <Content Include="Scripts\jquery-custom-combobox.min.js.map">
+      <DependentUpon>jquery-custom-combobox.min.js</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Scripts\index.js" />
     <Content Include="Scripts\index.min.js">
       <DependentUpon>index.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery-custom-combobox.js" />
+    <Content Include="Scripts\jquery-custom-combobox.min.js">
+      <DependentUpon>jquery-custom-combobox.js</DependentUpon>
     </Content>
     <Content Include="Style\index.css" />
     <Content Include="Style\index.min.css">
