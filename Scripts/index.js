@@ -50,15 +50,13 @@ require([
 				ch = String.fromCharCode(Number.parseInt(match[1], 16));
 			}
 			console.log(ch);
-			if (ch.length === 1 && /[^0-9\t]/.test(ch)) {
-				if (!/[\b]/.test(ch)) { // Don't prevent backspace.
-					e.preventDefault();
-				}
+			if (/[^0-9]/.test(ch)) {
+				e.preventDefault();
 			}
 		};
 		for (var i = 0, l = inputs.length; i < l; i += 1) {
 			input = inputs[i];
-			input.onkeydown = f;
+			input.onkeypress = f;
 		}
 	}(document.querySelectorAll("input[type=number],#routeFilterBox")));
 
