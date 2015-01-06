@@ -69,6 +69,7 @@
     <Content Include="Scripts\index.min.js.map">
       <DependentUpon>index.min.js</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\QA.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml">
       <SubType>Designer</SubType>
