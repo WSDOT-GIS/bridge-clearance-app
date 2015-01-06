@@ -46,8 +46,7 @@ require([
 		if (match) {
 			ch = String.fromCharCode(Number.parseInt(match[1], 16));
 		}
-		console.log(ch);
-		if (!/(?:^[0-9\t]$)|((Backspace)|(Tab)|(Delete)|(Home)|(End))/i.test(ch)) {
+		if (!/(?:^[0-9\t]$)|(?:(?:Backspace)|(?:Tab)|(?:Delete)|(?:Home)|(?:End)|(?:Enter))/i.test(ch)) {
 			e.preventDefault();
 		}
 	}
@@ -58,14 +57,16 @@ require([
 	 */
 	function restrictToNumericInput(inputs) {
 		var input;
-		for (var i = 0, l = inputs.length; i < l; i += 1) {
-			input = inputs[i];
-			input.onkeypress = rejectNonNumericInput;
+		if (inputs) {
+			for (var i = 0, l = inputs.length; i < l; i += 1) {
+				input = inputs[i];
+				input.onkeypress = rejectNonNumericInput;
+			}
 		}
 	}
 
 	// Prevent user from entering non-numeric characters in number boxes.
-	restrictToNumericInput(document.querySelectorAll("input[type=number]"));
+	restrictToNumericInput(document.querySelectorAll("input[type=number],#routeFilterBox"));
 
 	/**
 	 * Gets the extent of all graphics' geometries.
@@ -700,7 +701,6 @@ require([
 			}
 			div.textContent = e.graphic.attributes.crossing_description;
 			div.setAttribute("style", ["position: fixed; left: ", e.clientX, "px; top: ", e.clientY, "px; display: block"].join(""));
-			console.log("mouse-over", e);
 		}
 
 		/**
@@ -850,26 +850,26 @@ require([
 		domUtils.show(document.getElementById("mapProgress"));
 	});
 
-	/////**
-	//// * Determines if the input box contains one of the suggestions from its datalist.
-	//// * @param {HTMLInputElement} textbox
-	//// * @returns {boolean}
-	//// */
-	////function inputBoxContainsItemFromList(textbox) {
-	////	var datalist, options, output = false;
-	////	////datalist = document.getElementById(textbox.getAttribute("list"));
-	////	datalist = document.getElementsByTagName("datalist")[0];
-	////	options = datalist.querySelectorAll("option");
+	/**
+	 * Determines if the input box contains one of the suggestions from its datalist.
+	 * @param {HTMLInputElement} textbox
+	 * @returns {boolean}
+	 */
+	function inputBoxContainsItemFromList(textbox) {
+		var datalist, options, output = false;
+		////datalist = document.getElementById(textbox.getAttribute("list"));
+		datalist = document.getElementsByTagName("datalist")[0];
+		options = datalist.querySelectorAll("option");
 
-	////	for (var i = 0, l = options.length; i < l; i += 1) {
-	////		if (options[i].value === textbox.value) {
-	////			output = true;
-	////			break;
-	////		}
-	////	}
+		for (var i = 0, l = options.length; i < l; i += 1) {
+			if (options[i].value === textbox.value) {
+				output = true;
+				break;
+			}
+		}
 
-	////	return output;
-	////}
+		return output;
+	}
 
 	/**
 	 * Pads a numeric string with less than three characters with zeroes
@@ -913,14 +913,14 @@ require([
 			}
 		}
 
-		////if (form.route.value) {
-		////	if (!inputBoxContainsItemFromList(form.route)) {
-		////		document.getElementById("invalidRouteAlert").classList.remove("hidden");
-		////		isValid = false;
-		////	} else {
-		////		document.getElementById("invalidRouteAlert").classList.add("hidden");
-		////	}
-		////}
+		if (form.route.value) {
+			if (!inputBoxContainsItemFromList(form.route)) {
+				document.getElementById("invalidRouteAlert").classList.remove("hidden");
+				isValid = false;
+			} else {
+				document.getElementById("invalidRouteAlert").classList.add("hidden");
+			}
+		}
 
 		if (isValid !== false) {
 			isValid = true;
@@ -1112,7 +1112,7 @@ require([
 	// Setup route data list.
 	(function () {
 		routeLocator.getRouteList(function (response) {
-			var routeBox, option, routes;
+			var routeBox, option, routes, list;
 
 			if (typeof response === "string") {
 				response = JSON.parse(response);
@@ -1131,8 +1131,8 @@ require([
 			});
 
 			routeBox = document.getElementById("routeFilterBox");
-			////list = document.createElement("datalist");
-			////list.id = "routeList";
+			list = document.createElement("datalist");
+			list.id = "routeList";
 
 			routes.forEach(function (/** {Route} */ r) {
 				var v;
@@ -1142,19 +1142,14 @@ require([
 					option.value = v; // r.name;
 					option.textContent = v;
 					option.setAttribute("data-lrs-types", r.lrsTypes);
-					////list.appendChild(option);
-					routeBox.appendChild(option);
+					list.appendChild(option);
 				}
 			});
 
 			
 
-			////document.body.appendChild(list);
+			document.body.appendChild(list);
 			////routeBox.setAttribute("list", list.id);
-
-			$(routeBox).combobox();
-
-			restrictToNumericInput(document.querySelector(".custom-combobox-input"));
 		});
 	}());
 
@@ -1224,7 +1219,7 @@ require([
 					}
 				},
 				errorHandler: function (error) {
-					console.log("elc error", error);
+					console.error("elc error", error);
 				}
 			});
 		}
