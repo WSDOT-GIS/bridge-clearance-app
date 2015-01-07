@@ -122,24 +122,10 @@ require([
 		}
 	}
 
-	/////**
-	//// * Makes the popup draggable.
-	//// * @returns {dojo/dnd/Moveable}
-	//// */
-	////function makePopupDraggable() {
-	////	var popupDiv = document.querySelector(".esriPopup");
-	////	var dnd;
-	////	if (popupDiv) {
-	////		dnd = new Moveable(popupDiv);
-	////	}
-	////	// TODO: Figure out how to make the little arrow point the right way after dragging.
-	////	return dnd;
-	////}
-
 	disableLinkBasedOnClass();
 
-	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/1";
-	pointsServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridges_QA/BridgeVerticalClearances_0_1/MapServer/0";
+	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
+	pointsServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
