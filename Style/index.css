@@ -6,6 +6,16 @@
 	/*background-color: #007c66;*/ /*Pantone 335*/
 }
 
+a.hamburger {
+	text-decoration: initial;
+	font-size: 1.5em;
+	font-weight: bold;
+}
+
+.navbar-default .navbar-nav > li > a.hamburger {
+	color: black;
+}
+
 q:before, q:after {
 	content: none;
 }
@@ -27,7 +37,7 @@ a, a:not(:hover) > .glyphicon {
 	text-decoration: underline;
 }
 
-.nav-tabs a, .nav-tabs a >.glyphicon {
+.nav-tabs a, .nav-tabs a > .glyphicon {
 	text-decoration: none;
 }
 
