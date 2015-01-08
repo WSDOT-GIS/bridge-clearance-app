@@ -44,7 +44,10 @@
 					m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
 				})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-				ga('create', { trackingId: 'UA-970887-21', cookieDomain: 'auto' });
+				ga('create', {
+					trackingId: 'UA-970887-21',
+					cookieDomain: 'wsdot.wa.gov'
+				});
 				ga(function (tracker) {
 					tracker.set("appName", "State Route Bridge Vertical Clearance Trip Planner");
 					tracker.send('pageview');
