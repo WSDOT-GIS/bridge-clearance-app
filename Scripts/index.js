@@ -33,6 +33,18 @@ require([
 
 	routeLocator = new elc.RouteLocator();
 
+	/**
+	 * Keyboard event
+	 * @external KeyboardEvent
+	 * @see  https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
+	 */
+
+	/**
+	 * Rejects keyboard input if it is non-numeric. 
+	 * Special characters (e.g., Delete, Tab) are also allowed.
+	 * @param {KeyboardEvent} e
+	 * @this {HTMLInputElement}
+	 */
 	function rejectNonNumericInput(e) {
 		var unicodeRe = /U\+(\d+)/;
 		// Chrome doesn't support the standard key property, so use keyIdentifier instead.
@@ -52,7 +64,8 @@ require([
 	}
 
 	/**
-	 * 
+	 * Sets up event handlers on input elements to make them reject
+	 * non-numeric input.
 	 * @param {NodeList} inputs
 	 */
 	function restrictToNumericInput(inputs) {
