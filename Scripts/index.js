@@ -672,7 +672,7 @@ require([
 	new Geocoder({
 		map: map,
 		autoComplete: true,
-		highlightLocation: true,
+		highlightLocation: false,
 		arcgisGeocoder: {
 			sourceCountry: "US",
 			searchExtent: mapInitExtent,
