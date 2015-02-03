@@ -51,15 +51,17 @@ require([
 		// Instead of the actual character that "key" returns, keyIdentifier returns
 		// A string such as "U+004F" representing the unicode character.
 
-		// For special characters (e.g., "Shift", a string containing the name of the key is returned.)
-		var ch = e.key || e.keyIdentifier;
-		var match = ch.match(unicodeRe);
-		// keyIdentifier returns a unicode. Convert to string.
-		if (match) {
-			ch = String.fromCharCode(Number.parseInt(match[1], 16));
-		}
-		if (!/(?:^[0-9\t]$)|(?:(?:Backspace)|(?:Tab)|(?:Delete)|(?:Home)|(?:End)|(?:Enter))/i.test(ch)) {
-			e.preventDefault();
+		if (e && (e.key || e.keyIdentifier)) {
+			// For special characters (e.g., "Shift", a string containing the name of the key is returned.)
+			var ch = e.key || e.keyIdentifier;
+			var match = ch.match(unicodeRe);
+			// keyIdentifier returns a unicode. Convert to string.
+			if (match) {
+				ch = String.fromCharCode(Number.parseInt(match[1], 16));
+			}
+			if (!/(?:^[0-9\t]$)|(?:(?:Backspace)|(?:Tab)|(?:Delete)|(?:Home)|(?:End)|(?:Enter))/i.test(ch)) {
+				e.preventDefault();
+			}
 		}
 	}
 
