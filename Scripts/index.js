@@ -810,10 +810,12 @@ require([
 		bridgeOnLayer.on("error", handleLayerError);
 		bridgeUnderLayer.on("error", handleLayerError);
 
-		bridgeOnLayer.on("mouse-over", showHoverText);
-		bridgeOnLayer.on("mouse-out", hideHoverText);
-		bridgeUnderLayer.on("mouse-over", showHoverText);
-		bridgeUnderLayer.on("mouse-out", hideHoverText);
+		if (!isMobile) {
+			bridgeOnLayer.on("mouse-over", showHoverText);
+			bridgeOnLayer.on("mouse-out", hideHoverText);
+			bridgeUnderLayer.on("mouse-over", showHoverText);
+			bridgeUnderLayer.on("mouse-out", hideHoverText);
+		}
 
 		// Add these layers to the map.
 		map.addLayer(bridgeOnLayer);
