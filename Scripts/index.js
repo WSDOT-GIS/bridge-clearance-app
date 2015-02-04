@@ -1,4 +1,4 @@
-﻿/*global require, Terraformer */
+﻿/*global require, Terraformer, MobileDetect */
 require([
 	"esri/map",
 	"esri/graphic",
@@ -309,7 +309,7 @@ require([
 		showAttribution: true
 	};
 
-	isMobile = document.body.clientWidth < 768;
+	isMobile = Boolean((new MobileDetect(window.navigator.userAgent)).mobile());  //document.body.clientWidth < 768;
 
 	// Use the mobile popup on smaller screens.
 	if (isMobile) {
