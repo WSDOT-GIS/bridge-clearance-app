@@ -309,10 +309,10 @@ require([
 		showAttribution: true
 	};
 
-	isMobile = Boolean((new MobileDetect(window.navigator.userAgent)).mobile());  //document.body.clientWidth < 768;
+	isMobile = Boolean((new MobileDetect(window.navigator.userAgent)).mobile());
 
 	// Use the mobile popup on smaller screens.
-	if (isMobile) {
+	if (document.body.clientWidth < 768) {
 		mapCreationParams.infoWindow = new PopupMobile(null, document.createElement("div"));
 	}
 
