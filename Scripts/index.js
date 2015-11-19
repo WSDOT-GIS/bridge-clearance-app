@@ -26,12 +26,12 @@ require([
 	"dojo/domReady!"
 ], function (Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, elc
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, RouteLocator
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
 
-	routeLocator = new elc.RouteLocator();
+	routeLocator = new RouteLocator();
 
 	/**
 	 * Keyboard event
@@ -1113,48 +1113,46 @@ require([
 	document.forms.clearanceForm.addEventListener("submit", hideInfoWindow);
 
 	// Setup route data list.
-	(function () {
-		routeLocator.getRouteList(function (response) {
-			var routeBox, option, routes, list;
+	routeLocator.getRouteList().then(function (response) {
+		var routeBox, option, routes, list;
 
-			if (typeof response === "string") {
-				response = JSON.parse(response);
+		if (typeof response === "string") {
+			response = JSON.parse(response);
+		}
+		routes = response.Current;
+
+		// Sort the items in the array by route name.
+		routes.sort(function (routeA, routeB) {
+			if (routeA.name === routeB.name) {
+				return 0;
+			} else if (routeA.name > routeB.name) {
+				return 1;
+			} else {
+				return -1;
 			}
-			routes = response.Current;
+		});
 
-			// Sort the items in the array by route name.
-			routes.sort(function (routeA, routeB) {
-				if (routeA.name === routeB.name) {
-					return 0;
-				} else if (routeA.name > routeB.name) {
-					return 1;
-				} else {
-					return -1;
-				}
-			});
+		routeBox = document.getElementById("routeFilterBox");
+		list = document.createElement("datalist");
+		list.id = "routeList";
 
-			routeBox = document.getElementById("routeFilterBox");
-			list = document.createElement("datalist");
-			list.id = "routeList";
-
-			routes.forEach(function (/** {Route} */ r) {
-				var v;
-				if (r.name.length <= 3) {
-					v = Number(r.name);
-					option = document.createElement("option");
-					option.value = v; // r.name;
-					option.textContent = v;
-					option.setAttribute("data-lrs-types", r.lrsTypes);
-					list.appendChild(option);
-				}
-			});
+		routes.forEach(function (/** {Route} */ r) {
+			var v;
+			if (r.name.length <= 3) {
+				v = Number(r.name);
+				option = document.createElement("option");
+				option.value = v; // r.name;
+				option.textContent = v;
+				option.setAttribute("data-lrs-types", r.lrsTypes);
+				list.appendChild(option);
+			}
+		});
 
 			
 
-			document.body.appendChild(list);
-			////routeBox.setAttribute("list", list.id);
-		});
-	}());
+		document.body.appendChild(list);
+		////routeBox.setAttribute("list", list.id);
+	});
 
 	// Submit when the user modifies fields.
 	(function (form, inputElements) {

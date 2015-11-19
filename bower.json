@@ -1,0 +1,29 @@
+{
+  "name": "Bridge Vertical Clearance Trip Planner",
+  "authors": [
+    "WSDOT-GIS"
+  ],
+  "description": "The WSDOT Bridge Vertical Clearance Trip Planner is an application intended to help the public identify bridges with restricted vertical clearances up to 16 feet on State highways. The application also provides links for permits and other information.",
+  "main": "index.html",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "WSDOT",
+    "bridge",
+    "clearance"
+  ],
+  "license": "Unlicense",
+  "homepage": "http://www.wsdot.wa.gov/Bridge/Structures/BVCTP.htm",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "elc": "wsdot-route-locator#~2.6.0"
+  }
+}
