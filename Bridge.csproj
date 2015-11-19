@@ -50,6 +50,13 @@
     <Content Include="apple-touch-icon-76x76.png" />
     <Content Include="apple-touch-icon-precomposed.png" />
     <Content Include="apple-touch-icon.png" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap.css" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap.min.css" />
+    <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="bower_components\bootstrap\dist\js\bootstrap.js" />
+    <Content Include="bower_components\bootstrap\dist\js\bootstrap.min.js" />
     <Content Include="bower_components\elc\elc-ui\ArcGisElcUI.js" />
     <Content Include="bower_components\elc\elc-ui\elc-ui-behavior.css" />
     <Content Include="bower_components\elc\elc-ui\elc-ui.css" />
@@ -68,6 +75,14 @@
     <Content Include="bower_components\elc\routeUtils.js" />
     <Content Include="bower_components\es6-shim\es6-shim.js" />
     <Content Include="bower_components\es6-shim\es6-shim.min.js" />
+    <Content Include="bower_components\jquery\dist\jquery.js" />
+    <Content Include="bower_components\jquery\dist\jquery.min.js" />
+    <Content Include="bower_components\mobile-detect\mobile-detect.js" />
+    <Content Include="bower_components\mobile-detect\mobile-detect.min.js" />
+    <Content Include="bower_components\terraformer-arcgis-parser\terraformer-arcgis-parser.js" />
+    <Content Include="bower_components\terraformer-arcgis-parser\terraformer-arcgis-parser.min.js" />
+    <Content Include="bower_components\terraformer\terraformer.js" />
+    <Content Include="bower_components\terraformer\terraformer.min.js" />
     <Content Include="browserconfig.xml" />
     <Content Include="favicon-160x160.png" />
     <Content Include="favicon-16x16.png" />
@@ -86,6 +101,13 @@
       <DependentUpon>index.min.js</DependentUpon>
     </Content>
     <Content Include="bower_components\es6-shim\es6-shim.map" />
+    <Content Include="bower_components\jquery\dist\jquery.min.map" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <Content Include="bower_components\bootstrap\dist\css\bootstrap.css.map" />
+    <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\QA.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml">

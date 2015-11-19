@@ -24,13 +24,10 @@
 	<meta name="msapplication-TileColor" content="#007c66">
 	<meta name="msapplication-TileImage" content="mstile-144x144.png">
 	<!-- #endregion favicon -->
-	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/esri/css/esri.css" />
-	<link rel="stylesheet" href="//js.arcgis.com/3.12compact/dijit/themes/claro/claro.css" />
-	<!--<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/esri/css/esri.css" />
-	<link rel="stylesheet" href="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dijit/themes/claro/claro.css" />-->
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css" />
-
+	<link rel="stylesheet" href="//js.arcgis.com/3.14compact/esri/css/esri.css" integrity="sha384-QJwUWLUSZAGs19E3dJlQUiPaGetwx5sU25wya32Kat5XfN1c8jxH6U0D3Ts4hlUm" crossorigin="anonymous">
+	<link rel="stylesheet" href="//js.arcgis.com/3.14compact/dijit/themes/claro/claro.css" integrity="sha384-EwqWQ9Ix1ytOCiOF9pIBMwHHpxdHVtMKUPdWSjoIIl1qpWrcCLl7YgCjb9d4AgVW" crossorigin="anonymous">
+	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="Style/index.min.css" />
 
 	<!-- Google Analytics -->
@@ -269,10 +266,10 @@
 			</div>
 		</div> <!--row-->
 	</div>
-	<script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer/1.0.4/terraformer.min.js"></script>
-	<script src="//cdn-geoweb.s3.amazonaws.com/terraformer-arcgis-parser/1.0.4/terraformer-arcgis-parser.min.js"></script>
+	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="bower_components/terraformer/terraformer.min.js"></script>
+	<script src="bower_components/terraformer-arcgis-parser/terraformer-arcgis-parser.min.js"></script>
 	<script>
 		(function () {
 			var root = location.pathname.replace(/\/[^\/]*$/, "");
@@ -287,9 +284,8 @@
 			window.dojoConfig = dojoConfig;
 		}());
 	</script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/mobile-detect/0.4.3/mobile-detect.min.js"></script>
-	<script src="//js.arcgis.com/3.12compact/init.js"></script>
-	<!--<script src="//js.arcgis.com/o/AGOLservice_WSDOT/bridge-restriction/dojo/dojo.js"></script>-->
+	<script src="bower_components/mobile-detect/mobile-detect.min.js"></script>
+	<script src="//js.arcgis.com/3.14compact/init.js" integrity="sha384-NZM5B6OSm+yMF9PeQ34QB3/jclC3520+k5XjYOz29SKA1euRHpF8UrNZ1fvSU5IH" crossorigin="anonymous"></script>
 	<script src="Scripts/index.js"></script>
 </body>
 
