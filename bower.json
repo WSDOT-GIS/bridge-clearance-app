@@ -24,6 +24,9 @@
     "tests"
   ],
   "dependencies": {
-    "elc": "wsdot-route-locator#~2.6.0"
+    "elc": "wsdot-route-locator#~2.6.0",
+    "mobile-detect": "hgoebl/mobile-detect.js#~1.3.0",
+    "bootstrap": "~3.3.5",
+    "terraformer-arcgis-parser": "~1.0.4"
   }
 }
