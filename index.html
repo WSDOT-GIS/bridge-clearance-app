@@ -1,271 +1,283 @@
 ﻿<!DOCTYPE html>
 <html lang="en-us" role="application">
 <head>
-	<title>State Route Bridge Vertical Clearance Trip Planner</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<!-- #region favicon -->
-	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="apple-touch-icon" sizes="57x57" href="apple-touch-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="apple-touch-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="apple-touch-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
-	<link rel="icon" type="image/png" href="favicon-192x192.png" sizes="192x192">
-	<link rel="icon" type="image/png" href="favicon-160x160.png" sizes="160x160">
-	<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
-	<link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
-	<link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
-	<meta name="msapplication-TileColor" content="#007c66">
-	<meta name="msapplication-TileImage" content="mstile-144x144.png">
-	<!-- #endregion favicon -->
-	<link rel="stylesheet" href="//js.arcgis.com/3.14compact/esri/css/esri.css" integrity="sha384-QJwUWLUSZAGs19E3dJlQUiPaGetwx5sU25wya32Kat5XfN1c8jxH6U0D3Ts4hlUm" crossorigin="anonymous">
-	<link rel="stylesheet" href="//js.arcgis.com/3.14compact/dijit/themes/claro/claro.css" integrity="sha384-EwqWQ9Ix1ytOCiOF9pIBMwHHpxdHVtMKUPdWSjoIIl1qpWrcCLl7YgCjb9d4AgVW" crossorigin="anonymous">
-	<link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" />
-	<link rel="stylesheet" href="Style/index.min.css" />
+    <title>State Route Bridge Vertical Clearance Trip Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- #region favicon -->
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="57x57" href="apple-touch-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="apple-touch-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="apple-touch-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="apple-touch-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="apple-touch-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180x180.png">
+    <link rel="icon" type="image/png" href="favicon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+    <meta name="msapplication-TileColor" content="#007c66">
+    <meta name="msapplication-TileImage" content="mstile-144x144.png">
+    <!-- #endregion favicon -->
+    <link rel="stylesheet" href="//js.arcgis.com/3.14compact/esri/css/esri.css" integrity="sha384-QJwUWLUSZAGs19E3dJlQUiPaGetwx5sU25wya32Kat5XfN1c8jxH6U0D3Ts4hlUm" crossorigin="anonymous">
+    <link rel="stylesheet" href="//js.arcgis.com/3.14compact/dijit/themes/claro/claro.css" integrity="sha384-EwqWQ9Ix1ytOCiOF9pIBMwHHpxdHVtMKUPdWSjoIIl1qpWrcCLl7YgCjb9d4AgVW" crossorigin="anonymous">
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="Style/index.min.css" />
 
-	<!-- Google Analytics -->
-	<script>
-		(function (dnt) {
-			if (dnt !== "yes" && dnt !== "1") {
-				(function (i, s, o, g, r, a, m) {
-					i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-						(i[r].q = i[r].q || []).push(arguments)
-					}, i[r].l = 1 * new Date(); a = s.createElement(o),
-					m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-				})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    <!-- Google Analytics -->
+    <script>
+        (function (dnt) {
+            if (dnt !== "yes" && dnt !== "1") {
+                (function (i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-				ga('create', {
-					trackingId: 'UA-970887-21',
-					cookieDomain: 'wsdot.wa.gov'
-				});
-				ga(function (tracker) {
-					tracker.set("appName", "State Route Bridge Vertical Clearance Trip Planner");
-					tracker.send('pageview');
-				});
-			}
-		}(navigator.doNotTrack || navigator.msDoNotTrack || null));
+                ga('create', {
+                    trackingId: 'UA-970887-21',
+                    cookieDomain: 'wsdot.wa.gov'
+                });
+                ga(function (tracker) {
+                    tracker.set("appName", "State Route Bridge Vertical Clearance Trip Planner");
+                    tracker.send('pageview');
+                });
+            }
+        }(navigator.doNotTrack || navigator.msDoNotTrack || null));
 
-	</script>
-	<!-- End Google Analytics -->
+    </script>
+    <!-- End Google Analytics -->
 
-	<script>
-	// Test for browser feature support.
-	(function () {
-		var supportsHistory = Boolean(window.history);
-		var supportsClassList, supportsAddEventListener;
-		(function () {
-			var div = document.createElement("div");
-			supportsClassList = Boolean(div.classList);
-			supportsAddEventListener = Boolean(div.addEventListener);
-		}());
+    <script>
+    // Test for browser feature support.
+    (function () {
+        var supportsHistory = Boolean(window.history);
+        var supportsClassList, supportsAddEventListener;
+        (function () {
+            var div = document.createElement("div");
+            supportsClassList = Boolean(div.classList);
+            supportsAddEventListener = Boolean(div.addEventListener);
+        }());
 
-		var unsupportedFeatures = [];
-		// Show an alert if the browser doesn't support a required feature.
-		if (!(supportsHistory && supportsClassList && supportsAddEventListener)) {
-			if (!supportsHistory) {
-				unsupportedFeatures.push("history");
-			}
-			if (!supportsClassList) {
-				unsupportedFeatures.push("classlist");
-			}
-			if (!supportsAddEventListener) {
-				unsupportedFeatures.push("add event listener");
-			}
-			alert("Obsolete browser detected. This application will not work correctly in the current browser. Please upgrade this browser to the latest version or try a different browser.");
-			
-			window.navigate("http://www.wsdot.wa.gov/Bridge/Structures/BVCTP.htm");
-		}
-	}());
-	</script>
+        var unsupportedFeatures = [];
+        // Show an alert if the browser doesn't support a required feature.
+        if (!(supportsHistory && supportsClassList && supportsAddEventListener)) {
+            if (!supportsHistory) {
+                unsupportedFeatures.push("history");
+            }
+            if (!supportsClassList) {
+                unsupportedFeatures.push("classlist");
+            }
+            if (!supportsAddEventListener) {
+                unsupportedFeatures.push("add event listener");
+            }
+            alert("Obsolete browser detected. This application will not work correctly in the current browser. Please upgrade this browser to the latest version or try a different browser.");
+            
+            window.navigate("http://www.wsdot.wa.gov/Bridge/Structures/BVCTP.htm");
+        }
+    }());
+    </script>
 </head>
 <body class="claro">
 
-	<div id="warningModal" class="modal fade" role="dialog" data-backdrop="static">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<!--<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>-->
-					<h4 class="modal-title"><span class="glyphicon glyphicon-exclamation-sign"></span> Disclaimer</h4>
-				</div>
-				<div class="modal-body">
-					<p>This Bridge Vertical Clearance Trip Planner is a guide for vertical clearances, but because of physical changes to highways and other possible inconsistencies due to natural phenomena (expansion and contraction of highway facilities due to temperature, natural or unnatural material deposition on the pavement, other transient and lasting unforeseen events, etc.), new construction, pavement overlays, lane reconfiguration, etc., it cannot be guaranteed. As stated on all permits in accordance with state law, the operator is responsible to identify, navigate and clear all obstructions. <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=468-38-070" target="_blank">WAC 468-38-070</a> states, <q>It is the responsibility of the permit applicant to check, or prerun, the proposed route and provide for safe maneuvers around the obstruction or detours as necessary.</q>  For permitting purposes, the permit applicant is identified on the permit as the entry associated to “Company Name”.</p>
-					<p>Note that the lane in which the maximum and minimum clearances occur are not listed. This must be determined by the operator. In accordance with state law, the owner or operator of a vehicle or combination of vehicles shall exercise due care in determining that sufficient vertical clearance is provided upon the public highways where the vehicle or combination of vehicles is being operated. Due to the variations in structure clearance partially cataloged above, such users should not assume that clearance is in excess of what is published, and should utilize check and prerun methods to assure safe passage.</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Accept</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+    <div id="warningModal" class="modal fade" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>-->
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-exclamation-sign"></span> Disclaimer</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        This Bridge Vertical Clearance Trip Planner is a guide for vertical clearances, but because of physical changes to
+                        highways and other possible inconsistencies due to natural phenomena (expansion and contraction of highway facilities
+                        due to temperature, natural or unnatural material deposition on the pavement, other transient and lasting unforeseen events,
+                        etc.), new construction, pavement overlays, lane reconfiguration, etc., it cannot be guaranteed. As stated on all permits
+                        in accordance with state law, the operator is responsible to identify, navigate and clear all obstructions.
+                        <a href="http://apps.leg.wa.gov/WAC/default.aspx?cite=468-38-070" target="_blank">WAC 468-38-070</a> states,
+                        <q>
+                            It is the responsibility of the permit applicant to check, or prerun, the proposed route and provide for safe maneuvers
+                            around the obstruction or detours as necessary.
+                        </q>
+                        For permitting purposes, the permit applicant is identified on the permit in the field titled “Company Name”.
+                    </p>
+                    <p>Note that the lane in which the maximum and minimum clearances occur are not listed. This must be determined by the operator. In accordance with state law, the owner or operator of a vehicle or combination of vehicles shall exercise due care in determining that sufficient vertical clearance is provided upon the public highways where the vehicle or combination of vehicles is being operated. Due to the variations in structure clearance partially cataloged above, such users should not assume that clearance is in excess of what is published, and should utilize check and prerun methods to assure safe passage.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Accept</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
-	<div id="topNavBar" class="navbar navbar-default" role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<h1 class="navbar-brand">
-					<a href="http://www.wsdot.wa.gov/" target="_blank"><img class="wsdot-logo" src="Images/WSDOT_ACRONYM_logo.png" alt="WSDOT" /></a>
-					<span class="hidden-xs">State Route</span>
-					Bridge<span class="hidden-xs"> Vertical</span> Clearance<span class="hidden-xs"> Trip Planner</span>
-				</h1>
-			</div>
+    <div id="topNavBar" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <h1 class="navbar-brand">
+                    <a href="http://www.wsdot.wa.gov/" target="_blank"><img class="wsdot-logo" src="Images/WSDOT_ACRONYM_logo.png" alt="WSDOT" /></a>
+                    <span class="hidden-xs">State Route</span>
+                    Bridge<span class="hidden-xs"> Vertical</span> Clearance<span class="hidden-xs"> Trip Planner</span>
+                </h1>
+            </div>
 
-			<ul class="nav navbar-nav navbar-right hidden-xs">
-				<li><a href="http://www.wsdot.wa.gov/Bridge/BVCTP/feedback.htm" target="_blank"><span class="glyphicon glyphicon-comment"></span> Feedback</a></li>
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle hamburger" data-toggle="dropdown">&equiv;</a>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="http://www.wsdot.wa.gov/news/" target="_blank"><span class="glyphicon glyphicon-bullhorn"></span> News</a></li>
-						<li><a href="http://www.wsdot.wa.gov/employment/" target="_blank"><span class="glyphicon glyphicon-link"></span> Employment</a></li>
-						<li><a href="http://www.wsdot.wa.gov/goodtogo/" target="_blank"><span class="glyphicon glyphicon-link"></span> Good To Go!</a></li>
-						<li><a href="http://www.wsdot.wa.gov/contact/" target="_blank"><span class="glyphicon glyphicon-envelope"></span> Contact Us</a></li>
-						<li><a href="http://www.wsdot.wa.gov/" target="_blank"><span class="glyphicon glyphicon-home"></span> WSDOT Home</a></li>
-					</ul>
-				</li>
+            <ul class="nav navbar-nav navbar-right hidden-xs">
+                <li><a href="http://www.wsdot.wa.gov/Bridge/BVCTP/feedback.htm" target="_blank"><span class="glyphicon glyphicon-comment"></span> Feedback</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle hamburger" data-toggle="dropdown">&equiv;</a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="http://www.wsdot.wa.gov/news/" target="_blank"><span class="glyphicon glyphicon-bullhorn"></span> News</a></li>
+                        <li><a href="http://www.wsdot.wa.gov/employment/" target="_blank"><span class="glyphicon glyphicon-link"></span> Employment</a></li>
+                        <li><a href="http://www.wsdot.wa.gov/goodtogo/" target="_blank"><span class="glyphicon glyphicon-link"></span> Good To Go!</a></li>
+                        <li><a href="http://www.wsdot.wa.gov/contact/" target="_blank"><span class="glyphicon glyphicon-envelope"></span> Contact Us</a></li>
+                        <li><a href="http://www.wsdot.wa.gov/" target="_blank"><span class="glyphicon glyphicon-home"></span> WSDOT Home</a></li>
+                    </ul>
+                </li>
 
-			</ul>
-		</div>
-	</div>
-	<div class="container-fluid">
-		<div class="row row-offcanvas row-offcanvas-left">
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row row-offcanvas row-offcanvas-left">
 
 
-			<!-- Tools panel-->
-			<div class="col-xs-9 col-sm-3 col-md-3 sidebar-offcanvas" id="sidebar">
-				<div class="panel">
-					<ul id="tabs" class="nav nav-tabs">
-						<li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span> Input</a></li>
-						<li><a href="#basemaps"><span class="glyphicon glyphicon-globe"></span> Basemaps</a></li>
-					</ul>
-					<div id="tabContent" class="tab-content">
-						<div class="tab-pane active" id="bridgetools">
-							<form id="clearanceForm" role="form">
-								<div class="form-group">
-									<label>Enter Vehicle Height</label>
-									<div class="input-group">
-										<input class="form-control" id="feetBox" name="feet" type="number" min="0" />
-										<label for="feetBox" class="input-group-addon">ft.</label>
-										<input class="form-control" id="inchesBox" name="inches" type="number" min="0" />
-										<label for="inchesBox" class="input-group-addon">in.</label>
-									</div>
-								</div>
-								<div id="tooHighWarning" class="alert alert-warning hidden" role="alert">
-									<span class="glyphicon glyphicon-warning-sign"></span> This application intended to assist users with overheight clearances up to 16 feet.
-									For taller loads, please follow steps in this link:
-									<a class="alert-link" href="http://www.wsdot.wa.gov/CommercialVehicle/superload.htm" target="_blank">Superload Requirements</a>.
-								</div>
-								<div id="heightRequiredWarning" class="alert alert-warning hidden" role="alert">
-									<span class="glyphicon glyphicon-warning-sign"></span> You must enter a value in feet and/or inches box.
-								</div>
-								<div class="form-group ui-widget">
-									<label for="routeFilterBox">Enter Route Number (optional)</label>
-									<input id="routeFilterBox" class="form-control" name="route" type="text" 
-										   autocomplete="off" inputmode="numeric" maxlength="3" />
-								</div>
-								<div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
-									<span class="glyphicon glyphicon-warning-sign"></span> Invalid Route.
-								</div>
-								<div class="checkbox">
-									<input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" />
-									<label for="includeNonMainlineCheckbox">Include State Route ramps, spurs, couplets</label>
-									<div class="alert alert-warning ramp-warning">
-										<span class="glyphicon glyphicon-warning-sign"></span> <strong>WARNING!</strong>
-										Local roads and streets under state routes are not available. Please contact the appropriate
-										<a href="http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">local agency</a>
-										for this information.
-									</div>
-								</div>
-								<div class="btn-group btn-group-justified">
-									<div class="btn-group">
-										<button type="submit" class="btn btn-success">Submit</button>
-									</div>
-									<div class="btn-group">
-										<button type="reset" class="btn btn-default">Reset</button>
-									</div>
-								</div>
-							</form>
-							<hr />
-							<div id="results" class="hidden">
-								<p>
-									<span class="glyphicon glyphicon-zoom-in"></span>
-									<a id="zoomToResultsLink" href="#">
-										Zoom to results
-									</a>
-								</p>
-								<table id="resultsTable" class="table">
-									<thead>
-										<tr>
-											<th></th>
-											<th>Count</th>
-											<th>Description</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><div class="legend-symbol legend-cannot-pass"></div></td>
-											<td id="noPassCount" data-on-count="0" data-under-count="0"></td>
-											<td>Vehicle will not pass under</td>
-										</tr>
-										<tr>
-											<td><div class="legend-symbol legend-can-pass"></div></td>
-											<td id="somePassCount" data-on-count="0" data-under-count="0"></td>
-											<td>Vehicle could pass under if correct lane is chosen</td>
-										</tr>
-									</tbody>
-								</table>
-								<div class="bg-info">
-									<p>
-										<span class="glyphicon glyphicon-info-sign"></span> Click on the colored dots on the map for detailed info.
-									</p>
-									<p>
-										<span class="glyphicon glyphicon-info-sign"></span> To obtain a permit: <a href="http://www.wsdot.wa.gov/CommercialVehicle/default.htm" target="_blank">Commercial Vehicle Services</a>
-									</p>
-								</div>
-							</div>
-						</div>
-						<div class="tab-pane" id="basemaps">
-							<div id="basemapGallery" class="claro"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- Map -->
-			<div id="map" class="col-sm-9 col-md-9" role="img">
-				<button id="homeButton">Home</button>
-				<div id="geocoder"></div>
-				<div id="tools">
-					<button type="button" class="btn btn-primary visible-xs" data-toggle="offcanvas" title="Toggle Tools"><span class="glyphicon glyphicon-list"></span></button>
-				</div>
-				<progress id="mapProgress" class="map-progress">Loading map data...</progress>
-			</div>
-		</div> <!--row-->
-	</div>
-	<script src="bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="bower_components/terraformer/terraformer.min.js"></script>
-	<script src="bower_components/terraformer-arcgis-parser/terraformer-arcgis-parser.min.js"></script>
-	<script>
-		(function () {
-			var root = location.pathname.replace(/\/[^\/]*$/, "");
-			var dojoConfig = {
-				async: true,
-				packages: [{
-					name: "elc",
-					location: [root, "bower_components/elc"].join("/"),
-					main: "RouteLocator"
-				}]
-			};
-			window.dojoConfig = dojoConfig;
-		}());
-	</script>
-	<script src="bower_components/mobile-detect/mobile-detect.min.js"></script>
-	<script src="//js.arcgis.com/3.14compact/init.js" integrity="sha384-NZM5B6OSm+yMF9PeQ34QB3/jclC3520+k5XjYOz29SKA1euRHpF8UrNZ1fvSU5IH" crossorigin="anonymous"></script>
-	<script src="Scripts/index.js"></script>
+            <!-- Tools panel-->
+            <div class="col-xs-9 col-sm-3 col-md-3 sidebar-offcanvas" id="sidebar">
+                <div class="panel">
+                    <ul id="tabs" class="nav nav-tabs">
+                        <li class="active"><a href="#bridgetools"><span class="glyphicon glyphicon-road"></span> Input</a></li>
+                        <li><a href="#basemaps"><span class="glyphicon glyphicon-globe"></span> Basemaps</a></li>
+                    </ul>
+                    <div id="tabContent" class="tab-content">
+                        <div class="tab-pane active" id="bridgetools">
+                            <form id="clearanceForm" role="form">
+                                <div class="form-group">
+                                    <label>Enter Vehicle Height</label>
+                                    <div class="input-group">
+                                        <input class="form-control" id="feetBox" name="feet" type="number" min="0" />
+                                        <label for="feetBox" class="input-group-addon">ft.</label>
+                                        <input class="form-control" id="inchesBox" name="inches" type="number" min="0" />
+                                        <label for="inchesBox" class="input-group-addon">in.</label>
+                                    </div>
+                                </div>
+                                <div id="tooHighWarning" class="alert alert-warning hidden" role="alert">
+                                    <span class="glyphicon glyphicon-warning-sign"></span> This application intended to assist users with overheight clearances up to 16 feet.
+                                    For taller loads, please follow steps in this link:
+                                    <a class="alert-link" href="http://www.wsdot.wa.gov/CommercialVehicle/superload.htm" target="_blank">Superload Requirements</a>.
+                                </div>
+                                <div id="heightRequiredWarning" class="alert alert-warning hidden" role="alert">
+                                    <span class="glyphicon glyphicon-warning-sign"></span> You must enter a value in feet and/or inches box.
+                                </div>
+                                <div class="form-group ui-widget">
+                                    <label for="routeFilterBox">Enter Route Number (optional)</label>
+                                    <input id="routeFilterBox" class="form-control" name="route" type="text"
+                                           autocomplete="off" inputmode="numeric" maxlength="3" />
+                                </div>
+                                <div id="invalidRouteAlert" class="alert alert-warning hidden" role="alert">
+                                    <span class="glyphicon glyphicon-warning-sign"></span> Invalid Route.
+                                </div>
+                                <div class="checkbox">
+                                    <input id="includeNonMainlineCheckbox" type="checkbox" name="include-non-mainline" checked="checked" />
+                                    <label for="includeNonMainlineCheckbox">Include State Route ramps, spurs, couplets</label>
+                                    <div class="alert alert-warning ramp-warning">
+                                        <span class="glyphicon glyphicon-warning-sign"></span> <strong>WARNING!</strong>
+                                        Local roads and streets under state routes are not available. Please contact the appropriate
+                                        <a href="http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">local agency</a>
+                                        for this information.
+                                    </div>
+                                </div>
+                                <div class="btn-group btn-group-justified">
+                                    <div class="btn-group">
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button type="reset" class="btn btn-default">Reset</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr />
+                            <div id="results" class="hidden">
+                                <p>
+                                    <span class="glyphicon glyphicon-zoom-in"></span>
+                                    <a id="zoomToResultsLink" href="#">
+                                        Zoom to results
+                                    </a>
+                                </p>
+                                <table id="resultsTable" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Count</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><div class="legend-symbol legend-cannot-pass"></div></td>
+                                            <td id="noPassCount" data-on-count="0" data-under-count="0"></td>
+                                            <td>Vehicle will not pass under</td>
+                                        </tr>
+                                        <tr>
+                                            <td><div class="legend-symbol legend-can-pass"></div></td>
+                                            <td id="somePassCount" data-on-count="0" data-under-count="0"></td>
+                                            <td>Vehicle could pass under if correct lane is chosen</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="bg-info">
+                                    <p>
+                                        <span class="glyphicon glyphicon-info-sign"></span> Click on the colored dots on the map for detailed info.
+                                    </p>
+                                    <p>
+                                        <span class="glyphicon glyphicon-info-sign"></span> To obtain a permit: <a href="http://www.wsdot.wa.gov/CommercialVehicle/default.htm" target="_blank">Commercial Vehicle Services</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="basemaps">
+                            <div id="basemapGallery" class="claro"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Map -->
+            <div id="map" class="col-sm-9 col-md-9" role="img">
+                <button id="homeButton">Home</button>
+                <div id="geocoder"></div>
+                <div id="tools">
+                    <button type="button" class="btn btn-primary visible-xs" data-toggle="offcanvas" title="Toggle Tools"><span class="glyphicon glyphicon-list"></span></button>
+                </div>
+                <progress id="mapProgress" class="map-progress">Loading map data...</progress>
+            </div>
+        </div> <!--row-->
+    </div>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/terraformer/terraformer.min.js"></script>
+    <script src="bower_components/terraformer-arcgis-parser/terraformer-arcgis-parser.min.js"></script>
+    <script>
+        (function () {
+            var root = location.pathname.replace(/\/[^\/]*$/, "");
+            var dojoConfig = {
+                async: true,
+                packages: [{
+                    name: "elc",
+                    location: [root, "bower_components/elc"].join("/"),
+                    main: "RouteLocator"
+                }]
+            };
+            window.dojoConfig = dojoConfig;
+        }());
+    </script>
+    <script src="bower_components/mobile-detect/mobile-detect.min.js"></script>
+    <script src="//js.arcgis.com/3.14compact/init.js" integrity="sha384-NZM5B6OSm+yMF9PeQ34QB3/jclC3520+k5XjYOz29SKA1euRHpF8UrNZ1fvSU5IH" crossorigin="anonymous"></script>
+    <script src="Scripts/index.js"></script>
 </body>
 
 </html>
