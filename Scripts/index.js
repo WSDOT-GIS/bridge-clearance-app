@@ -758,6 +758,7 @@ require([
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
+			orderByFields: ['VCMIN DESC'],
 			infoTemplate: infoTemplate
 		});
 		bridgeOnLayer.setRenderer(lineRenderer);
@@ -769,6 +770,7 @@ require([
 		bridgeUnderLayer = new FeatureLayer(pointsServiceUrl, {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
+			orderByFields: ['VCMIN DESC'],
 			outFields: ["*"
 				////"structure_id",
 				////"bridge_no",
