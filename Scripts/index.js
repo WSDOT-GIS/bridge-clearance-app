@@ -40,7 +40,7 @@ require([
 	 */
 
 	/**
-	 * Rejects keyboard input if it is non-numeric. 
+	 * Rejects keyboard input if it is non-numeric.
 	 * Special characters (e.g., Delete, Tab) are also allowed.
 	 * @param {KeyboardEvent} e
 	 * @this {HTMLInputElement}
@@ -89,7 +89,7 @@ require([
 	 * @returns {Extent}
 	 */
 	function getExtentOfGraphics(graphics) {
-		// Convert the graphics' geometries from ArcGIS to Terraformer Primitive. 
+		// Convert the graphics' geometries from ArcGIS to Terraformer Primitive.
 		// Output will be an array of Terraformer geometry objects.
 		var geoJsons = graphics.map(function (g) {
 			return Terraformer.ArcGIS.parse(g.geometry);
@@ -129,7 +129,7 @@ require([
 		}
 
 		var disabledLinks = document.querySelectorAll(".disabled > a");
-		
+
 		var link;
 		for (var i = 0; i < disabledLinks.length; i++) {
 			link = disabledLinks[0];
@@ -139,8 +139,8 @@ require([
 
 	disableLinkBasedOnClass();
 
-	linesServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
-	pointsServiceUrl = "http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
+	linesServiceUrl = "http://data.wsdot.wa.gov/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
+	pointsServiceUrl = "http://data.wsdot.wa.gov/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
@@ -438,7 +438,7 @@ require([
 		table.setAttribute("class", "bridge-info table table-striped table-hover");
 		table.createTHead();
 		tbody = table.createTBody();
-		
+
 		if (fieldsToInclude) {
 			fieldsToInclude.forEach(function (name) {
 				if (o.hasOwnProperty(name)) {
@@ -654,7 +654,7 @@ require([
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {Object} evt
 	 * @param {Error} evt.error
 	 * @param {Object} evt.target
@@ -831,7 +831,7 @@ require([
 	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" } }, "basemapGallery");
 	basemapGallery.startup();
 
-	// When the basemap gallery loads, select the first basemap with 
+	// When the basemap gallery loads, select the first basemap with
 	// the title "WSDOT Base Map". (There should be only one, but that's what
 	// the code is doing.)
 	basemapGallery.on("load", function () {
@@ -983,7 +983,7 @@ require([
 				}
 			});
 			if (count === 0) {
-				// {feet: "5", inches: "", route: "", include-non-mainline: false} 
+				// {feet: "5", inches: "", route: "", include-non-mainline: false}
 				msg = ["No bridges found lower than ", state.feet, "′"];
 				if (state.inches) {
 					msg.push(state.inches, '″');
@@ -1149,7 +1149,7 @@ require([
 				}
 			});
 
-			
+
 
 			document.body.appendChild(list);
 			////routeBox.setAttribute("list", list.id);
@@ -1227,7 +1227,7 @@ require([
 			});
 		}
 
-		
+
 	});
 
 });
