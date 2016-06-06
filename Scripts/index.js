@@ -771,36 +771,7 @@ require([
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
 			orderByFields: ['VCMIN DESC'],
-			outFields: ["*"
-				////"structure_id",
-				////"bridge_no",
-				////"lrs_route",
-				////"lrs_traffic_flow_beg",
-				////"crossing_description",
-				////"facilities_carried",
-				////"feature_intersected",
-				////"structure_length",
-				////"VCMAX",
-				////"VCMIN",
-
-				////////"objectid",
-				////////"location_gid",
-				////////"directional_indicator_LOC",
-				////////"arm_beg",
-				////////"arm_end",
-				////////"StackOrder",
-				////////"ahead_back_indicator_1",
-				////////"Latitude",
-				////////"Longitude",
-				////////"vert_clrnc_route_max",
-				////////"vert_clrnc_route_min",
-				////////"vert_clrnc_rvrs_max",
-				////////"vert_clrnc_rvrs_min",
-				////////"min_vert_deck",
-				////////"on_under_code",
-				////////"RP",
-				////////"SHAPE"
-			],
+			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
 
