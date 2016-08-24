@@ -1,4 +1,5 @@
-﻿// From http://jqueryui.com/autocomplete/#combobox
+/*eslint-env jquery*/
+// From http://jqueryui.com/autocomplete/#combobox
 
 (function ($) {
 	$.widget("custom.combobox", {
@@ -12,7 +13,7 @@
 		},
 		_createAutocomplete: function () {
 			var selected = this.element.children(":selected"),
-			value = selected.val() ? selected.text() : "";
+				value = selected.val() ? selected.text() : "";
 			this.input = $("<input>")
 			.appendTo(this.wrapper)
 			.val(value)
@@ -38,7 +39,7 @@
 		},
 		_createShowAllButton: function () {
 			var input = this.input,
-			wasOpen = false;
+				wasOpen = false;
 			$("<a>")
 			.attr("tabIndex", -1)
 			.attr("title", "Show All Items")
@@ -85,8 +86,8 @@
 			}
 			// Search for a match (case-insensitive)
 			var value = this.input.val(),
-			valueLowerCase = value.toLowerCase(),
-			valid = false;
+				valueLowerCase = value.toLowerCase(),
+				valid = false;
 			this.element.children("option").each(function () {
 				if ($(this).text().toLowerCase() === valueLowerCase) {
 					this.selected = valid = true;
