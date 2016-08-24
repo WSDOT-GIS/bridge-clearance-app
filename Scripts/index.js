@@ -1,4 +1,5 @@
-﻿/*global require, Terraformer, MobileDetect */
+/*eslint-env jquery*/
+/*global Terraformer, MobileDetect */
 require([
 	"esri/map",
 	"esri/graphic",
@@ -40,7 +41,7 @@ require([
 	 */
 
 	/**
-	 * Rejects keyboard input if it is non-numeric. 
+	 * Rejects keyboard input if it is non-numeric.
 	 * Special characters (e.g., Delete, Tab) are also allowed.
 	 * @param {KeyboardEvent} e
 	 * @this {HTMLInputElement}
@@ -89,7 +90,7 @@ require([
 	 * @returns {Extent}
 	 */
 	function getExtentOfGraphics(graphics) {
-		// Convert the graphics' geometries from ArcGIS to Terraformer Primitive. 
+		// Convert the graphics' geometries from ArcGIS to Terraformer Primitive.
 		// Output will be an array of Terraformer geometry objects.
 		var geoJsons = graphics.map(function (g) {
 			return Terraformer.ArcGIS.parse(g.geometry);
@@ -129,7 +130,7 @@ require([
 		}
 
 		var disabledLinks = document.querySelectorAll(".disabled > a");
-		
+
 		var link;
 		for (var i = 0; i < disabledLinks.length; i++) {
 			link = disabledLinks[0];
@@ -438,7 +439,7 @@ require([
 		table.setAttribute("class", "bridge-info table table-striped table-hover");
 		table.createTHead();
 		tbody = table.createTBody();
-		
+
 		if (fieldsToInclude) {
 			fieldsToInclude.forEach(function (name) {
 				if (o.hasOwnProperty(name)) {
@@ -654,13 +655,13 @@ require([
 	}
 
 	/**
-	 * 
+	 *
 	 * @param {Object} evt
 	 * @param {Error} evt.error
 	 * @param {Object} evt.target
 	 */
 	function handleLayerError(evt) {
-		console.error("layer error", evt);
+		console.error("layer error", evt); // eslint-disable-line no-console
 		document.head.innerHTML = "";
 		document.body.innerHTML = "<p>A problem was encountered contacting the bridge services. Please try again later.</p>";
 	}
@@ -714,7 +715,7 @@ require([
 			}
 		}
 
-		milepostLayer = new ArcGISDynamicMapServiceLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/MilepostValues/MapServer", {
+		milepostLayer = new ArcGISDynamicMapServiceLayer("http://data.wsdot.wa.gov/arcgis/rest/services/Shared/MilepostValues/MapServer", {
 			id: "mileposts"
 		});
 		map.addLayer(milepostLayer);
@@ -804,11 +805,12 @@ require([
 	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" } }, "basemapGallery");
 	basemapGallery.startup();
 
-	// When the basemap gallery loads, select the first basemap with 
+	// When the basemap gallery loads, select the first basemap with
 	// the title "WSDOT Base Map". (There should be only one, but that's what
 	// the code is doing.)
 	basemapGallery.on("load", function () {
-		var basemap, basemaps = basemapGallery.basemaps.filter(function (basemap) {
+		var basemap, basemaps;
+		basemaps = basemapGallery.basemaps.filter(function (basemap) {
 			return basemap.title === "WSDOT Base Map";
 		});
 		if (basemaps && basemaps.length > 0) {
@@ -956,7 +958,7 @@ require([
 				}
 			});
 			if (count === 0) {
-				// {feet: "5", inches: "", route: "", include-non-mainline: false} 
+				// {feet: "5", inches: "", route: "", include-non-mainline: false}
 				msg = ["No bridges found lower than ", state.feet, "′"];
 				if (state.inches) {
 					msg.push(state.inches, '″');
@@ -1008,7 +1010,7 @@ require([
 				}
 			}
 		} catch (err) {
-			console.error(err);
+			console.error(err); // eslint-disable-line no-console
 			state = null;
 		}
 		return state;
@@ -1121,7 +1123,7 @@ require([
 			}
 		});
 
-			
+
 
 		document.body.appendChild(list);
 		////routeBox.setAttribute("list", list.id);
@@ -1193,12 +1195,12 @@ require([
 					}
 				},
 				errorHandler: function (error) {
-					console.error("elc error", error);
+					console.error("elc error", error); // eslint-disable-line no-console
 				}
 			});
 		}
 
-		
+
 	});
 
 });

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en-us" role="application">
 <head>
     <title>State Route Bridge Vertical Clearance Trip Planner</title>
@@ -24,33 +24,32 @@
     <meta name="msapplication-TileColor" content="#007c66">
     <meta name="msapplication-TileImage" content="mstile-144x144.png">
     <!-- #endregion favicon -->
-    <link rel="stylesheet" href="//js.arcgis.com/3.14compact/esri/css/esri.css" integrity="sha384-QJwUWLUSZAGs19E3dJlQUiPaGetwx5sU25wya32Kat5XfN1c8jxH6U0D3Ts4hlUm" crossorigin="anonymous">
-    <link rel="stylesheet" href="//js.arcgis.com/3.14compact/dijit/themes/claro/claro.css" integrity="sha384-EwqWQ9Ix1ytOCiOF9pIBMwHHpxdHVtMKUPdWSjoIIl1qpWrcCLl7YgCjb9d4AgVW" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.17compact/esri/css/esri.css" integrity="sha384-j35n78UB1GIQbQXYEVrKD42S0/FV+DvF0YRL3grmvjplgtlwLE+d9vXCDzNH4Zg+" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.17compact/dijit/themes/claro/claro.css" integrity="sha384-jGMGVqnelCy6+YpPdOzkFc0FzpwpxyH699kFTvsXbHHky9+s5PusyybGjgaRY3/Z" crossorigin="anonymous">
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="Style/index.min.css" />
 
     <!-- Google Analytics -->
     <script>
-        (function (dnt) {
+        // Setup Google Analytics, but not if user has specified that they don't want to be tracked.
+        (function (dnt, cookieDomain) {
+            var scriptTag, hostRe = new RegExp(cookieDomain.replace(".", "\\.") + "$");
             if (dnt !== "yes" && dnt !== "1") {
-                (function (i, s, o, g, r, a, m) {
-                    i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                        (i[r].q = i[r].q || []).push(arguments)
-                    }, i[r].l = 1 * new Date(); a = s.createElement(o),
-                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-                ga('create', {
-                    trackingId: 'UA-970887-21',
-                    cookieDomain: 'wsdot.wa.gov'
-                });
+                window.ga = window.ga || function () { (ga.q = ga.q || []).push(arguments) }; ga.l = +new Date;
+                ga('create', 'UA-970887-21', hostRe.test(location.host) ? cookieDomain : "auto");
                 ga(function (tracker) {
                     tracker.set("appName", "State Route Bridge Vertical Clearance Trip Planner");
                     tracker.send('pageview');
                 });
+
+                // Add the script tag.
+                scriptTag = document.createElement("script");
+                scriptTag.src = "//www.google-analytics.com/analytics.js";
+                scriptTag.async = true;
+                document.head.appendChild(scriptTag);
             }
-        }(navigator.doNotTrack || navigator.msDoNotTrack || null));
+        }(navigator.doNotTrack || navigator.msDoNotTrack || null, "wsdot.wa.gov"));
 
     </script>
     <!-- End Google Analytics -->
@@ -79,7 +78,7 @@
                 unsupportedFeatures.push("add event listener");
             }
             alert("Obsolete browser detected. This application will not work correctly in the current browser. Please upgrade this browser to the latest version or try a different browser.");
-            
+
             window.navigate("http://www.wsdot.wa.gov/Bridge/Structures/BVCTP.htm");
         }
     }());
@@ -276,7 +275,7 @@
         }());
     </script>
     <script src="bower_components/mobile-detect/mobile-detect.min.js"></script>
-    <script src="//js.arcgis.com/3.14compact/init.js" integrity="sha384-NZM5B6OSm+yMF9PeQ34QB3/jclC3520+k5XjYOz29SKA1euRHpF8UrNZ1fvSU5IH" crossorigin="anonymous"></script>
+    <script src="https://js.arcgis.com/3.17compact/init.js" integrity="sha384-RB5nuwRMb/Jgb37gba7OykpFGdeA8L4kYmR5vUWj/AVxVg/78ElgUAYTivf1d3LI" crossorigin="anonymous"></script>
     <script src="Scripts/index.js"></script>
 </body>
 
