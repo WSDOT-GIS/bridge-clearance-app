@@ -97,9 +97,6 @@
     <Content Include="mstile-310x150.png" />
     <Content Include="mstile-310x310.png" />
     <Content Include="mstile-70x70.png" />
-    <Content Include="Scripts\index.min.js.map">
-      <DependentUpon>index.min.js</DependentUpon>
-    </Content>
     <Content Include="bower_components\es6-shim\es6-shim.map" />
     <Content Include="bower_components\jquery\dist\jquery.min.map" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
@@ -113,20 +110,11 @@
     <None Include="Properties\PublishProfiles\Test.pubxml">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Scripts\jquery-custom-combobox.min.js.map">
-      <DependentUpon>jquery-custom-combobox.min.js</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
     <Content Include="Scripts\index.js" />
-    <Content Include="Scripts\index.min.js">
-      <DependentUpon>index.js</DependentUpon>
-    </Content>
     <Content Include="Scripts\jquery-custom-combobox.js" />
-    <Content Include="Scripts\jquery-custom-combobox.min.js">
-      <DependentUpon>jquery-custom-combobox.js</DependentUpon>
-    </Content>
     <Content Include="Style\index.css" />
     <Content Include="Style\index.min.css">
       <DependentUpon>index.css</DependentUpon>
