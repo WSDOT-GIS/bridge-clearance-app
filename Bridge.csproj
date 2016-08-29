@@ -39,17 +39,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="apple-touch-icon-114x114.png" />
-    <Content Include="apple-touch-icon-120x120.png" />
-    <Content Include="apple-touch-icon-144x144.png" />
-    <Content Include="apple-touch-icon-152x152.png" />
-    <Content Include="apple-touch-icon-180x180.png" />
-    <Content Include="apple-touch-icon-57x57.png" />
-    <Content Include="apple-touch-icon-60x60.png" />
-    <Content Include="apple-touch-icon-72x72.png" />
-    <Content Include="apple-touch-icon-76x76.png" />
-    <Content Include="apple-touch-icon-precomposed.png" />
-    <Content Include="apple-touch-icon.png" />
+    <Content Include="apple-touch-icon-114x114.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-120x120.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-144x144.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-152x152.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-180x180.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-57x57.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-60x60.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-72x72.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-76x76.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon-precomposed.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="apple-touch-icon.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap.css" />
@@ -57,6 +79,10 @@
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="bower_components\bootstrap\dist\js\bootstrap.js" />
     <Content Include="bower_components\bootstrap\dist\js\bootstrap.min.js" />
+    <Content Include="bower_components\core.js\client\core.js" />
+    <Content Include="bower_components\core.js\client\core.min.js" />
+    <Content Include="bower_components\customevent-polyfill\customevent-polyfill.js" />
+    <Content Include="bower_components\customevent-polyfill\customevent-polyfill.min.js" />
     <Content Include="bower_components\elc\elc-ui\ArcGisElcUI.js" />
     <Content Include="bower_components\elc\elc-ui\elc-ui-behavior.css" />
     <Content Include="bower_components\elc\elc-ui\elc-ui.css" />
@@ -83,20 +109,39 @@
     <Content Include="bower_components\terraformer-arcgis-parser\terraformer-arcgis-parser.min.js" />
     <Content Include="bower_components\terraformer\terraformer.js" />
     <Content Include="bower_components\terraformer\terraformer.min.js" />
-    <Content Include="browserconfig.xml" />
-    <Content Include="favicon-160x160.png" />
-    <Content Include="favicon-16x16.png" />
-    <Content Include="favicon-192x192.png" />
-    <Content Include="favicon-32x32.png" />
-    <Content Include="favicon-96x96.png" />
+    <Content Include="browserconfig.xml">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="favicon-160x160.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="favicon-16x16.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="favicon-192x192.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="favicon-32x32.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="favicon-96x96.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="Images\MUTCD_W12-2.svg" />
     <Content Include="Images\WSDOT_ACRONYM_logo.png" />
-    <Content Include="mstile-144x144.png" />
-    <Content Include="mstile-150x150.png" />
-    <Content Include="mstile-310x150.png" />
-    <Content Include="mstile-310x310.png" />
-    <Content Include="mstile-70x70.png" />
+    <Content Include="mstile-144x144.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="mstile-150x150.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="mstile-310x150.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
+    <Content Include="mstile-310x310.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
     <Content Include="bower_components\es6-shim\es6-shim.map" />
     <Content Include="bower_components\jquery\dist\jquery.min.map" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
@@ -105,6 +150,7 @@
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="bower_components\core.js\client\core.min.js.map" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\QA.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml">
@@ -113,6 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
+    <Content Include="mstile-70x70.png">
+      <DependentUpon>favicon.ico</DependentUpon>
+    </Content>
     <Content Include="Scripts\index.js" />
     <Content Include="Scripts\jquery-custom-combobox.js" />
     <Content Include="Style\index.css" />
