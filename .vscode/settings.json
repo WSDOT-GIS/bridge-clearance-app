@@ -6,6 +6,7 @@
         "**/*.{min.js,min.js.map}": true
     },
     "files.exclude": {
+        "Images": true,
         "**/.git": true,
         "**/.svn": true,
         "**/.DS_Store": true,
@@ -22,6 +23,6 @@
         "*.csproj": true,
         "*.sln": true,
         "browserconfig.xml": true,
-        "route_params": true
+        "route_params": false
     }
 }
