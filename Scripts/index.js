@@ -1,8 +1,9 @@
 /*eslint-env jquery*/
-/*global Terraformer, MobileDetect */
+/*global Terraformer */
 require([
 	"jquery",
 	"bootstrap",
+	"mobile-detect",
 	"esri/map",
 	"esri/graphic",
 	"esri/geometry/Extent",
@@ -27,7 +28,7 @@ require([
 	"dojo/promise/all",
 	"elc",
 	"dojo/domReady!"
-], function ($, bootstrap, Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
+], function ($, bootstrap, MobileDetect, Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
 	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, RouteLocator
 ) {
