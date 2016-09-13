@@ -1,0 +1,33 @@
+{
+  "name": "Bridge Vertical Clearance Trip Planner",
+  "authors": [
+    "WSDOT-GIS"
+  ],
+  "description": "An application intended to help the public identify bridges with restricted vertical clearances up to 16 feet on State highways.",
+  "main": "index.html",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "WSDOT",
+    "bridge",
+    "clearance"
+  ],
+  "license": "Unlicense",
+  "homepage": "http://www.wsdot.wa.gov/Bridge/Structures/BVCTP.htm",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "elc": "wsdot-route-locator#~2.6.1",
+    "mobile-detect": "hgoebl/mobile-detect.js#~1.3.3",
+    "bootstrap": "~3.3.7",
+    "terraformer-arcgis-parser": "~1.0.5",
+    "core.js": "^2.4.1"
+  }
+}

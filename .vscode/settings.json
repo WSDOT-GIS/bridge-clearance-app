@@ -1,0 +1,28 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.{min.js,min.js.map}": true
+    },
+    "files.exclude": {
+        "Images": true,
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.DS_Store": true,
+        "**/*.user": true,
+        "Properties": true,
+        "bin": true,
+        "obj": true,
+        "apple-*": true,
+        "favicon*": true,
+        "mstile*": true,
+        ".vs": true,
+        "**/*.xlsx": true,
+        "**/*.sql": true,
+        "*.csproj": true,
+        "*.sln": true,
+        "browserconfig.xml": true,
+        "route_params": false
+    }
+}
