@@ -1,5 +1,9 @@
-﻿/*global require, Terraformer, MobileDetect */
+/*eslint-env jquery*/
+/*global Terraformer */
 require([
+	"jquery",
+	"bootstrap",
+	"mobile-detect",
 	"esri/map",
 	"esri/graphic",
 	"esri/geometry/Extent",
@@ -24,14 +28,14 @@ require([
 	"dojo/promise/all",
 	"elc",
 	"dojo/domReady!"
-], function (Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
+], function ($, bootstrap, MobileDetect, Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
-	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, elc
+	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, RouteLocator
 ) {
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
 
-	routeLocator = new elc.RouteLocator();
+	routeLocator = new RouteLocator();
 
 	/**
 	 * Keyboard event
@@ -139,8 +143,8 @@ require([
 
 	disableLinkBasedOnClass();
 
-	linesServiceUrl = "http://data.wsdot.wa.gov/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
-	pointsServiceUrl = "http://data.wsdot.wa.gov/ArcGIS/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
+	linesServiceUrl = "http://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
+	pointsServiceUrl = "http://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
@@ -660,7 +664,7 @@ require([
 	 * @param {Object} evt.target
 	 */
 	function handleLayerError(evt) {
-		console.error("layer error", evt);
+		console.error("layer error", evt); // eslint-disable-line no-console
 		document.head.innerHTML = "";
 		document.body.innerHTML = "<p>A problem was encountered contacting the bridge services. Please try again later.</p>";
 	}
@@ -714,7 +718,7 @@ require([
 			}
 		}
 
-		milepostLayer = new ArcGISDynamicMapServiceLayer("http://www.wsdot.wa.gov/geosvcs/ArcGIS/rest/services/Shared/MilepostValues/MapServer", {
+		milepostLayer = new ArcGISDynamicMapServiceLayer("http://data.wsdot.wa.gov/arcgis/rest/services/Shared/MilepostValues/MapServer", {
 			id: "mileposts"
 		});
 		map.addLayer(milepostLayer);
@@ -758,6 +762,7 @@ require([
 			id: "bridge-on",
 			mode: FeatureLayer.MODE_SELECTION,
 			outFields: ["*"],
+			orderByFields: ['VCMIN DESC'],
 			infoTemplate: infoTemplate
 		});
 		bridgeOnLayer.setRenderer(lineRenderer);
@@ -769,36 +774,8 @@ require([
 		bridgeUnderLayer = new FeatureLayer(pointsServiceUrl, {
 			id: "bridge-under",
 			mode: FeatureLayer.MODE_SELECTION,
-			outFields: ["*"
-				////"structure_id",
-				////"bridge_no",
-				////"lrs_route",
-				////"lrs_traffic_flow_beg",
-				////"crossing_description",
-				////"facilities_carried",
-				////"feature_intersected",
-				////"structure_length",
-				////"VCMAX",
-				////"VCMIN",
-
-				////////"objectid",
-				////////"location_gid",
-				////////"directional_indicator_LOC",
-				////////"arm_beg",
-				////////"arm_end",
-				////////"StackOrder",
-				////////"ahead_back_indicator_1",
-				////////"Latitude",
-				////////"Longitude",
-				////////"vert_clrnc_route_max",
-				////////"vert_clrnc_route_min",
-				////////"vert_clrnc_rvrs_max",
-				////////"vert_clrnc_rvrs_min",
-				////////"min_vert_deck",
-				////////"on_under_code",
-				////////"RP",
-				////////"SHAPE"
-			],
+			orderByFields: ['VCMIN DESC'],
+			outFields: ["*"],
 			infoTemplate: infoTemplate
 		});
 
@@ -835,7 +812,8 @@ require([
 	// the title "WSDOT Base Map". (There should be only one, but that's what
 	// the code is doing.)
 	basemapGallery.on("load", function () {
-		var basemap, basemaps = basemapGallery.basemaps.filter(function (basemap) {
+		var basemap, basemaps;
+		basemaps = basemapGallery.basemaps.filter(function (basemap) {
 			return basemap.title === "WSDOT Base Map";
 		});
 		if (basemaps && basemaps.length > 0) {
@@ -1035,7 +1013,7 @@ require([
 				}
 			}
 		} catch (err) {
-			console.error(err);
+			console.error(err); // eslint-disable-line no-console
 			state = null;
 		}
 		return state;
@@ -1113,48 +1091,46 @@ require([
 	document.forms.clearanceForm.addEventListener("submit", hideInfoWindow);
 
 	// Setup route data list.
-	(function () {
-		routeLocator.getRouteList(function (response) {
-			var routeBox, option, routes, list;
+	routeLocator.getRouteList().then(function (response) {
+		var routeBox, option, routes, list;
 
-			if (typeof response === "string") {
-				response = JSON.parse(response);
+		if (typeof response === "string") {
+			response = JSON.parse(response);
+		}
+		routes = response.Current;
+
+		// Sort the items in the array by route name.
+		routes.sort(function (routeA, routeB) {
+			if (routeA.name === routeB.name) {
+				return 0;
+			} else if (routeA.name > routeB.name) {
+				return 1;
+			} else {
+				return -1;
 			}
-			routes = response.Current;
-
-			// Sort the items in the array by route name.
-			routes.sort(function (routeA, routeB) {
-				if (routeA.name === routeB.name) {
-					return 0;
-				} else if (routeA.name > routeB.name) {
-					return 1;
-				} else {
-					return -1;
-				}
-			});
-
-			routeBox = document.getElementById("routeFilterBox");
-			list = document.createElement("datalist");
-			list.id = "routeList";
-
-			routes.forEach(function (/** {Route} */ r) {
-				var v;
-				if (r.name.length <= 3) {
-					v = Number(r.name);
-					option = document.createElement("option");
-					option.value = v; // r.name;
-					option.textContent = v;
-					option.setAttribute("data-lrs-types", r.lrsTypes);
-					list.appendChild(option);
-				}
-			});
-
-
-
-			document.body.appendChild(list);
-			////routeBox.setAttribute("list", list.id);
 		});
-	}());
+
+		routeBox = document.getElementById("routeFilterBox");
+		list = document.createElement("datalist");
+		list.id = "routeList";
+
+		routes.forEach(function (/** {Route} */ r) {
+			var v;
+			if (r.name.length <= 3) {
+				v = Number(r.name);
+				option = document.createElement("option");
+				option.value = v; // r.name;
+				option.textContent = v;
+				option.setAttribute("data-lrs-types", r.lrsTypes);
+				list.appendChild(option);
+			}
+		});
+
+
+
+		document.body.appendChild(list);
+		////routeBox.setAttribute("list", list.id);
+	});
 
 	// Submit when the user modifies fields.
 	(function (form, inputElements) {
@@ -1222,7 +1198,7 @@ require([
 					}
 				},
 				errorHandler: function (error) {
-					console.error("elc error", error);
+					console.error("elc error", error); // eslint-disable-line no-console
 				}
 			});
 		}
