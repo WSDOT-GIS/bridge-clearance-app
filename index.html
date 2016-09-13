@@ -285,8 +285,6 @@
         </div> <!--row-->
     </div>
     <script src="bower_components/core.js/client/core.min.js"></script>
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/terraformer/terraformer.min.js"></script>
     <script src="bower_components/terraformer-arcgis-parser/terraformer-arcgis-parser.min.js"></script>
     <script>
@@ -294,11 +292,23 @@
             var root = location.pathname.replace(/\/[^\/]*$/, "");
             var dojoConfig = {
                 async: true,
-                packages: [{
-                    name: "elc",
-                    location: [root, "bower_components/elc"].join("/"),
-                    main: "RouteLocator"
-                }]
+                packages: [
+                    {
+                        name: "elc",
+                        location: [root, "bower_components/elc"].join("/"),
+                        main: "RouteLocator"
+                    },
+                    {
+                        name: "jquery",
+                        location: [root, "bower_components/jquery/dist"].join("/"),
+                        main: "jquery.min"
+                    },
+                    {
+                        name: "bootstrap",
+                        location: [root, "bower_components/bootstrap/dist/js"].join("/"),
+                        main: "bootstrap.min"
+                    }
+                ]
             };
             window.dojoConfig = dojoConfig;
         }());
