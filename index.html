@@ -307,13 +307,17 @@
                         name: "bootstrap",
                         location: [root, "bower_components/bootstrap/dist/js"].join("/"),
                         main: "bootstrap.min"
+                    },
+                    {
+                        name: "mobile-detect",
+                        location: [root, "bower_components/mobile-detect"].join("/"),
+                        main: "mobile-detect.min"
                     }
                 ]
             };
             window.dojoConfig = dojoConfig;
         }());
     </script>
-    <script src="bower_components/mobile-detect/mobile-detect.min.js"></script>
     <script src="//js.arcgis.com/3.17compact/init.js" integrity="sha384-RB5nuwRMb/Jgb37gba7OykpFGdeA8L4kYmR5vUWj/AVxVg/78ElgUAYTivf1d3LI" crossorigin="anonymous"></script>
     <script src="Scripts/index.js"></script>
 </body>
