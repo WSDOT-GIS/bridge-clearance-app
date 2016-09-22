@@ -99,10 +99,9 @@
     <Content Include="bower_components\elc\RouteLocator.js" />
     <Content Include="bower_components\elc\routeTypeUtils.js" />
     <Content Include="bower_components\elc\routeUtils.js" />
-    <Content Include="bower_components\es6-shim\es6-shim.js" />
-    <Content Include="bower_components\es6-shim\es6-shim.min.js" />
     <Content Include="bower_components\jquery\dist\jquery.js" />
     <Content Include="bower_components\jquery\dist\jquery.min.js" />
+    <Content Include="bower_components\jquery\dist\jquery.min.map" />
     <Content Include="bower_components\mobile-detect\mobile-detect.js" />
     <Content Include="bower_components\mobile-detect\mobile-detect.min.js" />
     <Content Include="bower_components\terraformer-arcgis-parser\terraformer-arcgis-parser.js" />
@@ -142,8 +141,6 @@
     <Content Include="mstile-310x310.png">
       <DependentUpon>favicon.ico</DependentUpon>
     </Content>
-    <Content Include="bower_components\es6-shim\es6-shim.map" />
-    <Content Include="bower_components\jquery\dist\jquery.min.map" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap-theme.css.map" />
     <Content Include="bower_components\bootstrap\dist\css\bootstrap.css.map" />
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.eot" />
@@ -151,6 +148,8 @@
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="bower_components\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="bower_components\core.js\client\core.min.js.map" />
+    <Content Include="bower.json" />
+    <Content Include="package.json" />
     <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Properties\PublishProfiles\QA.pubxml" />
     <None Include="Properties\PublishProfiles\Test.pubxml">

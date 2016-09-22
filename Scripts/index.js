@@ -1,8 +1,6 @@
 /*eslint-env jquery*/
 /*global Terraformer */
 require([
-	"jquery",
-	"bootstrap",
 	"mobile-detect",
 	"esri/map",
 	"esri/graphic",
@@ -28,7 +26,7 @@ require([
 	"dojo/promise/all",
 	"elc",
 	"dojo/domReady!"
-], function ($, bootstrap, MobileDetect, Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
+], function (MobileDetect, Map, Graphic, Extent, SpatialReference, esriConfig, domUtils, FeatureLayer, Query, InfoTemplate, BasemapGallery,
 	Color, CartographicLineSymbol, webMercatorUtils, UniqueValueRenderer, SimpleMarkerSymbol, urlUtils,
 	PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, RouteLocator
 ) {
@@ -933,7 +931,7 @@ require([
 				where.push(" AND ", sridField, " LIKE '", srid, "%'");
 			}
 		} else if (exactMatch) {
-			where.push(" AND LEN(lrs_route) = 3");
+			where.push(" AND CHAR_LENGTH(" + sridField + ") = 3");
 		}
 		var query = new Query();
 		query.where = where.join("");
