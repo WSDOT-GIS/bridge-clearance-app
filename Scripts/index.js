@@ -274,7 +274,7 @@ require([
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
-	["www.wsdot.wa.gov"].forEach(function (serverName) {
+	["data.wsdot.wa.gov"].forEach(function (serverName) {
 		esriConfig.defaults.io.corsEnabledServers.push(serverName);
 	});
 
