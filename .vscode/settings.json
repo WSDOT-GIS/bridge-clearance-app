@@ -22,7 +22,6 @@
         "**/*.sql": true,
         "*.csproj": true,
         "*.sln": true,
-        "browserconfig.xml": true,
-        "route_params": false
+        "browserconfig.xml": true
     }
 }
