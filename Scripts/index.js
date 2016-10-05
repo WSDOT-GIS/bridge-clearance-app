@@ -31,6 +31,8 @@ require([
   PopupMobile, ArcGISDynamicMapServiceLayer, QueryTask, HomeButton, Geocoder, all, RouteLocator
 ) {
   'use strict'
+  // Detect if page is running from HTTPS URL.
+  var isHttps = !!location.protocol.match(/https/)
   var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile
 
   routeLocator = new RouteLocator('https://remoteapps.wsdot.wa.gov/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe')
@@ -140,7 +142,7 @@ require([
 
   disableLinkBasedOnClass()
 
-  var serviceUrlRoot = window.location.protocol.match(/https/) ? 'https://remoteapps.wsdot.wa.gov' : 'http://data.wsdot.wa.gov'
+  var serviceUrlRoot = isHttps ? 'https://remoteapps.wsdot.wa.gov' : 'http://data.wsdot.wa.gov'
 
   linesServiceUrl = serviceUrlRoot + '/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1'
   pointsServiceUrl = serviceUrlRoot + '/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0'
@@ -375,7 +377,7 @@ require([
     xy = webMercatorUtils.xyToLngLat(xy[0], xy[1])
     // Create the output URL, inserting the xy coordinates.
     if (xy) {
-      // http://maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
+      // //maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
       output = ['//maps.google.com/maps?q=&layer=c&cbll=', xy[1], ',', xy[0], '&cbp=11,0,0,0,0'].join('')
     }
     return output
@@ -810,8 +812,8 @@ require([
   // Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
   var basemapGallery = new BasemapGallery({
     map: map,
-
-    basemapsGroup: location.protocol.match(/https/) ? undefined : { id: 'a89e08f2cc584e55a23b76fa7c9b8618' }
+    // Only use custom basemap group if using HTTP. For HTTPS, use standard Esri basemaps to avoid mixed-content errors.
+    basemapsGroup: isHttps ? undefined : { id: 'a89e08f2cc584e55a23b76fa7c9b8618' }
   }, 'basemapGallery')
   basemapGallery.startup()
 
