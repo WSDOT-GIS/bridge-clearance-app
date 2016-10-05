@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "WSDOT Bridge Clearance application",
   "main": "index.html",
-  "dependencies": {
-
-  },
+  "dependencies": {},
   "devDependencies": {
-    "eslint": "^3.3.1"
+    "eslint": "^3.3.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-plugin-promise": "^2.0.1",
+    "eslint-plugin-standard": "^2.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

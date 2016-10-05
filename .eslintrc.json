@@ -1,25 +1,10 @@
 {
     "env": {
-        "browser": true,
-        "amd": true
+        "browser": true
     },
-    "extends": "eslint:recommended",
-    "rules": {
-        "indent": [
-            "error",
-            "tab"
-        ],
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
-        "quotes": [
-            "off",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
-    }
+    "extends": "standard",
+    "plugins": [
+        "standard",
+        "promise"
+    ]
 }
