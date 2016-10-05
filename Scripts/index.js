@@ -33,7 +33,7 @@ require([
 	"use strict";
 	var map, bridgeOnLayer, bridgeUnderLayer, vehicleHeight, linesServiceUrl, pointsServiceUrl, routeLocator, isMobile;
 
-	routeLocator = new RouteLocator();
+	routeLocator = new RouteLocator("https://remoteapps.wsdot.wa.gov/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe");
 
 	/**
 	 * Keyboard event
@@ -141,8 +141,10 @@ require([
 
 	disableLinkBasedOnClass();
 
-	linesServiceUrl = "http://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
-	pointsServiceUrl = "http://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
+	var serviceUrlRoot = window.location.protocol.match(/https/) ? "https://remoteapps.wsdot.wa.gov" : "http://data.wsdot.wa.gov";
+
+	linesServiceUrl = serviceUrlRoot + "/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
+	pointsServiceUrl = serviceUrlRoot + "/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
 
 	var fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
@@ -274,7 +276,7 @@ require([
 
 	esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
-	["data.wsdot.wa.gov"].forEach(function (serverName) {
+	["data.wsdot.wa.gov", "remoteapps.wsdot.wa.gov"].forEach(function (serverName) {
 		esriConfig.defaults.io.corsEnabledServers.push(serverName);
 	});
 
@@ -374,7 +376,7 @@ require([
 		// Create the output URL, inserting the xy coordinates.
 		if (xy) {
 			// http://maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
-			output = ["http://maps.google.com/maps?q=&layer=c&cbll=", xy[1], ",", xy[0], "&cbp=11,0,0,0,0"].join("");
+			output = ["//maps.google.com/maps?q=&layer=c&cbll=", xy[1], ",", xy[0], "&cbp=11,0,0,0,0"].join("");
 		}
 		return output;
 	}
@@ -569,10 +571,10 @@ require([
 		}
 
 		// Add link
-		// <a href="http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">Local agency contacts</a>
+		// <a href="//www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">Local agency contacts</a>
 		li = document.createElement("li");
 		a = document.createElement("a");
-		a.href = "http://www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
+		a.href = "//www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
 		a.target = "_blank";
 		a.textContent = "Local agency contacts";
 		li.appendChild(a);
@@ -716,7 +718,7 @@ require([
 			}
 		}
 
-		milepostLayer = new ArcGISDynamicMapServiceLayer("http://data.wsdot.wa.gov/arcgis/rest/services/Shared/MilepostValues/MapServer", {
+		milepostLayer = new ArcGISDynamicMapServiceLayer(serviceUrlRoot + "/arcgis/rest/services/Shared/MilepostValues/MapServer", {
 			id: "mileposts"
 		});
 		map.addLayer(milepostLayer);
@@ -803,7 +805,11 @@ require([
 	});
 
 	// Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
-	var basemapGallery = new BasemapGallery({ map: map, basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" } }, "basemapGallery");
+	var basemapGallery = new BasemapGallery({
+	  map: map,
+    
+	  basemapsGroup: location.protocol.match(/https/) ? undefined : { id: "a89e08f2cc584e55a23b76fa7c9b8618" }
+	}, "basemapGallery");
 	basemapGallery.startup();
 
 	// When the basemap gallery loads, select the first basemap with

@@ -6,7 +6,7 @@
         "**/*.{min.js,min.js.map}": true
     },
     "files.exclude": {
-        "Images": true,
+        "Images": false,
         "**/.git": true,
         "**/.svn": true,
         "**/.DS_Store": true,
