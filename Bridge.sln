@@ -1,13 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge.csproj", "{EB0A133E-9272-4123-8F13-A9D4C5006950}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C089439D-028A-49CA-885E-CF42E81FD81B}"
 	ProjectSection(SolutionItems) = preProject
-		module list.txt = module list.txt
 		README.md = README.md
 		UNLICENSE = UNLICENSE
 	EndProjectSection
