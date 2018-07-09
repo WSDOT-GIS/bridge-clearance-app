@@ -1,7 +1,7 @@
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 
-import all from "dojo/promise/all";
+import { AGSMouseEvent } from "esri";
 import Color from "esri/Color";
 import esriConfig from "esri/config";
 import BasemapGallery from "esri/dijit/BasemapGallery";
@@ -16,7 +16,7 @@ import Graphic from "esri/graphic";
 import InfoTemplate from "esri/InfoTemplate";
 import ArcGISDynamicMapServiceLayer from "esri/layers/ArcGISDynamicMapServiceLayer";
 import FeatureLayer from "esri/layers/FeatureLayer";
-import Map from "esri/map";
+import EsriMap from "esri/map";
 import UniqueValueRenderer from "esri/renderers/UniqueValueRenderer";
 import CartographicLineSymbol from "esri/symbols/CartographicLineSymbol";
 import SimpleMarkerSymbol from "esri/symbols/SimpleMarkerSymbol";
@@ -34,7 +34,7 @@ let bridgeUnderLayer: FeatureLayer;
 let vehicleHeight: number;
 
 const routeLocator = new RouteLocator(
-  "https://remoteapps.wsdot.wa.gov/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe"
+  "https://data.wsdot.wa.gov/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe"
 );
 
 /**
@@ -291,6 +291,7 @@ const mapInitExtent = new Extent({
 // Create the map, explicitly setting the LOD values. (This prevents the first layer added determining the LODs.)
 const mapCreationParams: any = {
   extent: mapInitExtent,
+  basemap: "streets-navigation-vector",
   lods: [
     { level: 0, resolution: 156543.033928, scale: 591657527.591555 },
     { level: 1, resolution: 78271.5169639999, scale: 295828763.795777 },
@@ -329,7 +330,7 @@ if (document.body.clientWidth < 768) {
   );
 }
 
-const map = new Map("map", mapCreationParams);
+const map = new EsriMap("map", mapCreationParams);
 
 /**
  * Parses a string into feet and inches.
@@ -735,10 +736,8 @@ map.on("load", function() {
 
   /**
    * Shows a div over the map at the point where the mouse cursor is.
-   * @param {MouseEvent} e
-   * @param {Graphic} e.graphic
    */
-  function showHoverText(e) {
+  function showHoverText(e: AGSMouseEvent) {
     let div;
     div = document.getElementById("hovertext");
     if (!div) {
@@ -883,13 +882,8 @@ map.on("load", function() {
 // Create the basemap gallery, adding the WSDOT map in addition to the default Esri basemaps.
 const basemapGallery = new BasemapGallery(
   {
-    map,
-    // Only use custom basemap group if using HTTP. For HTTPS, use standard Esri basemaps to avoid mixed-content errors.
-    // * Imagery Hybrid
-    // * WSDOT Base Map
-    // * Streets
-    // * Open Street Map
-    basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" }
+    // basemapsGroup: "a89e08f2cc584e55a23b76fa7c9b8618", // Custom AGOL basemap group seems to have been deleted.
+    map
   },
   "basemapGallery"
 );
@@ -899,9 +893,14 @@ basemapGallery.startup();
 // the title "WSDOT Base Map". (There should be only one, but that's what
 // the code is doing.)
 basemapGallery.on("load", function() {
-  const basemaps = basemapGallery.basemaps.filter(function(basemap) {
-    return basemap.title === "WSDOT Base Map";
-  });
+  let basemaps = basemapGallery.basemaps.filter(
+    basemap => basemap.title === "WSDOT Base Map"
+  );
+  if (!(basemaps && basemaps.length > 0)) {
+    basemaps = basemapGallery.basemaps.filter(basemap =>
+      basemap.title.match(/Streets/i)
+    );
+  }
   if (basemaps && basemaps.length > 0) {
     const basemap = basemaps[0];
     basemapGallery.select(basemap.id);
@@ -1110,7 +1109,7 @@ function selectFeatures(form: HTMLFormElement): any {
         const underSelectDeferred = bridgeUnderLayer.selectFeatures(
           createQuery("VCMIN", inches, routeText, exactRoute)
         );
-        all([onSelectDeferred, underSelectDeferred]).then(showAlert);
+        Promise.all([onSelectDeferred, underSelectDeferred]).then(showAlert);
       }
     }
   } catch (err) {

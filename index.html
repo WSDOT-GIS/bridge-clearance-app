@@ -52,8 +52,9 @@
     <meta name="msapplication-TileColor" content="#007c66">
     <meta name="msapplication-TileImage" content="mstile-144x144.png">
     <!-- #endregion favicon -->
-    <link rel="stylesheet" href="//js.arcgis.com/3.17/esri/css/esri.css" />
-    <link rel="stylesheet" href="//js.arcgis.com/3.17/dijit/themes/claro/claro.css" />
+    <link rel="stylesheet" href="https://js.arcgis.com/3.25/esri/css/esri.css" integrity="sha384-Vtqiar3jS6bqFyFuf1OQSZVRJhjl5EfMOz4pAdogx78Z3lZzkCPlZX2GgTu6agHu" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.25/dijit/themes/claro/claro.css" integrity="sha384-xudILpH2keG8vh5gOGVx24QsvYfePPzbQhFI7MUwgnt90OGNYggt/v7gE3gk9P9S" crossorigin="anonymous">
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -291,11 +292,6 @@
             </div>
         </div> <!--row-->
     </div>
-    <!-- <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/core.js/client/core.min.js"></script>
-    <script src="bower_components/terraformer/terraformer.min.js"></script>
-    <script src="bower_components/terraformer-arcgis-parser/terraformer-arcgis-parser.min.js"></script> -->
     <script>
         (function () {
             var root = location.pathname.replace(/\/[^\/]*$/, "");
@@ -306,23 +302,12 @@
                         name: "app",
                         location: [root, "Scripts"].join("/")
                     }
-                    // ,
-                    // {
-                    //     name: "elc",
-                    //     location: [root, "bower_components/elc"].join("/"),
-                    //     main: "RouteLocator"
-                    // },
-                    // {
-                    //     name: "mobile-detect",
-                    //     location: [root, "bower_components/mobile-detect"].join("/"),
-                    //     main: "mobile-detect.min"
-                    // }
                 ]
             };
             window.dojoConfig = dojoConfig;
         }());
     </script>
-    <script src="//js.arcgis.com/3.17/init.js" integrity="sha384-UIiMVdEutbM8Gw8aZAdy+9v4h7ySqcjaF9yVIsFiTLCSBUtw6DRZDnbUIn3lqcD+" crossorigin="anonymous"></script>
+    <script src="https://js.arcgis.com/3.25/init.js" integrity="sha384-1VhislcnI051SFPPTVD4VOSvnqTwDKsMcLHOq8S+pPrKHoB6p/YOJ6iKR1vfPpBC" crossorigin="anonymous"></script>
     <script>require(["app"])</script>
 </body>
 

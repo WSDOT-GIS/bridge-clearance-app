@@ -1,4 +1,6 @@
-Scripts/main.js
+Scripts/main.*
+
+.awcache
 
 .vscode/*
 !.vscode/settings.json
