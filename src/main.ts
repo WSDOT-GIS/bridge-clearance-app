@@ -1,13 +1,13 @@
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 
-// import "bootstrap";
 import all from "dojo/promise/all";
 import Color from "esri/Color";
 import esriConfig from "esri/config";
 import BasemapGallery from "esri/dijit/BasemapGallery";
 import Geocoder from "esri/dijit/Geocoder";
 import HomeButton from "esri/dijit/HomeButton";
+import Popup from "esri/dijit/Popup";
 import PopupMobile from "esri/dijit/PopupMobile";
 import domUtils from "esri/domUtils";
 import Extent from "esri/geometry/Extent";
@@ -16,51 +16,31 @@ import Graphic from "esri/graphic";
 import InfoTemplate from "esri/InfoTemplate";
 import ArcGISDynamicMapServiceLayer from "esri/layers/ArcGISDynamicMapServiceLayer";
 import FeatureLayer from "esri/layers/FeatureLayer";
-import Layer from "esri/layers/layer";
 import Map from "esri/map";
 import UniqueValueRenderer from "esri/renderers/UniqueValueRenderer";
-import SpatialReference from "esri/SpatialReference";
 import CartographicLineSymbol from "esri/symbols/CartographicLineSymbol";
 import SimpleMarkerSymbol from "esri/symbols/SimpleMarkerSymbol";
 import Query from "esri/tasks/query";
-import QueryTask from "esri/tasks/QueryTask";
 import urlUtils from "esri/urlUtils";
-// import $ from "jquery";
 import MobileDetect from "mobile-detect";
-
-import RouteLocator, { RouteLocation } from "wsdot-elc";
-
 import Terraformer from "terraformer";
 import { parse as parseArcGIS } from "terraformer-arcgis-parser";
+import RouteLocator, { RouteLocation } from "wsdot-elc";
 
 const clearanceForm: HTMLFormElement = (document.forms as any).clearanceForm;
 
-// Detect if page is running from HTTPS URL.
-const isHttps = !!location.protocol.match(/https/);
-// tslint:disable-next-line:one-variable-per-declaration
-let map,
-  bridgeOnLayer,
-  bridgeUnderLayer,
-  vehicleHeight,
-  linesServiceUrl,
-  pointsServiceUrl,
-  routeLocator,
-  isMobile;
+let bridgeOnLayer: FeatureLayer;
+let bridgeUnderLayer: FeatureLayer;
+let vehicleHeight: number;
 
-routeLocator = new RouteLocator(
+const routeLocator = new RouteLocator(
   "https://remoteapps.wsdot.wa.gov/arcgis/rest/services/Shared/ElcRestSOE/MapServer/exts/ElcRestSoe"
 );
 
 /**
- * Keyboard event
- * @external KeyboardEvent
- * @see  https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
- */
-
-/**
  * Rejects keyboard input if it is non-numeric.
  * Special characters (e.g., Delete, Tab) are also allowed.
- * @param {KeyboardEvent} e
+ * @param {KeyboardEvent} e https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
  * @this {HTMLInputElement}
  */
 function rejectNonNumericInput(e: KeyboardEvent & { keyIdentifier: string }) {
@@ -93,10 +73,9 @@ function rejectNonNumericInput(e: KeyboardEvent & { keyIdentifier: string }) {
  * @param {NodeList} inputs
  */
 function restrictToNumericInput(inputs: NodeList) {
-  var input;
   if (inputs) {
-    for (var i = 0, l = inputs.length; i < l; i += 1) {
-      input = inputs[i];
+    for (let i = 0, l = inputs.length; i < l; i += 1) {
+      const input = inputs[i] as HTMLInputElement;
       input.onkeypress = rejectNonNumericInput;
     }
   }
@@ -163,16 +142,12 @@ function disableLinkBasedOnClass() {
 
 disableLinkBasedOnClass();
 
-const serviceUrlRoot = isHttps
-  ? "https://remoteapps.wsdot.wa.gov"
-  : "http://data.wsdot.wa.gov";
+const serviceUrlRoot = "https://data.wsdot.wa.gov";
 
-linesServiceUrl =
-  serviceUrlRoot +
-  "/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
-pointsServiceUrl =
-  serviceUrlRoot +
-  "/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
+const linesServiceUrl =
+  "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/1";
+const pointsServiceUrl =
+  "https://data.wsdot.wa.gov/arcgis/rest/services/Bridge/BridgeVerticalClearances/MapServer/0";
 
 const fieldsWithWeirdFormatNumbers = /^(?:(?:horiz_clrnc_route)|(?:horiz_clrnc_rvrs)|(?:vert_clrnc_route_max)|(?:vert_clrnc_route_min)|(?:vert_clrnc_rvrs_max)|(?:vert_clrnc_rvrs_min)|(?:min_vert_(?:(?:deck)|(?:under))))$/i;
 
@@ -269,15 +244,13 @@ function someLanesCanPass(graphic: Graphic): number {
  * @returns {number}
  */
 function customToInches(n: number): number {
-  let feet, inches, output;
   if (typeof n === "number") {
-    inches = n % 100;
-    feet = (n - inches) / 100;
-    output = feet * 12 + inches;
+    const inches = n % 100;
+    const feet = (n - inches) / 100;
+    return feet * 12 + inches;
   } else {
-    output = n;
+    return n;
   }
-  return output;
 }
 
 /**
@@ -286,9 +259,8 @@ function customToInches(n: number): number {
  * @returns {number}
  */
 function inchesToCustom(inches: number): number {
-  let feetPart, inchesPart;
-  inchesPart = inches % 12;
-  feetPart = (inches - inchesPart) / 12;
+  const inchesPart = inches % 12;
+  const feetPart = (inches - inchesPart) / 12;
   return feetPart * 100 + inchesPart;
 }
 
@@ -305,9 +277,8 @@ function inchesToFeetAndInchesLabel(inches: number): string {
 
 esriConfig.defaults.io.proxyUrl = "proxy/proxy.ashx";
 
-["data.wsdot.wa.gov", "remoteapps.wsdot.wa.gov"].forEach(function(serverName) {
-  esriConfig.defaults.io.corsEnabledServers.push(serverName);
-});
+esriConfig.defaults.io.corsEnabledServers.push("data.wsdot.wa.gov");
+esriConfig.defaults.io.httpsDomains.push("wsdot.wa.gov");
 
 const mapInitExtent = new Extent({
   xmin: -14058520.2360666,
@@ -348,7 +319,7 @@ const mapCreationParams: any = {
   showAttribution: true
 };
 
-isMobile = Boolean(new MobileDetect(window.navigator.userAgent).mobile());
+const isMobile = Boolean(new MobileDetect(window.navigator.userAgent).mobile());
 
 // Use the mobile popup on smaller screens.
 if (document.body.clientWidth < 768) {
@@ -358,7 +329,7 @@ if (document.body.clientWidth < 768) {
   );
 }
 
-map = new Map("map", mapCreationParams);
+const map = new Map("map", mapCreationParams);
 
 /**
  * Parses a string into feet and inches.
@@ -405,31 +376,23 @@ FeetAndInches.prototype.toString = function() {
  * @param {esri/Graphic} graphic
  * @returns {string}
  */
-function getGoogleStreetViewUrl(graphic): string {
+function getGoogleStreetViewUrl(graphic): string | null {
   const geometry = graphic.geometry;
-  let xy;
-  let output = null;
   // Get the xy coordinates of the first (or only) point of the geometry.
-  xy =
+  const xy =
     geometry.type === "point"
       ? [geometry.x, geometry.y]
       : geometry.paths
         ? geometry.paths[0][0]
         : null;
   // Convert the coordinates from Web Mercator to WGS84.
-  xy = webMercatorUtils.xyToLngLat(xy[0], xy[1]);
+  const [x, y] = webMercatorUtils.xyToLngLat(xy[0], xy[1]);
   // Create the output URL, inserting the xy coordinates.
   if (xy) {
     // //maps.google.com/maps?q=&layer=c&cbll=47.15976,-122.48359&cbp=11,0,0,0,0
-    output = [
-      "//maps.google.com/maps?q=&layer=c&cbll=",
-      xy[1],
-      ",",
-      xy[0],
-      "&cbp=11,0,0,0,0"
-    ].join("");
+    return `//maps.google.com/maps?q=&layer=c&cbll=${x},${y}&cbp=11,0,0,0,0`;
   }
-  return output;
+  return null;
 }
 
 /**
@@ -438,20 +401,19 @@ function getGoogleStreetViewUrl(graphic): string {
  * @returns {HTMLTableElement}
  */
 function objectToTable(o: object): HTMLTableElement {
-  let table, row, cell, value;
   const aliases = {
     SRMP: "Milepost"
   };
-  table = document.createElement("table");
+  const table = document.createElement("table");
   table.classList.add("table");
   for (const propName in o) {
     if (o.hasOwnProperty(propName)) {
-      row = table.insertRow(-1);
-      cell = document.createElement("th");
+      const row = table.insertRow(-1);
+      let cell = document.createElement("th");
       cell.textContent = aliases.hasOwnProperty(propName)
         ? aliases[propName]
         : propName;
-      value = o[propName];
+      const value = o[propName];
       row.appendChild(cell);
       cell = row.insertCell(-1);
       if (typeof value === "object") {
@@ -469,7 +431,9 @@ function objectToTable(o: object): HTMLTableElement {
  * @param {Layer} layer
  * @returns {Object.<string, string>}
  */
-function createFieldAliasDictionary(layer: FeatureLayer): { [s: string]: string; } {
+function createFieldAliasDictionary(
+  layer: FeatureLayer
+): { [s: string]: string } {
   let output = null;
   if (layer && layer.fields) {
     output = {};
@@ -487,14 +451,20 @@ function createFieldAliasDictionary(layer: FeatureLayer): { [s: string]: string;
  * @param {RegExp} [feetInchesFields] - Matches the names of fields that contain feet + inches data in an integer format.
  * @returns {HTMLTableElement}
  */
-function createTable(graphic: Graphic, fieldsToInclude: string[], feetInchesFields: RegExp): HTMLTableElement {
+function createTable(
+  graphic: Graphic,
+  fieldsToInclude: string[],
+  feetInchesFields: RegExp
+): HTMLTableElement {
   const table = document.createElement("table");
   let tr;
   let th;
   let td;
   let value;
   const o = graphic.attributes;
-  const aliasDict = createFieldAliasDictionary(graphic.getLayer() as FeatureLayer);
+  const aliasDict = createFieldAliasDictionary(
+    graphic.getLayer() as FeatureLayer
+  );
   table.setAttribute("class", "bridge-info table table-striped table-hover");
   table.createTHead();
   const tbody = table.createTBody();
@@ -609,15 +579,12 @@ function toHtmlContent(graphic): DocumentFragment {
   ul.setAttribute("class", "link-list");
   fragment.appendChild(ul);
 
-  let li
-  let a;
-
   // Add a google street view link if possible.
   const gsvUrl = getGoogleStreetViewUrl(graphic);
   if (gsvUrl) {
-    li = document.createElement("li");
+    const li = document.createElement("li");
     li.setAttribute("class", "google-street-view");
-    a = document.createElement("a");
+    const a = document.createElement("a");
     a.setAttribute("class", "google-street-view");
     a.href = gsvUrl;
     a.textContent = "Google Street View";
@@ -629,13 +596,13 @@ function toHtmlContent(graphic): DocumentFragment {
 
   // Add link
   // <a href="//www.wsdot.wa.gov/CommercialVehicle/county_permits.htm" target="_blank">Local agency contacts</a>
-  li = document.createElement("li");
-  a = document.createElement("a");
-  a.href = "//www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
-  a.target = "_blank";
-  a.textContent = "Local agency contacts";
-  li.appendChild(a);
-  ul.appendChild(li);
+  const li2 = document.createElement("li");
+  const a2 = document.createElement("a");
+  a2.href = "//www.wsdot.wa.gov/CommercialVehicle/county_permits.htm";
+  a2.target = "_blank";
+  a2.textContent = "Local agency contacts";
+  li2.appendChild(a2);
+  ul.appendChild(li2);
 
   const table = createTable(
     graphic,
@@ -643,11 +610,10 @@ function toHtmlContent(graphic): DocumentFragment {
     fieldsWithWeirdFormatNumbers
   );
 
-  let p;
   if (table.classList) {
     table.classList.add("collapsed");
-    p = document.createElement("p");
-    a = document.createElement("a");
+    const p = document.createElement("p");
+    const a = document.createElement("a");
     a.href = "#";
     a.innerHTML =
       "Details...<span class='glyphicon glyphicon-chevron-down'></span>";
@@ -669,7 +635,7 @@ const infoTemplate = new InfoTemplate("${crossing_description}", toHtmlContent);
  * @param {Number} method
  * @param {FeatureLayer} target
  */
-interface FeatureSelectionCompleteResult {
+interface IFeatureSelectionCompleteResult {
   features: Graphic[];
   method: number;
   target: FeatureLayer;
@@ -682,9 +648,9 @@ function calulateTotal(element) {
 }
 
 /** Updates the feature count table.
- * @param {FeatureSelectionCompleteResult} results
+ * @param {IFeatureSelectionCompleteResult} results
  */
-function handleSelectionComplete(results: FeatureSelectionCompleteResult) {
+function handleSelectionComplete(results: IFeatureSelectionCompleteResult) {
   // Determine which layer triggered the selection-complete event.
   // Get the corresponding table cell that holds its feature count.
   // Update the value in that table cell.
@@ -766,14 +732,6 @@ new Geocoder(
 map.on("load", function() {
   // Create the cartographic line symbol that will be used to show the selected lines.
   // This gives them a better appearance than the default behavior.
-  // let milepostLayer,
-  //   defaultPointSymbol,
-  //   defaultLineSymbol,
-  //   warningLineSymbol,
-  //   pointRenderer,
-  //   lineRenderer,
-  //   defaultColor,
-  //   warningColor;
 
   /**
    * Shows a div over the map at the point where the mouse cursor is.
@@ -843,14 +801,17 @@ map.on("load", function() {
   );
 
   const defaultPointSymbol = new SimpleMarkerSymbol();
-  defaultPointSymbol.setColor(defaultColor)
-  defaultPointSymbol.setSize(pointSize)
+  defaultPointSymbol.setColor(defaultColor);
+  defaultPointSymbol.setSize(pointSize);
   defaultPointSymbol.setOutline(null);
 
   const label = "Can pass in some lanes";
   const description = "Vehicle may be able to pass in some but not all lanes.";
 
-  const lineRenderer = new UniqueValueRenderer(defaultLineSymbol, someLanesCanPass);
+  const lineRenderer = new UniqueValueRenderer(
+    defaultLineSymbol,
+    someLanesCanPass
+  );
   lineRenderer.addValue({
     value: 1,
     symbol: warningLineSymbol,
@@ -924,9 +885,11 @@ const basemapGallery = new BasemapGallery(
   {
     map,
     // Only use custom basemap group if using HTTP. For HTTPS, use standard Esri basemaps to avoid mixed-content errors.
-    basemapsGroup: isHttps
-      ? undefined
-      : { id: "a89e08f2cc584e55a23b76fa7c9b8618" }
+    // * Imagery Hybrid
+    // * WSDOT Base Map
+    // * Streets
+    // * Open Street Map
+    basemapsGroup: { id: "a89e08f2cc584e55a23b76fa7c9b8618" }
   },
   "basemapGallery"
 );
@@ -936,12 +899,11 @@ basemapGallery.startup();
 // the title "WSDOT Base Map". (There should be only one, but that's what
 // the code is doing.)
 basemapGallery.on("load", function() {
-  let basemap, basemaps;
-  basemaps = basemapGallery.basemaps.filter(function(basemap) {
+  const basemaps = basemapGallery.basemaps.filter(function(basemap) {
     return basemap.title === "WSDOT Base Map";
   });
   if (basemaps && basemaps.length > 0) {
-    basemap = basemaps[0];
+    const basemap = basemaps[0];
     basemapGallery.select(basemap.id);
   }
 });
@@ -1074,15 +1036,6 @@ function createQuery(
  * @returns {Object} Returns the history state object.
  */
 function selectFeatures(form: HTMLFormElement): any {
-  let inches,
-    feetAndInches,
-    routeText,
-    exactRoute,
-    state,
-    formIsValid,
-    onSelectDeferred,
-    underSelectDeferred;
-
   /**
    * Shows an alert if no features were selected.
    * @param {Array.<Array.<(boolean|esri/Graphic)>>} dListResponse - Response from a dojo/DeferredList.
@@ -1111,14 +1064,14 @@ function selectFeatures(form: HTMLFormElement): any {
     showResults();
   }
 
-  formIsValid = validateClearanceForm();
+  const formIsValid = validateClearanceForm();
 
   if (!formIsValid) {
     return;
   }
 
   // Set the state that will be passed back if successful.
-  state = {
+  let state = {
     feet: form.feet.value,
     inches: form.inches.value,
     route: form.route.value,
@@ -1130,11 +1083,11 @@ function selectFeatures(form: HTMLFormElement): any {
     form.blur();
 
     // Get the clearance amount.
-    feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
-    inches = feetAndInches.totalInches();
+    const feetAndInches = new FeetAndInches(form.feet.value, form.inches.value);
+    const inches = feetAndInches.totalInches();
 
     // Get the route filter
-    routeText = form.route.value;
+    const routeText = form.route.value;
     // Make sure that route text is valid
     if (
       routeText &&
@@ -1146,22 +1099,23 @@ function selectFeatures(form: HTMLFormElement): any {
       alert("Invalid route");
       state = null;
     } else {
-      exactRoute = !(document.getElementById(
+      const exactRoute = !(document.getElementById(
         "includeNonMainlineCheckbox"
       ) as HTMLInputElement).checked;
       if (inches) {
         vehicleHeight = inchesToCustom(inches + 3);
-        onSelectDeferred = bridgeOnLayer.selectFeatures(
+        const onSelectDeferred = bridgeOnLayer.selectFeatures(
           createQuery("VCMIN", inches, routeText, exactRoute)
         );
-        underSelectDeferred = bridgeUnderLayer.selectFeatures(
+        const underSelectDeferred = bridgeUnderLayer.selectFeatures(
           createQuery("VCMIN", inches, routeText, exactRoute)
         );
         all([onSelectDeferred, underSelectDeferred]).then(showAlert);
       }
     }
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
+    // tslint:disable-next-line:no-console
+    console.error(err);
     state = null;
   }
   return state;
@@ -1331,25 +1285,30 @@ map.on("click", function(evt) {
   const graphicTagNames = /(?:(?:circle)|(?:path))/i;
 
   // Only proceed if the target is not a graphic.
-  if (!graphicTagNames.test(evt.target.tagName)) {
+  if (!graphicTagNames.test((evt.target as any).tagName)) {
     mapPoint = evt.mapPoint;
-    routeLocator.findNearestRouteLocations({
-      coordinates: [mapPoint.x, mapPoint.y],
-      referenceDate: new Date(),
-      searchRadius: 200,
-      inSR: mapPoint.spatialReference.wkid,
-      outSR: mapPoint.spatialReference.wkid,
-      useCors: true,
-      successHandler(elcResults) {
-        if (elcResults.length) {
-          map.infoWindow.setFeatures(elcResults.map(routeLocationToGraphic));
-          map.infoWindow.show(mapPoint);
+    routeLocator
+      .findNearestRouteLocations({
+        coordinates: [mapPoint.x, mapPoint.y],
+        referenceDate: new Date(),
+        searchRadius: 200,
+        inSR: mapPoint.spatialReference.wkid,
+        outSR: mapPoint.spatialReference.wkid,
+        useCors: true
+      })
+      .then(
+        elcResults => {
+          if (elcResults.length) {
+            (map.infoWindow as Popup).setFeatures(
+              elcResults.map(routeLocationToGraphic)
+            );
+            map.infoWindow.show(mapPoint);
+          }
+        },
+        error => {
+          // tslint:disable-next-line:no-console
+          console.error("elc error", error);
         }
-      },
-      errorHandler(error) {
-        // tslint:disable-next-line:no-console
-        console.error("elc error", error);
-      }
-    });
+      );
   }
 });
