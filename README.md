@@ -1,6 +1,8 @@
 WSDOT State Route Bridge Vertical Clearance Trip Planner
 ========================================================
 
+<mark>:warning: **This repository is archived, meaning that it is no longer maintained** :warning:</mark>
+
 This is the source code for the [WSDOT State Route Bride Vertical Clearance Trip Planner] web application.
 
 Bower error workaround
@@ -36,4 +38,5 @@ PNG and ICO files were generated from the SVG using [RealFaviconGenerator.net]. 
 [Web Essentials 2017]:https://marketplace.visualstudio.com/items?itemName=MadsKristensen.WebExtensionPack2017
 [bower install]:https://bower.io/docs/api/#install
 [--force]:https://bower.io/docs/api/#force
+
 [WSDOT State Route Bride Vertical Clearance Trip Planner]:http://www.wsdot.wa.gov/data/tools/bridgeclearance/
